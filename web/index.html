@@ -43,6 +43,26 @@
           background-size: 100% 100%;
     }
 
+    #ues-splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #FDFCFB;
+    }
+
+    #ues-splash svg {
+      width: 84px;
+      height: auto;
+      animation: ues-pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes ues-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .55; transform: scale(.94); }
+    }
+
     .center {
       margin: 0;
       position: absolute;
@@ -93,18 +113,27 @@
       body {
         background-color: #17130F;
           }
+      #ues-splash { background-color: #17130F; }
     }
-  </style>
+</style>
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
       document.getElementById("splash")?.remove();
       document.getElementById("splash-branding")?.remove();
+      document.getElementById("ues-splash")?.remove();
       document.body.style.background = "transparent";
     }
   </script>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 </head>
 <body>
+  <div id="ues-splash">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136.08 356" role="img" aria-label="UES Rutas">
+      <path fill="#FF6C0E" fill-rule="evenodd" d="M26.60 254.32C26.60 254.32 6.00 195.70 24.43 152.44C35.76 125.82 54.21 92.96 58.20 82.17C72.87 42.52 72.87 6.00 72.87 6.00C79.27 46.17 82.12 97.29 76.59 115.02C64.98 152.19 58.08 157.02 42.26 192.24C27.13 225.89 26.60 254.32 26.60 254.32"/>
+      <path fill="#FF6C0E" fill-rule="evenodd" d="M51.06 302.07C51.06 302.07 31.00 239.70 48.89 200.19C60.83 173.83 78.67 140.71 82.66 129.92C97.33 90.27 97.33 53.75 97.33 53.75C103.74 93.92 106.59 145.04 101.05 162.77C89.45 199.94 82.55 204.77 66.72 239.99C51.60 273.64 51.06 302.07 51.06 302.07"/>
+      <path fill="#FF6C0E" fill-rule="evenodd" d="M74.55 350.00C74.55 350.00 53.00 294.70 74.00 246.70C86.26 218.69 101.75 187.52 106.15 177.85C123.69 139.38 120.82 101.69 120.82 101.69C127.23 141.85 130.08 192.98 124.54 210.70C112.94 247.88 106.04 252.71 90.21 287.92C75.09 321.58 74.55 350.00 74.55 350.00"/>
+    </svg>
+  </div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader

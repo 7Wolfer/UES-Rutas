@@ -15,11 +15,12 @@ abstract final class Atencion {
       'Abrir WhatsApp',
       'Se abrirá WhatsApp para escribir al área de Atención de la UES.',
     );
-    if (!ok) return;
+    if (!ok || !context.mounted) return;
     final uri = Uri.parse(
       'https://wa.me/$_numero?text=${Uri.encodeComponent('Hola, necesito ayuda con la app UES Rutas.')}',
     );
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    await _abrir(context, uri,
+        modo: LaunchMode.externalApplication, error: 'No se pudo abrir WhatsApp.');
   }
 
   static Future<void> llamar(BuildContext context) async {
@@ -29,8 +30,25 @@ abstract final class Atencion {
       'Se abrirá el marcador con el número de Atención de la UES '
           '(${AppConfig.telefonoAtencion}).',
     );
-    if (!ok) return;
-    await launchUrl(Uri(scheme: 'tel', path: AppConfig.telefonoAtencion));
+    if (!ok || !context.mounted) return;
+    await _abrir(context, Uri(scheme: 'tel', path: AppConfig.telefonoAtencion),
+        error: 'No se pudo abrir el marcador telefónico.');
+  }
+
+  static Future<void> _abrir(
+    BuildContext context,
+    Uri uri, {
+    LaunchMode modo = LaunchMode.platformDefault,
+    required String error,
+  }) async {
+    bool ok;
+    try {
+      ok = await launchUrl(uri, mode: modo);
+    } catch (_) {
+      ok = false;
+    }
+    if (ok || !context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
   }
 
   static Future<bool> _confirmar(

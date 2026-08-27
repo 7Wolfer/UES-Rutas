@@ -91,6 +91,25 @@ flutter:
 flutter_native_splash:
   color: "#FDFCFB"
   color_dark: "#17130F"
+  image: assets/brand/splash.png
+  image_dark: assets/brand/splash_dark.png
   android_12:
     color: "#FDFCFB"
     color_dark: "#17130F"
+    image: assets/brand/splash.png
+    image_dark: assets/brand/splash_dark.png
+  web: false
+
+# Íconos de la app. Regenerar con: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  image_path: "assets/brand/icono_app.png"
+  android: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/brand/icono_adaptivo_fg.png"
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/brand/icono_web.png"
+    background_color: "#FFFFFF"
+    theme_color: "#8E1537"

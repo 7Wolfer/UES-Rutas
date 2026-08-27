@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -79,19 +80,26 @@ class _TabCredencial extends StatelessWidget {
                       children: [
                         Row(
                           children: [
+                            SvgPicture.asset(
+                              'assets/brand/ues_isotipo.svg',
+                              height: 26,
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.white, BlendMode.srcIn),
+                            ),
+                            const SizedBox(width: 8),
                             const Text('UES',
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 22,
-                                    letterSpacing: 2)),
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20,
+                                    letterSpacing: 1)),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text('Universidad Estatal de Sonora',
                                   style: TextStyle(
                                       color:
                                           Colors.white.withValues(alpha: 0.85),
-                                      fontSize: 11)),
+                                      fontSize: 10)),
                             ),
                           ],
                         ),

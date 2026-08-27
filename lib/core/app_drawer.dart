@@ -26,8 +26,8 @@ class AppDrawer extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
               child: Row(
                 children: [
-                  SvgPicture.asset('assets/brand/llama_placeholder.svg',
-                      width: 34, height: 34),
+                  SvgPicture.asset('assets/brand/ues_isotipo.svg',
+                      height: 34, semanticsLabel: 'Logo UES'),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

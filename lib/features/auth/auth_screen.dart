@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/config.dart';
@@ -56,11 +57,22 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final oscuro = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(title: const Text('Iniciar sesión')),
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          Center(
+            child: SvgPicture.asset(
+              oscuro
+                  ? 'assets/brand/ues_horizontal_blanco.svg'
+                  : 'assets/brand/ues_horizontal.svg',
+              width: 220,
+              semanticsLabel: 'Universidad Estatal de Sonora',
+            ),
+          ),
+          const SizedBox(height: 28),
           Text('Correo institucional',
               style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),

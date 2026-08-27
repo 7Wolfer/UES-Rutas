@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../core/brand.dart';
 import 'widgets.dart';
@@ -17,6 +18,46 @@ class CatalogoScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
         children: [
+          const EncabezadoSeccion('Logotipo'),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant),
+            ),
+            child: SvgPicture.asset('assets/brand/ues_horizontal.svg',
+                width: 240),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+            decoration: BoxDecoration(
+              color: UesBrand.vino,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: SvgPicture.asset('assets/brand/ues_horizontal_blanco.svg',
+                width: 240),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              SvgPicture.asset('assets/brand/ues_isotipo.svg', height: 56),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  'Logosímbolo (la llama). En tamaños chicos se usa solo. No '
+                  'deformar, re-colorear fuera de la paleta ni ponerle sombras.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
           const EncabezadoSeccion('Paleta institucional'),
           const SizedBox(height: 8),
           const _Swatch(
