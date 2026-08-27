@@ -53,7 +53,6 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
     final oscuro = theme.brightness == Brightness.dark;
     final dataAsync = ref.watch(campusDataProvider);
     final estilo = ref.watch(estiloMapaProvider);
-    final seleccionadoId = ref.watch(lugarSeleccionadoProvider);
     final destacado = ref.watch(avisoDestacadoProvider);
 
     return Scaffold(
@@ -78,7 +77,6 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
                 controller: _map,
                 estilo: estilo,
                 oscuro: oscuro,
-                lugarDestacadoId: seleccionadoId,
                 posicionUsuario: _posUsuario,
                 onTapLugar: (l) {
                   ref.read(lugarSeleccionadoProvider.notifier).state = l.id;
@@ -96,6 +94,7 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
 
             // Barra superior
             SafeArea(
+              bottom: false,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
                 child: Row(
@@ -110,6 +109,7 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Center(
+                        heightFactor: 1,
                         child: PastillaAccion(
                           label: 'Explorar el campus',
                           icon: Icons.explore_outlined,
@@ -135,7 +135,7 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
             // Banner de aviso destacado
             if (destacado != null)
               Positioned(
-                top: MediaQuery.paddingOf(context).top + 62,
+                top: MediaQuery.paddingOf(context).top + 66,
                 left: 14,
                 right: 14,
                 child: _BannerAviso(aviso: destacado),

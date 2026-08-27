@@ -20,9 +20,6 @@ dependencies:
   # Navegación
   go_router: ^14.6.0
 
-  # Identidad UES: Montserrat + Source Sans 3
-  google_fonts: ^6.2.1
-
   # Backend / auth (stub por ahora, detrás de feature flag)
   supabase_flutter: ^2.8.0
 
@@ -68,6 +65,28 @@ flutter:
     - assets/seed/
     - assets/brand/
     - assets/docs/
+
+  # Identidad UES: Montserrat (títulos) + Source Sans 3 (cuerpo).
+  # Empaquetadas para no descargarlas en runtime (arranque más rápido, sin FOUT).
+  fonts:
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
+    - family: Source Sans 3
+      fonts:
+        - asset: assets/fonts/SourceSans3-Regular.ttf
+        - asset: assets/fonts/SourceSans3-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SourceSans3-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/SourceSans3-Bold.ttf
+          weight: 700
 
 flutter_native_splash:
   color: "#FDFCFB"

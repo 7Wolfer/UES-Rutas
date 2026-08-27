@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../core/brand.dart';
@@ -10,10 +12,17 @@ import '../../data/routing.dart';
 /// Mapa real del campus UES: teselas de OpenStreetMap + capa propia
 /// (perímetro, campo deportivo, edificios, pines y ruta).
 ///
+/// Rendimiento:
+/// - Las capas estáticas (teselas, perímetro, contorno de edificios) se
+///   construyen una sola vez; solo se rehacen si cambian `data`/`estilo`/`oscuro`.
+/// - El lugar resaltado y los marcadores viven en un `Consumer` para que un
+///   toque en un pin no reconstruya todo el mapa.
+/// - Los marcadores se filtran por zoom: pocos de lejos, todos de cerca.
+///
 /// Nota web: en la build web con CanvasKit, las teselas de `flutter_map` no
 /// empiezan a cargarse hasta el primer gesto real (toque/scroll). En iOS y
 /// Android (los objetivos de la app) cargan normalmente.
-class MapaCampus extends StatefulWidget {
+class MapaCampus extends ConsumerStatefulWidget {
   const MapaCampus({
     super.key,
     required this.data,
@@ -33,6 +42,9 @@ class MapaCampus extends StatefulWidget {
   final EstiloMapa estilo;
   final bool oscuro;
   final RutaCalculada? ruta;
+
+  /// Lugar a resaltar de forma explícita (p. ej. el destino en "cómo llegar").
+  /// Si es `null`, el mapa usa `lugarSeleccionadoProvider`.
   final String? lugarDestacadoId;
   final LatLng? posicionUsuario;
   final ValueChanged<Lugar>? onTapLugar;
@@ -40,27 +52,120 @@ class MapaCampus extends StatefulWidget {
   final double paddingInferior;
 
   @override
-  State<MapaCampus> createState() => _MapaCampusState();
+  ConsumerState<MapaCampus> createState() => _MapaCampusState();
 }
 
-class _MapaCampusState extends State<MapaCampus> {
+class _MapaCampusState extends ConsumerState<MapaCampus> {
   static const _pkgName = 'mx.ues.ues_rutas';
+
+  /// Zoom máximo al que arranca la vista de campus (mismo encuadre en móvil y
+  /// escritorio, para que el zoom-gate de pines sea consistente).
+  static const _zoomCampusMax = 17.0;
+
+  /// Cuánto hay que acercar respecto al encuadre inicial para ver "todos" los
+  /// pines. Por debajo se muestran solo los lugares principales.
+  static const _saltoDetalle = 1.2;
+
+  /// Categorías visibles cuando el mapa está "lejos" (vista de campus).
+  static const _catsLejos = {
+    CategoriaMapa.aula,
+    CategoriaMapa.biblioteca,
+    CategoriaMapa.alimentos,
+    CategoriaMapa.deportivo,
+  };
+
+  double? _zoomBase;
+  bool _zoomCerca = false;
+
+  // --- Capas estáticas, memorizadas ---
+  late LatLngBounds _limitesCampus;
+  late List<Polygon> _perimetroPolis;
+  late List<Polygon> _edificiosBasePolis;
 
   CampusData get data => widget.data;
   bool get oscuro => widget.oscuro;
   EstiloMapa get estilo => widget.estilo;
   RutaCalculada? get ruta => widget.ruta;
-  String? get lugarDestacadoId => widget.lugarDestacadoId;
 
-  LatLngBounds get _limitesCampus {
+  @override
+  void initState() {
+    super.initState();
+    _recalcularEstaticas();
+    // El zoom real del encuadre inicial (ya aplicado el `initialCameraFit`).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      try {
+        final z = widget.controller.camera.zoom;
+        if (_zoomBase != z) setState(() => _zoomBase = z);
+      } catch (_) {
+        /* el controlador aún no está listo; se queda con el valor por defecto */
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant MapaCampus old) {
+    super.didUpdateWidget(old);
+    if (!identical(old.data, widget.data) || old.oscuro != widget.oscuro) {
+      _recalcularEstaticas();
+    }
+  }
+
+  void _recalcularEstaticas() {
     final lats = data.info.perimetro.map((p) => p.lat).toList();
     final lngs = data.info.perimetro.map((p) => p.lng).toList();
-    return LatLngBounds(
+    _limitesCampus = LatLngBounds(
       LatLng(lats.reduce((a, b) => a < b ? a : b),
           lngs.reduce((a, b) => a < b ? a : b)),
       LatLng(lats.reduce((a, b) => a > b ? a : b),
           lngs.reduce((a, b) => a > b ? a : b)),
     );
+
+    _perimetroPolis = [
+      Polygon(
+        points: data.info.perimetro.map((p) => p.toLatLng()).toList(),
+        color: UesBrand.naranja.withValues(alpha: oscuro ? 0.10 : 0.07),
+        borderColor: UesBrand.naranja.withValues(alpha: 0.55),
+        borderStrokeWidth: 2,
+      ),
+      if (data.info.campoDeportivo.length > 2)
+        Polygon(
+          points: data.info.campoDeportivo.map((p) => p.toLatLng()).toList(),
+          color: const Color(0xFF3E8E4F).withValues(alpha: 0.18),
+          borderColor: const Color(0xFF3E8E4F).withValues(alpha: 0.5),
+          borderStrokeWidth: 1,
+        ),
+    ];
+
+    _edificiosBasePolis = [
+      for (final l in data.lugares)
+        if (l.poligono != null && l.poligono!.length >= 3)
+          Polygon(
+            points: l.poligono!.map((p) => p.toLatLng()).toList(),
+            color: l.categoria.color.withValues(alpha: oscuro ? 0.35 : 0.28),
+            borderColor: l.categoria.color.withValues(alpha: 0.9),
+            borderStrokeWidth: 1,
+          ),
+    ];
+  }
+
+  double get _umbralDetalle => (_zoomBase ?? 16.5) + _saltoDetalle;
+
+  /// Cambia el "cubo" de zoom (lejos/cerca) solo cuando cruza el umbral, y
+  /// nunca durante la fase de build (el `initialCameraFit` puede dispararlo).
+  void _actualizarCuboZoom(double zoom) {
+    final cerca = zoom >= _umbralDetalle;
+    if (cerca == _zoomCerca || !mounted) return;
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && (zoom >= _umbralDetalle) != _zoomCerca) {
+          setState(() => _zoomCerca = zoom >= _umbralDetalle);
+        }
+      });
+    } else {
+      setState(() => _zoomCerca = cerca);
+    }
   }
 
   CameraFit get _encuadre {
@@ -75,12 +180,18 @@ class _MapaCampusState extends State<MapaCampus> {
     return CameraFit.bounds(
       bounds: _limitesCampus,
       padding: EdgeInsets.fromLTRB(28, 96, 28, 44 + widget.paddingInferior),
+      maxZoom: _zoomCampusMax,
     );
   }
+
+  /// Id del lugar a resaltar: el explícito o, si no, el seleccionado en la app.
+  String? _watchDestacadoId(WidgetRef ref) =>
+      widget.lugarDestacadoId ?? ref.watch(lugarSeleccionadoProvider);
 
   @override
   Widget build(BuildContext context) {
     final bg = oscuro ? const Color(0xFF16130F) : const Color(0xFFF2EFEA);
+    final hayRuta = ruta != null && ruta!.puntos.length > 1;
 
     return FlutterMap(
       mapController: widget.controller,
@@ -92,6 +203,7 @@ class _MapaCampusState extends State<MapaCampus> {
         backgroundColor: bg,
         initialCameraFit: _encuadre,
         onTap: (_, __) => widget.onTapMapa?.call(),
+        onPositionChanged: (camera, _) => _actualizarCuboZoom(camera.zoom),
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.drag |
               InteractiveFlag.flingAnimation |
@@ -103,10 +215,27 @@ class _MapaCampusState extends State<MapaCampus> {
       ),
       children: [
         _tiles(),
-        _perimetro(),
-        _edificios(context),
-        if (ruta != null && ruta!.puntos.length > 1) _rutaLayer(),
-        _marcadores(context),
+        PolygonLayer(polygons: _perimetroPolis),
+        PolygonLayer(polygons: _edificiosBasePolis),
+        Consumer(builder: (context, ref, _) {
+          final destacado = data.lugar(_watchDestacadoId(ref));
+          final poly = destacado?.poligono;
+          if (poly == null || poly.length < 3) {
+            return const SizedBox.shrink();
+          }
+          return PolygonLayer(polygons: [
+            Polygon(
+              points: poly.map((p) => p.toLatLng()).toList(),
+              color: destacado!.categoria.color.withValues(alpha: 0.55),
+              borderColor: destacado.categoria.color,
+              borderStrokeWidth: 2.5,
+            ),
+          ]);
+        }),
+        if (hayRuta) _rutaLayer(),
+        Consumer(builder: (context, ref, _) {
+          return _marcadores(context, _watchDestacadoId(ref));
+        }),
         _atribucion(context),
       ],
     );
@@ -129,43 +258,6 @@ class _MapaCampusState extends State<MapaCampus> {
     );
   }
 
-  PolygonLayer _perimetro() {
-    return PolygonLayer(
-      polygons: [
-        Polygon(
-          points: data.info.perimetro.map((p) => p.toLatLng()).toList(),
-          color: UesBrand.naranja.withValues(alpha: oscuro ? 0.10 : 0.07),
-          borderColor: UesBrand.naranja.withValues(alpha: 0.55),
-          borderStrokeWidth: 2,
-        ),
-        if (data.info.campoDeportivo.length > 2)
-          Polygon(
-            points: data.info.campoDeportivo.map((p) => p.toLatLng()).toList(),
-            color: const Color(0xFF3E8E4F).withValues(alpha: 0.18),
-            borderColor: const Color(0xFF3E8E4F).withValues(alpha: 0.5),
-            borderStrokeWidth: 1,
-          ),
-      ],
-    );
-  }
-
-  PolygonLayer _edificios(BuildContext context) {
-    final polis = <Polygon>[];
-    for (final l in data.lugares) {
-      final poly = l.poligono;
-      if (poly == null || poly.length < 3) continue;
-      final destacado = l.id == lugarDestacadoId;
-      polis.add(Polygon(
-        points: poly.map((p) => p.toLatLng()).toList(),
-        color: l.categoria.color
-            .withValues(alpha: destacado ? 0.55 : (oscuro ? 0.35 : 0.28)),
-        borderColor: l.categoria.color.withValues(alpha: 0.9),
-        borderStrokeWidth: destacado ? 2.5 : 1,
-      ));
-    }
-    return PolygonLayer(polygons: polis);
-  }
-
   PolylineLayer _rutaLayer() {
     final pts = ruta!.puntos.map((p) => p.toLatLng()).toList();
     return PolylineLayer(
@@ -180,11 +272,16 @@ class _MapaCampusState extends State<MapaCampus> {
     );
   }
 
-  MarkerLayer _marcadores(BuildContext context) {
+  /// `true` si el lugar debe verse aunque el mapa esté alejado (vista de campus).
+  bool _visibleLejos(Lugar l) =>
+      _catsLejos.contains(l.categoria) || l.id == 'lug_acceso_principal';
+
+  MarkerLayer _marcadores(BuildContext context, String? destacadoId) {
     final markers = <Marker>[];
 
     for (final l in data.lugares) {
-      final destacado = l.id == lugarDestacadoId;
+      final destacado = l.id == destacadoId;
+      if (!_zoomCerca && !destacado && !_visibleLejos(l)) continue;
       markers.add(Marker(
         point: l.punto.toLatLng(),
         width: destacado ? 150 : 34,
@@ -254,10 +351,7 @@ class _PinLugar extends StatelessWidget {
       decoration: BoxDecoration(
         color: lugar.categoria.color,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: destacado ? 3 : 2),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
-        ],
+        border: Border.all(color: Colors.white, width: destacado ? 3 : 2.5),
       ),
       child: Icon(lugar.categoria.icono,
           color: Colors.white, size: destacado ? 20 : 16),
@@ -276,9 +370,7 @@ class _PinLugar extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: cs.surface,
                     borderRadius: BorderRadius.circular(8),
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black26, blurRadius: 4)
-                    ],
+                    border: Border.all(color: cs.outlineVariant),
                   ),
                   child: Text(
                     lugar.etiquetaCorta,

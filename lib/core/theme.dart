@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'brand.dart';
 
@@ -7,8 +6,12 @@ import 'brand.dart';
 ///
 /// - `primary` = naranja institucional → acentos, navegación activa, ruta, FAB.
 /// - Botón principal (CTA) = vino, por contraste y peso institucional.
-/// - Tipografía: Montserrat (títulos) + Source Sans 3 (cuerpo).
+/// - Tipografía: Montserrat (títulos) + Source Sans 3 (cuerpo), empaquetadas
+///   como assets (ver `pubspec.yaml`) para no descargarlas en runtime.
 abstract final class UesTheme {
+  static const _titulos = 'Montserrat';
+  static const _cuerpo = 'Source Sans 3';
+
   static ThemeData get light => _build(Brightness.light);
   static ThemeData get dark => _build(Brightness.dark);
 
@@ -18,8 +21,8 @@ abstract final class UesTheme {
 
     final typo = Typography.material2021(platform: TargetPlatform.iOS);
     final baseText = isLight ? typo.black : typo.white;
-    final headings = GoogleFonts.montserratTextTheme(baseText);
-    final body = GoogleFonts.sourceSans3TextTheme(baseText);
+    final headings = baseText.apply(fontFamily: _titulos);
+    final body = baseText.apply(fontFamily: _cuerpo);
 
     final textTheme = headings
         .copyWith(
@@ -56,7 +59,8 @@ abstract final class UesTheme {
         elevation: 0,
         scrolledUnderElevation: 2,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.montserrat(
+        titleTextStyle: TextStyle(
+          fontFamily: _titulos,
           fontSize: 20,
           fontWeight: FontWeight.w700,
           color: isLight ? Colors.white : UesBrand.oscuroTexto,
@@ -68,7 +72,8 @@ abstract final class UesTheme {
           foregroundColor: Colors.white,
           disabledBackgroundColor: cs.onSurface.withValues(alpha: 0.12),
           minimumSize: const Size(0, 52),
-          textStyle: GoogleFonts.montserrat(
+          textStyle: const TextStyle(
+            fontFamily: _titulos,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),
@@ -95,7 +100,8 @@ abstract final class UesTheme {
         elevation: 3,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
-          return GoogleFonts.sourceSans3(
+          return TextStyle(
+            fontFamily: _cuerpo,
             fontSize: 12,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
             color: selected ? UesBrand.naranjaOscuro : cs.onSurfaceVariant,
@@ -123,7 +129,8 @@ abstract final class UesTheme {
         backgroundColor:
             isLight ? UesBrand.neutro50 : UesBrand.oscuroSuperficieAlta,
         selectedColor: UesBrand.naranja.withValues(alpha: 0.16),
-        labelStyle: GoogleFonts.sourceSans3(fontWeight: FontWeight.w600),
+        labelStyle:
+            const TextStyle(fontFamily: _cuerpo, fontWeight: FontWeight.w600),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       ),
       inputDecorationTheme: InputDecorationTheme(

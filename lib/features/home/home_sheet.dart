@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +23,7 @@ class HomeSheet extends ConsumerStatefulWidget {
 class HomeSheetState extends ConsumerState<HomeSheet> {
   final _sheet = DraggableScrollableController();
   final _buscar = TextEditingController();
+  Timer? _debounce;
 
   static const _colapsado = 0.18;
   static const _medio = 0.48;
@@ -32,13 +35,28 @@ class HomeSheetState extends ConsumerState<HomeSheet> {
 
   void _animar(double size) {
     if (!_sheet.isAttached) return;
+    if ((_sheet.size - size).abs() < 0.02) return; // ya está ahí
     _sheet.animateTo(size,
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic);
   }
 
+  void _alBuscar(String v) {
+    _debounce?.cancel();
+    if (v.trim().isEmpty) {
+      ref.read(consultaBusquedaProvider.notifier).state = '';
+      return;
+    }
+    ref.read(lugarSeleccionadoProvider.notifier).state = null;
+    expandir();
+    _debounce = Timer(const Duration(milliseconds: 180), () {
+      if (mounted) ref.read(consultaBusquedaProvider.notifier).state = v;
+    });
+  }
+
   @override
   void dispose() {
+    _debounce?.cancel();
     _sheet.dispose();
     _buscar.dispose();
     super.dispose();
@@ -84,13 +102,7 @@ class HomeSheetState extends ConsumerState<HomeSheet> {
                 child: CampoBusqueda(
                   controller: _buscar,
                   hintText: '¿A dónde vas en el campus?',
-                  onChanged: (v) {
-                    ref.read(consultaBusquedaProvider.notifier).state = v;
-                    if (v.isNotEmpty) {
-                      ref.read(lugarSeleccionadoProvider.notifier).state = null;
-                      expandir();
-                    }
-                  },
+                  onChanged: _alBuscar,
                 ),
               ),
               Divider(height: 1, color: cs.outlineVariant),
@@ -254,60 +266,75 @@ class _Directorio extends ConsumerWidget {
     if (data == null) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    // Lista plana (encabezado de categoría o lugar) para render perezoso.
     final porCat = <CategoriaMapa, List<Lugar>>{};
     for (final l in data.lugares) {
       porCat.putIfAbsent(l.categoria, () => []).add(l);
     }
+    final items = <Object>[];
+    for (final cat in _cats) {
+      final lugares = porCat[cat];
+      if (lugares == null) continue;
+      lugares.sort((a, b) => a.nombre.compareTo(b.nombre));
+      items.add(cat);
+      items.addAll(lugares);
+    }
 
-    return ListView(
+    final cs = Theme.of(context).colorScheme;
+
+    return ListView.builder(
       controller: scrollController,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-      children: [
-        for (final cat in _cats)
-          if (porCat[cat] != null) ...[
-            Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 6),
-              child: Row(
-                children: [
-                  Icon(cat.icono, size: 18, color: cat.color),
-                  const SizedBox(width: 8),
-                  Text(cat.etiqueta.toUpperCase(),
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            letterSpacing: 1,
-                            fontWeight: FontWeight.w700,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          )),
-                ],
-              ),
+      itemCount: items.length + 1,
+      itemBuilder: (context, i) {
+        if (i == items.length) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Center(
+              child: Text('Datos de prueba · el catálogo real llega después',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: cs.onSurfaceVariant)),
             ),
-            ...(porCat[cat]!..sort((a, b) => a.nombre.compareTo(b.nombre))).map(
-              (l) => ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                leading: Container(
-                  width: 10,
-                  height: 10,
-                  decoration:
-                      BoxDecoration(color: cat.color, shape: BoxShape.circle),
-                ),
-                title: Text(l.nombre),
-                trailing: l.accesible
-                    ? const Icon(Icons.accessible,
-                        size: 16, color: Color(0xFF2457A6))
-                    : null,
-                onTap: () => onElegir(l),
-              ),
+          );
+        }
+        final it = items[i];
+        if (it is CategoriaMapa) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 6),
+            child: Row(
+              children: [
+                Icon(it.icono, size: 18, color: it.color),
+                const SizedBox(width: 8),
+                Text(it.etiqueta.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w700,
+                          color: cs.onSurfaceVariant,
+                        )),
+              ],
             ),
-          ],
-        const SizedBox(height: 16),
-        Center(
-          child: Text('Datos de prueba · el catálogo real llega después',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  )),
-        ),
-      ],
+          );
+        }
+        final l = it as Lugar;
+        return ListTile(
+          dense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+          leading: Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+                color: l.categoria.color, shape: BoxShape.circle),
+          ),
+          title: Text(l.nombre),
+          trailing: l.accesible
+              ? const Icon(Icons.accessible, size: 16, color: Color(0xFF2457A6))
+              : null,
+          onTap: () => onElegir(l),
+        );
+      },
     );
   }
 }
