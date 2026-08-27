@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!-- PLACEHOLDER. Sustituir por el logosímbolo / llama oficial en vectorial
+       que proporcione el Depto. de Difusión e Imagen Institucional (DDIIUES).
+       Colores institucionales: naranja #FF6C0E, amarillo #FFA400. -->
+  <path fill="#FFA400" d="M48 6c10 14 4 22-2 30-5 7-6 14 2 20 6-5 9-12 8-20 9 9 12 20 6 31-6 12-20 17-31 12C22 96 14 82 18 68c3-11 12-16 14-27 1-9-2-17-2-25 0 0 9 6 12 16 3-9 2-19 8-30 0 0-8 20 0 28 6-9 9-19 8-27C68 3 58 0 48 6z"/>
+  <path fill="#FF6C0E" d="M50 44c1 8-2 15-8 20 12 4 22-3 24-15 1-8-2-15-8-20 3 8 0 15-8 15z"/>
+</svg>

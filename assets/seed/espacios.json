@@ -1,0 +1,39 @@
+[
+  { "id": "esp_acceso", "tipo": "exterior", "nombre": "Acceso Principal", "edificioId": null, "nivel": 0, "punto": { "x": 500, "y": 680 }, "categoria": "servicios", "accesible": true, "descripcion": "Entrada peatonal desde la avenida. Punto de partida por defecto." },
+
+  { "id": "esp_edif_a", "tipo": "edificio", "nombre": "Edificio A · Rectoría y Administración", "edificioId": "edif_a", "nivel": 0, "punto": { "x": 175, "y": 185 }, "categoria": "edificio", "accesible": true, "descripcion": "Acceso principal por la explanada norte." },
+  { "id": "esp_edif_b", "tipo": "edificio", "nombre": "Edificio B · Aulas", "edificioId": "edif_b", "nivel": 0, "punto": { "x": 405, "y": 175 }, "categoria": "edificio", "accesible": true, "descripcion": "Cuenta con rampa y elevador." },
+  { "id": "esp_edif_c", "tipo": "edificio", "nombre": "Edificio C · Aulas y Audiovisuales", "edificioId": "edif_c", "nivel": 0, "punto": { "x": 625, "y": 175 }, "categoria": "edificio", "accesible": true, "descripcion": "" },
+  { "id": "esp_edif_d", "tipo": "edificio", "nombre": "Edificio D · Laboratorios", "edificioId": "edif_d", "nivel": 0, "punto": { "x": 855, "y": 195 }, "categoria": "edificio", "accesible": true, "descripcion": "" },
+  { "id": "esp_edif_e", "tipo": "edificio", "nombre": "Edificio E · Aulas", "edificioId": "edif_e", "nivel": 0, "punto": { "x": 855, "y": 395 }, "categoria": "edificio", "accesible": true, "descripcion": "Elevador junto al acceso." },
+  { "id": "esp_edif_biblio", "tipo": "edificio", "nombre": "Biblioteca Central", "edificioId": "edif_biblio", "nivel": 0, "punto": { "x": 160, "y": 365 }, "categoria": "biblioteca", "accesible": true, "descripcion": "" },
+  { "id": "esp_edif_domo", "tipo": "edificio", "nombre": "Domo Universitario", "edificioId": "edif_domo", "nivel": 0, "punto": { "x": 640, "y": 458 }, "categoria": "deportivo", "accesible": true, "descripcion": "Sede de eventos institucionales." },
+  { "id": "esp_edif_cafe", "tipo": "edificio", "nombre": "Cafetería", "edificioId": "edif_cafe", "nivel": 0, "punto": { "x": 405, "y": 498 }, "categoria": "alimentos", "accesible": true, "descripcion": "" },
+
+  { "id": "esp_aula_b001", "tipo": "aula", "nombre": "Aula B-001", "numeroAula": "B-001", "edificioId": "edif_b", "nivel": 0, "punto": { "x": 360, "y": 130 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_b101", "tipo": "aula", "nombre": "Aula B-101", "numeroAula": "B-101", "edificioId": "edif_b", "nivel": 1, "punto": { "x": 355, "y": 108 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_b102", "tipo": "aula", "nombre": "Aula B-102", "numeroAula": "B-102", "edificioId": "edif_b", "nivel": 1, "punto": { "x": 450, "y": 108 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_b201", "tipo": "aula", "nombre": "Aula B-201", "numeroAula": "B-201", "edificioId": "edif_b", "nivel": 2, "punto": { "x": 355, "y": 108 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_b202", "tipo": "aula", "nombre": "Aula B-202", "numeroAula": "B-202", "edificioId": "edif_b", "nivel": 2, "punto": { "x": 450, "y": 108 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_c101", "tipo": "aula", "nombre": "Aula C-101", "numeroAula": "C-101", "edificioId": "edif_c", "nivel": 1, "punto": { "x": 580, "y": 108 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_c102", "tipo": "aula", "nombre": "Aula C-102", "numeroAula": "C-102", "edificioId": "edif_c", "nivel": 1, "punto": { "x": 670, "y": 108 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_e101", "tipo": "aula", "nombre": "Aula E-101", "numeroAula": "E-101", "edificioId": "edif_e", "nivel": 1, "punto": { "x": 810, "y": 300 }, "categoria": "aula", "accesible": true },
+  { "id": "esp_aula_e102", "tipo": "aula", "nombre": "Aula E-102", "numeroAula": "E-102", "edificioId": "edif_e", "nivel": 1, "punto": { "x": 900, "y": 300 }, "categoria": "aula", "accesible": true },
+
+  { "id": "esp_lab_d001", "tipo": "aula", "nombre": "Laboratorio de Cómputo 1", "edificioId": "edif_d", "nivel": 0, "punto": { "x": 820, "y": 110 }, "categoria": "aula", "accesible": true, "descripcion": "40 equipos, acceso por credencial." },
+  { "id": "esp_lab_d101", "tipo": "aula", "nombre": "Laboratorio de Redes", "edificioId": "edif_d", "nivel": 1, "punto": { "x": 890, "y": 110 }, "categoria": "aula", "accesible": true },
+
+  { "id": "esp_bano_b_pb", "tipo": "servicio", "nombre": "Baños · Planta Baja Edificio B", "edificioId": "edif_b", "nivel": 0, "punto": { "x": 460, "y": 130 }, "categoria": "servicios", "accesible": false },
+  { "id": "esp_bano_b_n1", "tipo": "servicio", "nombre": "Baños · Nivel 1 Edificio B", "edificioId": "edif_b", "nivel": 1, "punto": { "x": 480, "y": 108 }, "categoria": "servicios", "accesible": true },
+  { "id": "esp_bano_acc_b", "tipo": "servicio", "nombre": "Baño accesible · Planta Baja Edificio B", "edificioId": "edif_b", "nivel": 0, "punto": { "x": 430, "y": 132 }, "categoria": "accesibilidad", "accesible": true },
+  { "id": "esp_enfermeria", "tipo": "servicio", "nombre": "Enfermería / Servicio Médico", "edificioId": "edif_a", "nivel": 0, "punto": { "x": 255, "y": 195 }, "categoria": "salud", "accesible": true, "descripcion": "Atención de 7:00 a 20:00." },
+  { "id": "esp_agua_plaza", "tipo": "servicio", "nombre": "Bebederos · Explanada Central", "edificioId": null, "nivel": 0, "punto": { "x": 520, "y": 405 }, "categoria": "servicios", "accesible": true },
+  { "id": "esp_estacionamiento", "tipo": "exterior", "nombre": "Estacionamiento Principal", "edificioId": null, "nivel": 0, "punto": { "x": 150, "y": 545 }, "categoria": "estacionamiento", "accesible": true },
+  { "id": "esp_estac_acc", "tipo": "exterior", "nombre": "Cajones para personas con discapacidad", "edificioId": null, "nivel": 0, "punto": { "x": 235, "y": 500 }, "categoria": "accesibilidad", "accesible": true },
+  { "id": "esp_rampa_b", "tipo": "servicio", "nombre": "Rampa de acceso · Edificio B", "edificioId": "edif_b", "nivel": 0, "punto": { "x": 395, "y": 168 }, "categoria": "accesibilidad", "accesible": true },
+
+  { "id": "esp_ofi_a210", "tipo": "oficina", "nombre": "Cubículo A-210", "edificioId": "edif_a", "nivel": 2, "punto": { "x": 120, "y": 95 }, "categoria": "oficina", "accesible": true },
+  { "id": "esp_ofi_c110", "tipo": "oficina", "nombre": "Cubículo C-110", "edificioId": "edif_c", "nivel": 1, "punto": { "x": 560, "y": 112 }, "categoria": "oficina", "accesible": true },
+  { "id": "esp_ofi_e105", "tipo": "oficina", "nombre": "Cubículo E-105", "edificioId": "edif_e", "nivel": 1, "punto": { "x": 792, "y": 300 }, "categoria": "oficina", "accesible": true },
+  { "id": "esp_ofi_d120", "tipo": "oficina", "nombre": "Coordinación de Laboratorios · D-120", "edificioId": "edif_d", "nivel": 1, "punto": { "x": 905, "y": 112 }, "categoria": "oficina", "accesible": true }
+]

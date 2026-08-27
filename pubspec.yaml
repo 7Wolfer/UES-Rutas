@@ -1,0 +1,49 @@
+name: ues_rutas
+description: >
+  UES Rutas — aplicación de orientación y navegación para el campus de la
+  Universidad Estatal de Sonora (plantel Hermosillo).
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Estado
+  flutter_riverpod: ^2.6.1
+
+  # Navegación (deep links para QR y URLs en web)
+  go_router: ^14.6.0
+
+  # Identidad UES: Montserrat + Source Sans 3
+  google_fonts: ^6.2.1
+
+  # Backend / auth (stub por ahora, detrás de feature flag)
+  supabase_flutter: ^2.8.0
+
+  # Mapa ilustrativo del campus
+  flutter_svg: ^2.0.16
+
+  # Persistencia de ajustes (tema, tamaño de texto, alto contraste)
+  shared_preferences: ^2.3.0
+
+  # Utilidades
+  collection: ^1.19.0
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/seed/
+    - assets/map/
+    - assets/brand/

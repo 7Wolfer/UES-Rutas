@@ -1,0 +1,38 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+doc/api/
+
+# Entorno / secretos
+.env
+.env.*
+!.env.example
+env.json
+lib/core/secrets.dart
+
+# Herramientas locales
+.claude/
+*.log
+
+# Plataforma nativa (regenerable con `flutter create .`)
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+android/.gradle/
+android/local.properties
+android/key.properties
+*.jks
+
+# macOS
+.DS_Store
+
+# Supabase CLI
+supabase/.branches/
+supabase/.temp/
