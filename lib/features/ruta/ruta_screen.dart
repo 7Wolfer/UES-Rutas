@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models.dart';
@@ -11,7 +12,7 @@ class RutaScreen extends ConsumerStatefulWidget {
   const RutaScreen({
     super.key,
     required this.destinoId,
-    this.origenId = 'esp_acceso',
+    this.origenId = 'lug_acceso_principal',
     this.accesibleInicial = false,
   });
 
@@ -24,6 +25,7 @@ class RutaScreen extends ConsumerStatefulWidget {
 }
 
 class _RutaScreenState extends ConsumerState<RutaScreen> {
+  final _map = MapController();
   late bool _accesible = widget.accesibleInicial;
 
   @override
@@ -31,6 +33,7 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
     final data = ref.watch(campusDataProvider);
     final motor = ref.watch(motorRutasProvider);
     final cs = Theme.of(context).colorScheme;
+    final oscuro = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Cómo llegar')),
@@ -39,8 +42,8 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
         error: (e, _) => EstadoVacio(
             icono: Icons.error_outline, titulo: 'Error', descripcion: '$e'),
         data: (campus) {
-          final origen = campus.espacio(widget.origenId);
-          final destino = campus.espacio(widget.destinoId);
+          final origen = campus.lugar(widget.origenId);
+          final destino = campus.lugar(widget.destinoId);
           if (origen == null || destino == null || motor == null) {
             return const EstadoVacio(
               icono: Icons.wrong_location_outlined,
@@ -58,12 +61,13 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
           return Column(
             children: [
               SizedBox(
-                height: MediaQuery.sizeOf(context).height * 0.42,
+                height: MediaQuery.sizeOf(context).height * 0.4,
                 child: MapaCampus(
                   data: campus,
+                  controller: _map,
+                  oscuro: oscuro,
                   ruta: ruta,
-                  destacarEspacioId: destino.id,
-                  nivelInicial: destino.nivel,
+                  lugarDestacadoId: destino.id,
                 ),
               ),
               Expanded(
@@ -86,13 +90,12 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
                           _Metrica(
                             icono: Icons.straighten,
                             valor: '${ruta.distancia.round()} m',
-                            etiqueta: 'Distancia aprox.',
+                            etiqueta: 'Distancia',
                           ),
                           const SizedBox(width: 12),
                           _Metrica(
                             icono: Icons.schedule,
-                            valor:
-                                '${ruta.duracionEstimada.inMinutes} min',
+                            valor: '${ruta.duracionEstimada.inMinutes} min',
                             etiqueta: 'Caminando',
                           ),
                         ],
@@ -104,27 +107,21 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
                         onChanged: (v) => setState(() => _accesible = v),
                         title: const Text('Ruta accesible'),
                         subtitle: Text(
-                          'Evita escaleras; prioriza rampas y elevador.',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: cs.onSurfaceVariant,
-                              ),
+                          'Evita escalones; prioriza rampas.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: cs.onSurfaceVariant),
                         ),
                         secondary: const Icon(Icons.accessible),
                       ),
-                      if (_accesible && !ruta.usaElevador && !ruta.usaRampa &&
-                          !ruta.usaEscaleras)
+                      if (_accesible && ruta.usaRampa)
                         const _Aviso(
-                            'Esta ruta es a nivel de piso, sin cambios de nivel.'),
-                      if (_accesible && (ruta.usaElevador || ruta.usaRampa))
-                        _Aviso(
-                          'Ruta sin escaleras'
-                          '${ruta.usaElevador ? ' · usa elevador' : ''}'
-                          '${ruta.usaRampa ? ' · usa rampa' : ''}.',
-                        ),
+                            'Ruta sin escalones · usa rampa de acceso.'),
                       if (!_accesible && ruta.usaEscaleras)
                         const _Aviso(
-                          'Esta ruta incluye escaleras. Activa "Ruta accesible" '
-                          'para una alternativa sin escalones.',
+                          'Esta ruta incluye un escalón. Activa "Ruta accesible" '
+                          'para una alternativa.',
                         ),
                       const SizedBox(height: 16),
                       const EncabezadoSeccion('Indicaciones'),
@@ -162,11 +159,7 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
                     child: Icon(pasos[i].icono, size: 18, color: cs.primary),
                   ),
                   if (i != pasos.length - 1)
-                    Container(
-                      width: 2,
-                      height: 20,
-                      color: cs.outlineVariant,
-                    ),
+                    Container(width: 2, height: 20, color: cs.outlineVariant),
                 ],
               ),
               const SizedBox(width: 12),
@@ -186,20 +179,20 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
 
 class _OrigenDestino extends StatelessWidget {
   const _OrigenDestino({required this.origen, required this.destino});
-  final Espacio origen;
-  final Espacio destino;
+  final Lugar origen;
+  final Lugar destino;
 
   @override
   Widget build(BuildContext context) {
     return TarjetaUes(
       child: Column(
         children: [
-          _fila(context, Icons.trip_origin, 'Desde', origen.titulo),
+          _fila(context, Icons.trip_origin, 'Desde', origen.nombre),
           const Padding(
             padding: EdgeInsets.only(left: 9),
             child: SizedBox(height: 14, child: VerticalDivider(width: 2)),
           ),
-          _fila(context, Icons.place, 'Hasta', destino.titulo),
+          _fila(context, Icons.place, 'Hasta', destino.nombre),
         ],
       ),
     );

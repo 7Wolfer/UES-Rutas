@@ -32,8 +32,10 @@ abstract final class UesTheme {
           ),
           labelMedium: body.labelMedium,
           labelSmall: body.labelSmall,
-          titleMedium: headings.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          titleLarge: headings.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+          titleMedium:
+              headings.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          titleLarge:
+              headings.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           headlineSmall:
               headings.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           headlineMedium:
@@ -118,11 +120,11 @@ abstract final class UesTheme {
       chipTheme: ChipThemeData(
         showCheckmark: false,
         side: BorderSide(color: cs.outlineVariant),
-        backgroundColor: isLight ? UesBrand.neutro50 : UesBrand.oscuroSuperficieAlta,
+        backgroundColor:
+            isLight ? UesBrand.neutro50 : UesBrand.oscuroSuperficieAlta,
         selectedColor: UesBrand.naranja.withValues(alpha: 0.16),
         labelStyle: GoogleFonts.sourceSans3(fontWeight: FontWeight.w600),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -150,10 +152,10 @@ abstract final class UesTheme {
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith((s) =>
-            s.contains(WidgetState.selected) ? Colors.white : null),
-        trackColor: WidgetStateProperty.resolveWith((s) =>
-            s.contains(WidgetState.selected) ? UesBrand.naranja : null),
+        thumbColor: WidgetStateProperty.resolveWith(
+            (s) => s.contains(WidgetState.selected) ? Colors.white : null),
+        trackColor: WidgetStateProperty.resolveWith(
+            (s) => s.contains(WidgetState.selected) ? UesBrand.naranja : null),
       ),
     );
   }

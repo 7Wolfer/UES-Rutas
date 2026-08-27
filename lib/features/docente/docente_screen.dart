@@ -35,7 +35,7 @@ class DocenteScreen extends ConsumerWidget {
                 titulo: 'Docente no encontrado'),
           );
         }
-        final oficina = campus.espacio(d.oficinaEspacioId);
+        final oficina = campus.lugar(d.oficinaLugarId);
         final porDia = <int, List<Asignacion>>{};
         for (final a in d.asignaciones) {
           porDia.putIfAbsent(a.dia, () => []).add(a);
@@ -73,8 +73,7 @@ class DocenteScreen extends ConsumerWidget {
               if (oficina != null)
                 _FilaInfo(
                   icono: Icons.meeting_room_outlined,
-                  texto:
-                      '${oficina.nombre} · ${campus.edificio(oficina.edificioId)?.etiqueta ?? ''} ${etiquetaNivel(oficina.nivel)}',
+                  texto: 'Oficina · ${oficina.nombre}',
                   onTap: () => context.push('/espacio/${oficina.id}'),
                 ),
               const SizedBox(height: 20),
@@ -95,12 +94,11 @@ class DocenteScreen extends ConsumerWidget {
                         ?.copyWith(color: cs.secondary),
                   ),
                 ),
-                ...(porDia[dia]!..sort((a, b) => a.horaInicio.compareTo(b.horaInicio)))
+                ...(porDia[dia]!
+                      ..sort((a, b) => a.horaInicio.compareTo(b.horaInicio)))
                     .map((a) => _FilaClase(
                           asignacion: a,
-                          espacio: campus.espacio(a.espacioId),
-                          edificio: campus.edificio(
-                              campus.espacio(a.espacioId)?.edificioId),
+                          lugar: campus.lugar(a.lugarId),
                         )),
               ],
             ],
@@ -127,11 +125,13 @@ class _FilaInfo extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           children: [
-            Icon(icono, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
+            Icon(icono,
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
             const SizedBox(width: 12),
             Expanded(
-                child: Text(texto,
-                    style: Theme.of(context).textTheme.bodyMedium)),
+                child:
+                    Text(texto, style: Theme.of(context).textTheme.bodyMedium)),
             if (onTap != null) const Icon(Icons.chevron_right, size: 20),
           ],
         ),
@@ -141,15 +141,10 @@ class _FilaInfo extends StatelessWidget {
 }
 
 class _FilaClase extends StatelessWidget {
-  const _FilaClase({
-    required this.asignacion,
-    required this.espacio,
-    required this.edificio,
-  });
+  const _FilaClase({required this.asignacion, required this.lugar});
 
   final Asignacion asignacion;
-  final Espacio? espacio;
-  final Edificio? edificio;
+  final Lugar? lugar;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +153,8 @@ class _FilaClase extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: TarjetaUes(
-        onTap: espacio == null ? null : () => context.push('/espacio/${espacio!.id}'),
+        onTap:
+            lugar == null ? null : () => context.push('/espacio/${lugar!.id}'),
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,22 +174,20 @@ class _FilaClase extends StatelessWidget {
             const SizedBox(height: 6),
             Row(
               children: [
-                Icon(Icons.place_outlined, size: 16, color: cs.onSurfaceVariant),
+                Icon(Icons.place_outlined,
+                    size: 16, color: cs.onSurfaceVariant),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    espacio == null
-                        ? 'Aula por definir'
-                        : '${espacio!.titulo}  ·  ${edificio?.etiqueta ?? ''} ${etiquetaNivel(espacio!.nivel)}',
+                    lugar?.nombre ?? 'Lugar por definir',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: cs.onSurfaceVariant,
                         ),
                   ),
                 ),
-                if (espacio != null)
+                if (lugar != null)
                   TextButton.icon(
-                    onPressed: () =>
-                        context.push('/ruta?destino=${espacio!.id}'),
+                    onPressed: () => context.push('/ruta?destino=${lugar!.id}'),
                     icon: const Icon(Icons.directions_walk, size: 18),
                     label: const Text('Ir'),
                     style: TextButton.styleFrom(

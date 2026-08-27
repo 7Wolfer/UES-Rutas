@@ -1,0 +1,37 @@
+[
+  {
+    "id": "av_2026_08_24_semestre",
+    "fecha": "2026-08-24",
+    "titulo": "📚 Semestre agosto–diciembre 2026",
+    "cuerpo": "Las clases iniciaron el lunes 17 de agosto. Consulta el calendario académico completo en la sección de Credencialización.",
+    "categoria": "general"
+  },
+  {
+    "id": "av_2026_08_20_domo",
+    "fecha": "2026-08-20",
+    "titulo": "⚠️ AVISO IMPORTANTE ⚠️",
+    "cuerpo": "El acceso poniente (junto al campo deportivo) permanecerá cerrado del 24 al 28 de agosto por mantenimiento. Usa el acceso principal por Av. Ley Federal del Trabajo.",
+    "categoria": "ruta"
+  },
+  {
+    "id": "av_2026_08_18_bienvenida",
+    "fecha": "2026-08-18",
+    "titulo": "🐎 ¡Bienvenida, comunidad UES!",
+    "cuerpo": "Nueva app de orientación del campus en fase de prueba. Encuentra edificios, servicios y traza tu ruta a pie. Tu retroalimentación nos ayuda a mejorarla.",
+    "categoria": "general"
+  },
+  {
+    "id": "av_2026_08_15_cafeteria",
+    "fecha": "2026-08-15",
+    "titulo": "🍽️ Nuevo horario de Cafetería UES",
+    "cuerpo": "A partir de esta semana, la Cafetería UES abre de 7:00 a 20:00 de lunes a viernes.",
+    "categoria": "evento"
+  },
+  {
+    "id": "av_2026_08_10_biblioteca",
+    "fecha": "2026-08-10",
+    "titulo": "📖 Biblioteca — ampliación de horario en exámenes",
+    "cuerpo": "Durante periodos de evaluación, el Aula Magna / Biblioteca extiende su servicio hasta las 21:00.",
+    "categoria": "evento"
+  }
+]

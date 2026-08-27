@@ -19,8 +19,10 @@ class CatalogoScreen extends StatelessWidget {
         children: [
           const EncabezadoSeccion('Paleta institucional'),
           const SizedBox(height: 8),
-          const _Swatch('Naranja · Pantone 1585 C', UesBrand.naranja, '#FF6C0E'),
-          const _Swatch('Amarillo · Pantone 137 C', UesBrand.amarillo, '#FFA400'),
+          const _Swatch(
+              'Naranja · Pantone 1585 C', UesBrand.naranja, '#FF6C0E'),
+          const _Swatch(
+              'Amarillo · Pantone 137 C', UesBrand.amarillo, '#FFA400'),
           const _Swatch('Vino · Pantone 1955 C', UesBrand.vino, '#8E1537'),
           const SizedBox(height: 8),
           Text(
@@ -55,7 +57,8 @@ class CatalogoScreen extends StatelessWidget {
             runSpacing: 8,
             children: [
               for (final c in CategoriaMapa.values)
-                ChipCategoria(etiqueta: c.etiqueta, color: c.color, icono: c.icono),
+                ChipCategoria(
+                    etiqueta: c.etiqueta, color: c.color, icono: c.icono),
             ],
           ),
           const SizedBox(height: 24),
@@ -85,7 +88,8 @@ class CatalogoScreen extends StatelessWidget {
             runSpacing: 12,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              FilledButton(onPressed: () {}, child: const Text('Acción principal')),
+              FilledButton(
+                  onPressed: () {}, child: const Text('Acción principal')),
               OutlinedButton(onPressed: () {}, child: const Text('Secundaria')),
               FilledButton.icon(
                 onPressed: () {},
@@ -181,9 +185,9 @@ class _Swatch extends StatelessWidget {
                   Text(nombre, style: Theme.of(context).textTheme.titleSmall),
                   Text(hex,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontFeatures: const [FontFeature.tabularFigures()],
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          )),
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      )),
                 ],
               ),
             ),

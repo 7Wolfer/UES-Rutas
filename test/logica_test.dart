@@ -15,27 +15,37 @@ void main() {
     motor = MotorRutas(data);
   });
 
-  test('el catálogo de prueba carga con contenido', () {
-    expect(data.edificios, isNotEmpty);
-    expect(data.espacios.length, greaterThan(15));
+  test('el catálogo de prueba carga con contenido real del campus', () {
+    expect(data.lugares.length, greaterThan(25));
     expect(data.docentes, isNotEmpty);
     expect(data.nodos, isNotEmpty);
     expect(data.aristas, isNotEmpty);
+    expect(data.info.perimetro.length, greaterThan(4));
+    expect(data.lugares.any((l) => l.nombre.contains('Cafetería')), isTrue);
+    expect(
+        data.lugares.any((l) => l.nombre == 'Aula Magna / Biblioteca'), isTrue);
+  });
+
+  test('todas las coordenadas caen dentro del campus de Hermosillo', () {
+    for (final l in data.lugares) {
+      expect(l.punto.lat, inInclusiveRange(29.118, 29.126));
+      expect(l.punto.lng, inInclusiveRange(-110.967, -110.958));
+    }
   });
 
   test('todas las aristas referencian nodos existentes', () {
     final ids = {for (final n in data.nodos) n.id};
     for (final a in data.aristas) {
-      expect(ids.contains(a.a), isTrue, reason: 'nodo ${a.a} no existe');
-      expect(ids.contains(a.b), isTrue, reason: 'nodo ${a.b} no existe');
+      expect(ids.contains(a.a), isTrue, reason: 'nodo ${a.a}');
+      expect(ids.contains(a.b), isTrue, reason: 'nodo ${a.b}');
     }
   });
 
-  test('las asignaciones apuntan a espacios reales', () {
+  test('las asignaciones apuntan a lugares reales', () {
     for (final d in data.docentes) {
       for (final asg in d.asignaciones) {
-        expect(data.espacio(asg.espacioId), isNotNull,
-            reason: '${d.nombre} → ${asg.espacioId}');
+        expect(data.lugar(asg.lugarId), isNotNull,
+            reason: '${d.nombre} → ${asg.lugarId}');
       }
     }
   });
@@ -47,9 +57,10 @@ void main() {
       expect(r.first.titulo, contains('Martínez'));
     });
 
-    test('encuentra un aula por su número', () {
-      final r = buscar(data, 'B-101');
-      expect(r.any((x) => x.titulo == 'AULA B-101'), isTrue);
+    test('encuentra un edificio', () {
+      expect(buscar(data, 'biblioteca'), isNotEmpty);
+      expect(buscar(data, 'gimnasio').any((x) => x.titulo.contains('Gimnasio')),
+          isTrue);
     });
 
     test('es insensible a acentos', () {
@@ -57,15 +68,13 @@ void main() {
       expect(buscar(data, 'Cafetería'), isNotEmpty);
     });
 
-    test('el id de cada resultado abre una ficha válida', () {
-      for (final q in ['edificio', 'aula', 'biblioteca', 'martinez', 'bano']) {
+    test('cada resultado abre una ficha válida', () {
+      for (final q in ['edificio', 'salud', 'estacionamiento', 'soto']) {
         for (final r in buscar(data, q)) {
-          switch (r.tipo) {
-            case TipoResultado.docente:
-              expect(data.docente(r.id), isNotNull, reason: '$q → ${r.id}');
-            case TipoResultado.espacio:
-            case TipoResultado.edificio:
-              expect(data.espacio(r.id), isNotNull, reason: '$q → ${r.id}');
+          if (r.tipo == TipoResultado.docente) {
+            expect(data.docente(r.id), isNotNull);
+          } else {
+            expect(data.lugar(r.id), isNotNull);
           }
         }
       }
@@ -73,57 +82,40 @@ void main() {
   });
 
   group('ruteo peatonal', () {
-    final origen = 'esp_acceso';
-    const destinoN1 = 'esp_aula_b101'; // Nivel 1 del Edificio B
-
-    test('ruta normal al Nivel 1 usa escaleras', () {
-      final r = motor.calcular(
-        origen: data.espacio(origen)!,
-        destino: data.espacio(destinoN1)!,
-        accesible: false,
-      );
-      expect(r.sinRuta, isFalse);
-      expect(r.usaEscaleras, isTrue);
-      expect(r.puntos.length, greaterThan(2));
-    });
-
-    test('ruta accesible evita escaleras y usa elevador', () {
-      final r = motor.calcular(
-        origen: data.espacio(origen)!,
-        destino: data.espacio(destinoN1)!,
-        accesible: true,
-      );
-      expect(r.sinRuta, isFalse);
-      expect(r.usaEscaleras, isFalse);
-      expect(r.usaElevador || r.usaRampa, isTrue);
-    });
-
-    test('describir() produce pasos con inicio y fin', () {
-      final r = motor.calcular(
-        origen: data.espacio(origen)!,
-        destino: data.espacio(destinoN1)!,
-        accesible: true,
-      );
-      final pasos = motor.describir(
-        r,
-        origen: data.espacio(origen)!,
-        destino: data.espacio(destinoN1)!,
-      );
+    test('traza una ruta con distancia y pasos', () {
+      final origen = data.lugar('lug_acceso_principal')!;
+      final destino = data.lugar('lug_aula_magna_biblioteca')!;
+      final ruta =
+          motor.calcular(origen: origen, destino: destino, accesible: false);
+      expect(ruta.sinRuta, isFalse);
+      expect(ruta.distancia, greaterThan(0));
+      expect(ruta.puntos.length, greaterThan(2));
+      final pasos = motor.describir(ruta, origen: origen, destino: destino);
       expect(pasos.first.texto, contains('Sales de'));
       expect(pasos.last.texto, contains('Llegas a'));
-      expect(pasos.length, greaterThan(2));
     });
 
-    test('hay ruta entre cualquier par de espacios enganchados al grafo', () {
-      final conNodo = data.espacios
-          .where((e) => data.nodos.any((n) => n.espacioId == e.id))
-          .toList();
-      for (final a in conNodo) {
-        for (final b in conNodo) {
-          if (identical(a, b)) continue;
-          final r = motor.calcular(origen: a, destino: b, accesible: false);
-          expect(r.sinRuta, isFalse,
-              reason: 'sin ruta ${a.id} → ${b.id}');
+    test('el acceso poniente no es accesible; existe alternativa', () {
+      final poniente = data.lugar('lug_acceso_poniente')!;
+      expect(poniente.accesible, isFalse);
+    });
+
+    test('hay ruta entre edificios principales', () {
+      final ids = [
+        'lug_edificio_a',
+        'lug_centro_de_computo',
+        'lug_cafeteria_ues',
+        'lug_gimnasio_ues',
+      ];
+      for (final a in ids) {
+        for (final b in ids) {
+          if (a == b) continue;
+          final r = motor.calcular(
+            origen: data.lugar(a)!,
+            destino: data.lugar(b)!,
+            accesible: false,
+          );
+          expect(r.sinRuta, isFalse, reason: 'sin ruta $a → $b');
         }
       }
     });

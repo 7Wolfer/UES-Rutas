@@ -10,7 +10,7 @@ class CampoBusqueda extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.autofocus = false,
-    this.hintText = 'Buscar aula, edificio, servicio o docente',
+    this.hintText = 'Buscar edificio, servicio o docente',
   });
 
   final TextEditingController? controller;
@@ -151,7 +151,8 @@ class ChipCategoria extends StatelessWidget {
                 Container(
                   width: 9,
                   height: 9,
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                  decoration:
+                      BoxDecoration(color: color, shape: BoxShape.circle),
                 ),
               const SizedBox(width: 6),
               Text(
@@ -272,6 +273,147 @@ class EstadoVacio extends StatelessWidget {
               ),
             ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Botón circular elevado para controles flotantes sobre el mapa.
+class BotonCircularMapa extends StatelessWidget {
+  const BotonCircularMapa({
+    super.key,
+    required this.icon,
+    required this.onTap,
+    this.tooltip,
+    this.activo = false,
+    this.cargando = false,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final String? tooltip;
+  final bool activo;
+  final bool cargando;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final w = Material(
+      color: activo ? cs.primary : cs.surface,
+      shape: const CircleBorder(),
+      elevation: 3,
+      shadowColor: Colors.black26,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: cargando ? null : onTap,
+        child: SizedBox(
+          width: 46,
+          height: 46,
+          child: cargando
+              ? const Padding(
+                  padding: EdgeInsets.all(13),
+                  child: CircularProgressIndicator(strokeWidth: 2.4),
+                )
+              : Icon(icon,
+                  size: 22, color: activo ? cs.onPrimary : cs.onSurfaceVariant),
+        ),
+      ),
+    );
+    return tooltip == null ? w : Tooltip(message: tooltip!, child: w);
+  }
+}
+
+/// Pastilla de acción principal (barra superior del mapa).
+class PastillaAccion extends StatelessWidget {
+  const PastillaAccion({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: UesBrand.naranja,
+      borderRadius: BorderRadius.circular(999),
+      elevation: 3,
+      shadowColor: Colors.black26,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: const Color(0xFF2A1200)),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF2A1200),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Handle de arrastre para hojas inferiores.
+class HandleHoja extends StatelessWidget {
+  const HandleHoja({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        width: 40,
+        height: 4,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.outlineVariant,
+          borderRadius: BorderRadius.circular(999),
+        ),
+      ),
+    );
+  }
+}
+
+/// Insignia numérica (badge) para el drawer.
+class Badge2 extends StatelessWidget {
+  const Badge2(this.count, {super.key});
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    if (count <= 0) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+      decoration: BoxDecoration(
+        color: UesBrand.error,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        count > 99 ? '99+' : '$count',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

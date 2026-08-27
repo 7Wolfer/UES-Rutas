@@ -132,7 +132,8 @@ class AjustesScreen extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.info_outline),
             title: Text('Versión'),
-            subtitle: Text('${AppConfig.nombreApp} 0.1.0 · avance de prácticas'),
+            subtitle:
+                Text('${AppConfig.nombreApp} 0.1.0 · avance de prácticas'),
           ),
         ],
       ),

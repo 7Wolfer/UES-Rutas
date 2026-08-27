@@ -97,8 +97,7 @@ class _FilaResultado extends StatelessWidget {
         switch (r.tipo) {
           case TipoResultado.docente:
             context.push('/docente/${r.id}');
-          case TipoResultado.espacio:
-          case TipoResultado.edificio:
+          case TipoResultado.lugar:
             context.push('/espacio/${r.id}');
         }
       },

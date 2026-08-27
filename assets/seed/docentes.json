@@ -4,12 +4,12 @@
     "nombre": "Dra. Laura Martínez Rivera",
     "departamento": "Ingeniería de Software",
     "correo": "laura.martinez@ues.mx",
-    "oficinaEspacioId": "esp_ofi_c110",
+    "oficinaLugarId": "lug_oficinas_academicas",
     "fotoUrl": null,
     "asignaciones": [
-      { "materia": "Estructuras de Datos", "grupo": "2-A", "espacioId": "esp_aula_b101", "dia": 1, "horaInicio": 7, "minInicio": 0, "horaFin": 8, "minFin": 30 },
-      { "materia": "Estructuras de Datos", "grupo": "2-A", "espacioId": "esp_aula_b101", "dia": 3, "horaInicio": 7, "minInicio": 0, "horaFin": 8, "minFin": 30 },
-      { "materia": "Bases de Datos", "grupo": "4-A", "espacioId": "esp_aula_c101", "dia": 2, "horaInicio": 9, "minInicio": 0, "horaFin": 10, "minFin": 30 }
+      { "materia": "Estructuras de Datos", "grupo": "2-A", "lugarId": "lug_centro_de_computo", "dia": 1, "horaInicio": 7, "minInicio": 0, "horaFin": 8, "minFin": 30 },
+      { "materia": "Estructuras de Datos", "grupo": "2-A", "lugarId": "lug_centro_de_computo", "dia": 3, "horaInicio": 7, "minInicio": 0, "horaFin": 8, "minFin": 30 },
+      { "materia": "Bases de Datos", "grupo": "4-A", "lugarId": "lug_edificio_b", "dia": 2, "horaInicio": 9, "minInicio": 0, "horaFin": 10, "minFin": 30 }
     ]
   },
   {
@@ -17,11 +17,11 @@
     "nombre": "Mtro. Jorge Soto Payán",
     "departamento": "Ingeniería de Software",
     "correo": "jorge.soto@ues.mx",
-    "oficinaEspacioId": "esp_ofi_e105",
+    "oficinaLugarId": "lug_edificio_e",
     "fotoUrl": null,
     "asignaciones": [
-      { "materia": "Programación Web", "grupo": "6-A", "espacioId": "esp_aula_e101", "dia": 1, "horaInicio": 10, "minInicio": 0, "horaFin": 12, "minFin": 0 },
-      { "materia": "Ingeniería de Requisitos", "grupo": "6-A", "espacioId": "esp_aula_b201", "dia": 4, "horaInicio": 8, "minInicio": 0, "horaFin": 10, "minFin": 0 }
+      { "materia": "Programación Web", "grupo": "6-A", "lugarId": "lug_centro_de_computo", "dia": 1, "horaInicio": 10, "minInicio": 0, "horaFin": 12, "minFin": 0 },
+      { "materia": "Ingeniería de Requisitos", "grupo": "6-A", "lugarId": "lug_edificio_e", "dia": 4, "horaInicio": 8, "minInicio": 0, "horaFin": 10, "minFin": 0 }
     ]
   },
   {
@@ -29,11 +29,11 @@
     "nombre": "Dra. Ana Bracamonte López",
     "departamento": "Ciencias Básicas · Matemáticas",
     "correo": "ana.bracamonte@ues.mx",
-    "oficinaEspacioId": "esp_ofi_a210",
+    "oficinaLugarId": "lug_laboratorios_centrales",
     "fotoUrl": null,
     "asignaciones": [
-      { "materia": "Cálculo Diferencial", "grupo": "1-B", "espacioId": "esp_aula_b001", "dia": 1, "horaInicio": 7, "minInicio": 0, "horaFin": 9, "minFin": 0 },
-      { "materia": "Álgebra Lineal", "grupo": "2-A", "espacioId": "esp_aula_b102", "dia": 3, "horaInicio": 9, "minInicio": 0, "horaFin": 11, "minFin": 0 }
+      { "materia": "Cálculo Diferencial", "grupo": "1-B", "lugarId": "lug_edificio_a", "dia": 1, "horaInicio": 7, "minInicio": 0, "horaFin": 9, "minFin": 0 },
+      { "materia": "Álgebra Lineal", "grupo": "2-A", "lugarId": "lug_edificio_a", "dia": 3, "horaInicio": 9, "minInicio": 0, "horaFin": 11, "minFin": 0 }
     ]
   },
   {
@@ -41,11 +41,11 @@
     "nombre": "Mtro. Ricardo Valencia Ung",
     "departamento": "Redes y Sistemas",
     "correo": "ricardo.valencia@ues.mx",
-    "oficinaEspacioId": "esp_ofi_d120",
+    "oficinaLugarId": "lug_edificio_f",
     "fotoUrl": null,
     "asignaciones": [
-      { "materia": "Redes de Computadoras", "grupo": "5-A", "espacioId": "esp_lab_d101", "dia": 2, "horaInicio": 11, "minInicio": 0, "horaFin": 13, "minFin": 0 },
-      { "materia": "Sistemas Operativos", "grupo": "5-A", "espacioId": "esp_aula_c102", "dia": 5, "horaInicio": 9, "minInicio": 0, "horaFin": 11, "minFin": 0 }
+      { "materia": "Redes de Computadoras", "grupo": "5-A", "lugarId": "lug_centro_de_computo", "dia": 2, "horaInicio": 11, "minInicio": 0, "horaFin": 13, "minFin": 0 },
+      { "materia": "Sistemas Operativos", "grupo": "5-A", "lugarId": "lug_edificio_f", "dia": 5, "horaInicio": 9, "minInicio": 0, "horaFin": 11, "minFin": 0 }
     ]
   },
   {
@@ -53,21 +53,21 @@
     "nombre": "Lic. Patricia Gámez Ruiz",
     "departamento": "Ciencias Económico-Administrativas",
     "correo": "patricia.gamez@ues.mx",
-    "oficinaEspacioId": "esp_ofi_c110",
+    "oficinaLugarId": "lug_edificio_g",
     "fotoUrl": null,
     "asignaciones": [
-      { "materia": "Contabilidad General", "grupo": "1-A", "espacioId": "esp_aula_c101", "dia": 1, "horaInicio": 9, "minInicio": 0, "horaFin": 10, "minFin": 30 }
+      { "materia": "Contabilidad General", "grupo": "1-A", "lugarId": "lug_edificio_g", "dia": 1, "horaInicio": 9, "minInicio": 0, "horaFin": 10, "minFin": 30 }
     ]
   },
   {
     "id": "doc_ibarra",
     "nombre": "Dr. Miguel Ibarra Fong",
-    "departamento": "Ingeniería Industrial",
+    "departamento": "Ciencias de la Salud",
     "correo": "miguel.ibarra@ues.mx",
-    "oficinaEspacioId": "esp_ofi_e105",
+    "oficinaLugarId": "lug_ciencias_de_la_salud",
     "fotoUrl": null,
     "asignaciones": [
-      { "materia": "Investigación de Operaciones", "grupo": "7-A", "espacioId": "esp_aula_e102", "dia": 4, "horaInicio": 10, "minInicio": 0, "horaFin": 12, "minFin": 0 }
+      { "materia": "Anatomía", "grupo": "1-A", "lugarId": "lug_ciencias_de_la_salud", "dia": 4, "horaInicio": 10, "minInicio": 0, "horaFin": 12, "minFin": 0 }
     ]
   }
 ]

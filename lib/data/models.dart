@@ -2,118 +2,79 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../core/brand.dart';
-import '../core/formato.dart';
 
-/// Punto en el sistema de coordenadas del mapa ilustrativo (0..1000 x, 0..700 y).
-/// Cuando se carguen planos reales, esto se reemplaza por lat/lng.
+/// Coordenada geográfica. Reemplaza el sistema local x/y anterior.
 @immutable
 class Punto {
-  const Punto(this.x, this.y);
+  const Punto(this.lat, this.lng);
 
-  final double x;
-  final double y;
+  final double lat;
+  final double lng;
+
+  LatLng toLatLng() => LatLng(lat, lng);
 
   factory Punto.fromJson(Map<String, dynamic> j) =>
-      Punto((j['x'] as num).toDouble(), (j['y'] as num).toDouble());
+      Punto((j['lat'] as num).toDouble(), (j['lng'] as num).toDouble());
 
+  /// Distancia en metros (haversine).
   double distanciaA(Punto o) {
-    final dx = x - o.x;
-    final dy = y - o.y;
-    return math.sqrt(dx * dx + dy * dy);
+    const r = 6371000.0;
+    final p1 = lat * math.pi / 180;
+    final p2 = o.lat * math.pi / 180;
+    final dp = (o.lat - lat) * math.pi / 180;
+    final dl = (o.lng - lng) * math.pi / 180;
+    final a = math.sin(dp / 2) * math.sin(dp / 2) +
+        math.cos(p1) * math.cos(p2) * math.sin(dl / 2) * math.sin(dl / 2);
+    return 2 * r * math.asin(math.min(1, math.sqrt(a)));
   }
 }
 
-enum TipoEspacio { aula, oficina, servicio, edificio, exterior }
-
+/// Cualquier punto de interés del campus: edificio, servicio, área, acceso.
 @immutable
-class Edificio {
-  const Edificio({
+class Lugar {
+  const Lugar({
     required this.id,
-    required this.clave,
     required this.nombre,
-    required this.descripcion,
-    required this.rect,
-    required this.niveles,
-  });
-
-  final String id;
-
-  /// Letra o clave corta ("E", "A"). Se muestra como "EDIFICIO E".
-  final String clave;
-  final String nombre;
-  final String descripcion;
-
-  /// Rectángulo [left, top, width, height] en coordenadas del mapa.
-  final List<double> rect;
-
-  /// Números de nivel disponibles, p. ej. [0, 1, 2].
-  final List<int> niveles;
-
-  String get etiqueta => etiquetaEdificio(clave);
-
-  Punto get centro => Punto(rect[0] + rect[2] / 2, rect[1] + rect[3] / 2);
-
-  factory Edificio.fromJson(Map<String, dynamic> j) => Edificio(
-        id: j['id'] as String,
-        clave: j['clave'] as String,
-        nombre: j['nombre'] as String,
-        descripcion: (j['descripcion'] ?? '') as String,
-        rect: (j['rect'] as List).map((e) => (e as num).toDouble()).toList(),
-        niveles: (j['niveles'] as List).map((e) => e as int).toList(),
-      );
-}
-
-@immutable
-class Espacio {
-  const Espacio({
-    required this.id,
-    required this.tipo,
-    required this.nombre,
-    required this.edificioId,
-    required this.nivel,
-    required this.punto,
     required this.categoria,
+    required this.punto,
     required this.accesible,
-    this.numeroAula,
+    this.nombreCorto,
     this.descripcion = '',
+    this.poligono,
   });
 
   final String id;
-  final TipoEspacio tipo;
   final String nombre;
-
-  /// `null` si el espacio es exterior (kiosko, plaza, estacionamiento abierto).
-  final String? edificioId;
-  final int nivel;
-  final Punto punto;
+  final String? nombreCorto;
   final CategoriaMapa categoria;
+  final Punto punto;
   final bool accesible;
-
-  /// Número de aula ("1", "204") — solo para [TipoEspacio.aula].
-  final String? numeroAula;
   final String descripcion;
 
-  /// Texto para mostrar como título de la ficha.
-  String get titulo {
-    if (tipo == TipoEspacio.aula && numeroAula != null) {
-      return etiquetaAula(numeroAula!);
-    }
-    return nombre;
-  }
+  /// Contorno del edificio (si aplica), para dibujar sobre el mapa.
+  final List<Punto>? poligono;
 
-  factory Espacio.fromJson(Map<String, dynamic> j) => Espacio(
+  bool get esEdificio =>
+      categoria == CategoriaMapa.aula ||
+      categoria == CategoriaMapa.biblioteca ||
+      categoria == CategoriaMapa.oficina;
+
+  String get etiquetaCorta => nombreCorto ?? nombre;
+
+  factory Lugar.fromJson(Map<String, dynamic> j) => Lugar(
         id: j['id'] as String,
-        tipo: TipoEspacio.values.byName(j['tipo'] as String),
         nombre: j['nombre'] as String,
-        edificioId: j['edificioId'] as String?,
-        nivel: (j['nivel'] ?? 0) as int,
-        punto: Punto.fromJson(j['punto'] as Map<String, dynamic>),
+        nombreCorto: j['nombreCorto'] as String?,
         categoria: CategoriaMapa.desdeId(j['categoria'] as String?),
-        accesible: (j['accesible'] ?? false) as bool,
-        numeroAula: j['numeroAula'] as String?,
+        punto: Punto.fromJson(j['punto'] as Map<String, dynamic>),
+        accesible: (j['accesible'] ?? true) as bool,
         descripcion: (j['descripcion'] ?? '') as String,
+        poligono: (j['poligono'] as List?)
+            ?.map((e) => Punto.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 }
 
@@ -122,7 +83,7 @@ class Asignacion {
   const Asignacion({
     required this.materia,
     required this.grupo,
-    required this.espacioId,
+    required this.lugarId,
     required this.dia,
     required this.horaInicio,
     required this.minInicio,
@@ -132,7 +93,7 @@ class Asignacion {
 
   final String materia;
   final String grupo;
-  final String espacioId;
+  final String lugarId;
 
   /// 1 = Lunes ... 6 = Sábado.
   final int dia;
@@ -141,14 +102,15 @@ class Asignacion {
   final int horaFin;
   final int minFin;
 
-  String get diaNombre => diasSemana[(dia - 1).clamp(0, diasSemana.length - 1)];
-  String get horario =>
-      rangoHorario(horaInicio, minInicio, horaFin, minFin);
+  String get horario {
+    String hhmm(int h, int m) => '$h:${m.toString().padLeft(2, '0')}';
+    return '${hhmm(horaInicio, minInicio)}–${hhmm(horaFin, minFin)}';
+  }
 
   factory Asignacion.fromJson(Map<String, dynamic> j) => Asignacion(
         materia: j['materia'] as String,
         grupo: (j['grupo'] ?? '') as String,
-        espacioId: j['espacioId'] as String,
+        lugarId: j['lugarId'] as String,
         dia: j['dia'] as int,
         horaInicio: j['horaInicio'] as int,
         minInicio: (j['minInicio'] ?? 0) as int,
@@ -164,8 +126,8 @@ class Docente {
     required this.nombre,
     required this.departamento,
     required this.correo,
-    required this.oficinaEspacioId,
     required this.asignaciones,
+    this.oficinaLugarId,
     this.fotoUrl,
   });
 
@@ -173,12 +135,20 @@ class Docente {
   final String nombre;
   final String departamento;
   final String correo;
-  final String? oficinaEspacioId;
+  final String? oficinaLugarId;
   final List<Asignacion> asignaciones;
   final String? fotoUrl;
 
   static const _titulos = {
-    'dr', 'dra', 'mtro', 'mtra', 'lic', 'ing', 'c', 'prof', 'profa',
+    'dr',
+    'dra',
+    'mtro',
+    'mtra',
+    'lic',
+    'ing',
+    'c',
+    'prof',
+    'profa',
   };
 
   String get iniciales {
@@ -186,9 +156,7 @@ class Docente {
         .trim()
         .split(RegExp(r'\s+'))
         .where((p) => p.isNotEmpty)
-        .where((p) => !_titulos.contains(
-              p.replaceAll('.', '').toLowerCase(),
-            ))
+        .where((p) => !_titulos.contains(p.replaceAll('.', '').toLowerCase()))
         .toList();
     if (partes.isEmpty) return '?';
     if (partes.length == 1) return partes.first.substring(0, 1).toUpperCase();
@@ -201,7 +169,7 @@ class Docente {
         nombre: j['nombre'] as String,
         departamento: (j['departamento'] ?? '') as String,
         correo: (j['correo'] ?? '') as String,
-        oficinaEspacioId: j['oficinaEspacioId'] as String?,
+        oficinaLugarId: j['oficinaLugarId'] as String?,
         fotoUrl: j['fotoUrl'] as String?,
         asignaciones: ((j['asignaciones'] ?? []) as List)
             .map((e) => Asignacion.fromJson(e as Map<String, dynamic>))
@@ -209,29 +177,52 @@ class Docente {
       );
 }
 
-/// Contenedor de todo el catálogo del campus (seed local o Supabase).
+/// Contorno y centro del campus (de `assets/seed/campus.json`).
+@immutable
+class CampusInfo {
+  const CampusInfo({
+    required this.perimetro,
+    required this.centro,
+    required this.campoDeportivo,
+  });
+
+  final List<Punto> perimetro;
+  final Punto centro;
+  final List<Punto> campoDeportivo;
+
+  factory CampusInfo.fromJson(Map<String, dynamic> j) => CampusInfo(
+        perimetro: (j['perimetro'] as List)
+            .map((e) => Punto.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        centro: Punto.fromJson(j['centro'] as Map<String, dynamic>),
+        campoDeportivo: ((j['campoDeportivo'] ?? []) as List)
+            .map((e) => Punto.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+}
+
 @immutable
 class CampusData {
   const CampusData({
-    required this.edificios,
-    required this.espacios,
+    required this.info,
+    required this.lugares,
     required this.docentes,
     required this.nodos,
     required this.aristas,
   });
 
-  final List<Edificio> edificios;
-  final List<Espacio> espacios;
+  final CampusInfo info;
+  final List<Lugar> lugares;
   final List<Docente> docentes;
   final List<NodoRuta> nodos;
   final List<AristaRuta> aristas;
 
-  Edificio? edificio(String? id) =>
-      id == null ? null : edificios.where((e) => e.id == id).firstOrNull;
-  Espacio? espacio(String? id) =>
-      id == null ? null : espacios.where((e) => e.id == id).firstOrNull;
+  List<Lugar> get edificios => lugares.where((l) => l.esEdificio).toList();
+
+  Lugar? lugar(String? id) =>
+      id == null ? null : lugares.firstWhereOrNull((l) => l.id == id);
   Docente? docente(String? id) =>
-      id == null ? null : docentes.where((e) => e.id == id).firstOrNull;
+      id == null ? null : docentes.firstWhereOrNull((d) => d.id == id);
 }
 
 // --- Grafo de ruteo peatonal ---
@@ -240,46 +231,33 @@ enum TipoArista { exterior, pasillo, escalera, rampa, elevador, puerta }
 
 @immutable
 class NodoRuta {
-  const NodoRuta({
-    required this.id,
-    required this.punto,
-    required this.nivel,
-    this.espacioId,
-  });
+  const NodoRuta({required this.id, required this.punto, this.lugarId});
 
   final String id;
   final Punto punto;
-  final int nivel;
-
-  /// Si el nodo coincide con un espacio (entrada, aula), su id.
-  final String? espacioId;
+  final String? lugarId;
 
   factory NodoRuta.fromJson(Map<String, dynamic> j) => NodoRuta(
         id: j['id'] as String,
         punto: Punto.fromJson(j['punto'] as Map<String, dynamic>),
-        nivel: (j['nivel'] ?? 0) as int,
-        espacioId: j['espacioId'] as String?,
+        lugarId: j['lugarId'] as String?,
       );
 }
 
 @immutable
 class AristaRuta {
-  const AristaRuta({
-    required this.a,
-    required this.b,
-    required this.tipo,
-  });
+  const AristaRuta({required this.a, required this.b, required this.tipo});
 
   final String a;
   final String b;
   final TipoArista tipo;
 
-  /// ¿La arista es transitable en "ruta accesible"? Excluye escaleras.
+  /// Transitable en "ruta accesible" (excluye escaleras).
   bool get esAccesible => tipo != TipoArista.escalera;
 
   factory AristaRuta.fromJson(Map<String, dynamic> j) => AristaRuta(
         a: j['a'] as String,
         b: j['b'] as String,
-        tipo: TipoArista.values.byName((j['tipo'] ?? 'pasillo') as String),
+        tipo: TipoArista.values.byName((j['tipo'] ?? 'exterior') as String),
       );
 }

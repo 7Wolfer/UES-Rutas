@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/brand.dart';
 import 'models.dart';
 
-enum TipoResultado { espacio, edificio, docente }
+enum TipoResultado { lugar, docente }
 
 @immutable
 class ResultadoBusqueda {
@@ -37,67 +37,46 @@ String normaliza(String s) {
   return b.toString();
 }
 
-/// Busca en aulas, edificios, servicios y docentes. Devuelve resultados
-/// ordenados por relevancia (coincidencia de prefijo primero).
+/// Busca en lugares (edificios, servicios, accesos) y docentes.
 List<ResultadoBusqueda> buscar(CampusData data, String consulta) {
   final q = normaliza(consulta.trim());
   if (q.isEmpty) return const [];
 
   final scored = <(int, ResultadoBusqueda)>[];
 
-  int puntua(List<String> campos) {
+  int puntua(List<String?> campos) {
     var best = -1;
     for (final c in campos) {
+      if (c == null || c.isEmpty) continue;
       final n = normaliza(c);
       if (n == q) {
-        best = best < 100 ? 100 : best;
-      } else if (n.startsWith(q)) {
-        if (best < 80) best = 80;
-      } else if (n.contains(q)) {
-        if (best < 50) best = 50;
+        best = 100;
+      } else if (n.startsWith(q) && best < 80) {
+        best = 80;
+      } else if (n.contains(q) && best < 50) {
+        best = 50;
       }
     }
     return best;
   }
 
-  for (final e in data.edificios) {
-    final s = puntua([e.nombre, e.clave, e.etiqueta, e.descripcion]);
-    if (s >= 0) {
-      scored.add((
-        s,
-        ResultadoBusqueda(
-          tipo: TipoResultado.edificio,
-          id: 'esp_${e.id}',
-          titulo: e.nombre,
-          subtitulo: e.etiqueta,
-          icono: Icons.apartment_outlined,
-          color: UesBrand.vino,
-        ),
-      ));
-    }
-  }
-
-  for (final e in data.espacios) {
-    if (e.tipo == TipoEspacio.edificio) continue;
-    final cat = e.categoria;
+  for (final l in data.lugares) {
     final s = puntua([
-      e.nombre,
-      e.titulo,
-      if (e.numeroAula != null) e.numeroAula!,
-      e.descripcion,
-      cat.etiqueta,
+      l.nombre,
+      l.nombreCorto,
+      l.descripcion,
+      l.categoria.etiqueta,
     ]);
     if (s >= 0) {
-      final edif = data.edificio(e.edificioId);
       scored.add((
         s,
         ResultadoBusqueda(
-          tipo: TipoResultado.espacio,
-          id: e.id,
-          titulo: e.titulo,
-          subtitulo: edif != null ? edif.etiqueta : cat.etiqueta,
-          icono: cat.icono,
-          color: cat.color,
+          tipo: TipoResultado.lugar,
+          id: l.id,
+          titulo: l.nombre,
+          subtitulo: l.categoria.etiqueta,
+          icono: l.categoria.icono,
+          color: l.categoria.color,
         ),
       ));
     }
@@ -123,9 +102,7 @@ List<ResultadoBusqueda> buscar(CampusData data, String consulta) {
 
   scored.sort((a, b) {
     final byScore = b.$1.compareTo(a.$1);
-    if (byScore != 0) return byScore;
-    return a.$2.titulo.compareTo(b.$2.titulo);
+    return byScore != 0 ? byScore : a.$2.titulo.compareTo(b.$2.titulo);
   });
-
   return scored.map((e) => e.$2).toList();
 }

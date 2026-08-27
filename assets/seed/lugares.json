@@ -1,0 +1,1083 @@
+[
+ {
+  "id": "lug_centro_de_computo",
+  "nombre": "Centro de Cómputo",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.121196,
+   "lng": -110.961156
+  },
+  "accesible": true,
+  "descripcion": "Laboratorios de cómputo.",
+  "poligono": [
+   {
+    "lat": 29.121228,
+    "lng": -110.961038
+   },
+   {
+    "lat": 29.121129,
+    "lng": -110.961025
+   },
+   {
+    "lat": 29.121101,
+    "lng": -110.961298
+   },
+   {
+    "lat": 29.121195,
+    "lng": -110.961311
+   },
+   {
+    "lat": 29.121206,
+    "lng": -110.961209
+   },
+   {
+    "lat": 29.121225,
+    "lng": -110.961212
+   },
+   {
+    "lat": 29.121232,
+    "lng": -110.96114
+   },
+   {
+    "lat": 29.121217,
+    "lng": -110.961138
+   },
+   {
+    "lat": 29.121228,
+    "lng": -110.961038
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_n",
+  "nombre": "Edificio N",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.121126,
+   "lng": -110.96184
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. N",
+  "poligono": [
+   {
+    "lat": 29.121102,
+    "lng": -110.961566
+   },
+   {
+    "lat": 29.121231,
+    "lng": -110.961583
+   },
+   {
+    "lat": 29.121213,
+    "lng": -110.961748
+   },
+   {
+    "lat": 29.121229,
+    "lng": -110.961751
+   },
+   {
+    "lat": 29.121233,
+    "lng": -110.961876
+   },
+   {
+    "lat": 29.121195,
+    "lng": -110.961992
+   },
+   {
+    "lat": 29.121178,
+    "lng": -110.961988
+   },
+   {
+    "lat": 29.121155,
+    "lng": -110.962158
+   },
+   {
+    "lat": 29.121025,
+    "lng": -110.962136
+   },
+   {
+    "lat": 29.121046,
+    "lng": -110.961971
+   },
+   {
+    "lat": 29.121028,
+    "lng": -110.96192
+   },
+   {
+    "lat": 29.121027,
+    "lng": -110.961847
+   },
+   {
+    "lat": 29.121048,
+    "lng": -110.96177
+   },
+   {
+    "lat": 29.121079,
+    "lng": -110.961727
+   },
+   {
+    "lat": 29.121102,
+    "lng": -110.961566
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_a",
+  "nombre": "Edificio A",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.120999,
+   "lng": -110.962374
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. A",
+  "poligono": [
+   {
+    "lat": 29.120976,
+    "lng": -110.962191
+   },
+   {
+    "lat": 29.121087,
+    "lng": -110.962209
+   },
+   {
+    "lat": 29.121034,
+    "lng": -110.962649
+   },
+   {
+    "lat": 29.120922,
+    "lng": -110.962632
+   },
+   {
+    "lat": 29.120976,
+    "lng": -110.962191
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_b",
+  "nombre": "Edificio B",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.12123,
+   "lng": -110.96243
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. B",
+  "poligono": [
+   {
+    "lat": 29.121199,
+    "lng": -110.962224
+   },
+   {
+    "lat": 29.121319,
+    "lng": -110.962242
+   },
+   {
+    "lat": 29.121287,
+    "lng": -110.96252
+   },
+   {
+    "lat": 29.12126,
+    "lng": -110.962516
+   },
+   {
+    "lat": 29.121253,
+    "lng": -110.962575
+   },
+   {
+    "lat": 29.121188,
+    "lng": -110.962565
+   },
+   {
+    "lat": 29.121195,
+    "lng": -110.962503
+   },
+   {
+    "lat": 29.121167,
+    "lng": -110.962499
+   },
+   {
+    "lat": 29.121199,
+    "lng": -110.962224
+   }
+  ]
+ },
+ {
+  "id": "lug_laboratorios_centrales",
+  "nombre": "Laboratorios Centrales",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.12144,
+   "lng": -110.962439
+  },
+  "accesible": true,
+  "descripcion": "Laboratorios de ciencias básicas.",
+  "poligono": [
+   {
+    "lat": 29.121479,
+    "lng": -110.962663
+   },
+   {
+    "lat": 29.121321,
+    "lng": -110.962639
+   },
+   {
+    "lat": 29.121382,
+    "lng": -110.962101
+   },
+   {
+    "lat": 29.12154,
+    "lng": -110.962125
+   },
+   {
+    "lat": 29.121479,
+    "lng": -110.962663
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_f",
+  "nombre": "Edificio F",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.121632,
+   "lng": -110.961349
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. F",
+  "poligono": [
+   {
+    "lat": 29.121651,
+    "lng": -110.961629
+   },
+   {
+    "lat": 29.121536,
+    "lng": -110.961611
+   },
+   {
+    "lat": 29.121604,
+    "lng": -110.961068
+   },
+   {
+    "lat": 29.121629,
+    "lng": -110.961072
+   },
+   {
+    "lat": 29.121719,
+    "lng": -110.961087
+   },
+   {
+    "lat": 29.121651,
+    "lng": -110.961629
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_g",
+  "nombre": "Edificio G",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.121804,
+   "lng": -110.961309
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. G",
+  "poligono": [
+   {
+    "lat": 29.121837,
+    "lng": -110.961405
+   },
+   {
+    "lat": 29.121729,
+    "lng": -110.961389
+   },
+   {
+    "lat": 29.121754,
+    "lng": -110.961166
+   },
+   {
+    "lat": 29.121861,
+    "lng": -110.961181
+   },
+   {
+    "lat": 29.121837,
+    "lng": -110.961405
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_k_laboratorios_turismo",
+  "nombre": "Edificio K · Laboratorios Turismo",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.121906,
+   "lng": -110.961554
+  },
+  "accesible": true,
+  "descripcion": "Aulas y laboratorios de Turismo.",
+  "nombreCorto": "Edif. K",
+  "poligono": [
+   {
+    "lat": 29.121944,
+    "lng": -110.961671
+   },
+   {
+    "lat": 29.121924,
+    "lng": -110.961667
+   },
+   {
+    "lat": 29.121845,
+    "lng": -110.961654
+   },
+   {
+    "lat": 29.121823,
+    "lng": -110.961652
+   },
+   {
+    "lat": 29.12187,
+    "lng": -110.961271
+   },
+   {
+    "lat": 29.121991,
+    "lng": -110.961291
+   },
+   {
+    "lat": 29.121944,
+    "lng": -110.961671
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_i",
+  "nombre": "Edificio I",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.122403,
+   "lng": -110.96196
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. I",
+  "poligono": [
+   {
+    "lat": 29.122437,
+    "lng": -110.962065
+   },
+   {
+    "lat": 29.122324,
+    "lng": -110.962048
+   },
+   {
+    "lat": 29.122351,
+    "lng": -110.961802
+   },
+   {
+    "lat": 29.122465,
+    "lng": -110.961819
+   },
+   {
+    "lat": 29.122437,
+    "lng": -110.962065
+   }
+  ]
+ },
+ {
+  "id": "lug_aula_magna_biblioteca",
+  "nombre": "Aula Magna / Biblioteca",
+  "categoria": "biblioteca",
+  "punto": {
+   "lat": 29.12238,
+   "lng": -110.961497
+  },
+  "accesible": true,
+  "descripcion": "Biblioteca, sala de lectura y Aula Magna.",
+  "poligono": [
+   {
+    "lat": 29.122484,
+    "lng": -110.961717
+   },
+   {
+    "lat": 29.122209,
+    "lng": -110.961672
+   },
+   {
+    "lat": 29.122259,
+    "lng": -110.961273
+   },
+   {
+    "lat": 29.12231,
+    "lng": -110.961282
+   },
+   {
+    "lat": 29.122533,
+    "lng": -110.961318
+   },
+   {
+    "lat": 29.122484,
+    "lng": -110.961717
+   }
+  ]
+ },
+ {
+  "id": "lug_oficinas_academicas",
+  "nombre": "Oficinas Académicas",
+  "categoria": "oficina",
+  "punto": {
+   "lat": 29.121627,
+   "lng": -110.962785
+  },
+  "accesible": true,
+  "descripcion": "Coordinaciones y cubículos docentes.",
+  "poligono": [
+   {
+    "lat": 29.121563,
+    "lng": -110.962681
+   },
+   {
+    "lat": 29.121679,
+    "lng": -110.9627
+   },
+   {
+    "lat": 29.121671,
+    "lng": -110.962766
+   },
+   {
+    "lat": 29.121702,
+    "lng": -110.962772
+   },
+   {
+    "lat": 29.12169,
+    "lng": -110.962859
+   },
+   {
+    "lat": 29.121687,
+    "lng": -110.962884
+   },
+   {
+    "lat": 29.121551,
+    "lng": -110.962861
+   },
+   {
+    "lat": 29.12154,
+    "lng": -110.96286
+   },
+   {
+    "lat": 29.121563,
+    "lng": -110.962681
+   }
+  ]
+ },
+ {
+  "id": "lug_invernadero",
+  "nombre": "Invernadero",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.121347,
+   "lng": -110.962767
+  },
+  "accesible": true,
+  "descripcion": "Invernadero del Jardín Botánico.",
+  "poligono": [
+   {
+    "lat": 29.121452,
+    "lng": -110.962828
+   },
+   {
+    "lat": 29.121176,
+    "lng": -110.962782
+   },
+   {
+    "lat": 29.12119,
+    "lng": -110.962675
+   },
+   {
+    "lat": 29.121466,
+    "lng": -110.962721
+   },
+   {
+    "lat": 29.121452,
+    "lng": -110.962828
+   }
+  ]
+ },
+ {
+  "id": "lug_recursos_humanos",
+  "nombre": "Recursos Humanos",
+  "categoria": "oficina",
+  "punto": {
+   "lat": 29.122083,
+   "lng": -110.961736
+  },
+  "accesible": true,
+  "descripcion": "",
+  "poligono": [
+   {
+    "lat": 29.122051,
+    "lng": -110.961765
+   },
+   {
+    "lat": 29.122054,
+    "lng": -110.961689
+   },
+   {
+    "lat": 29.12213,
+    "lng": -110.961692
+   },
+   {
+    "lat": 29.122127,
+    "lng": -110.961768
+   },
+   {
+    "lat": 29.122051,
+    "lng": -110.961765
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_e",
+  "nombre": "Edificio E",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.122098,
+   "lng": -110.962242
+  },
+  "accesible": true,
+  "descripcion": "Aulas de licenciatura.",
+  "nombreCorto": "Edif. E",
+  "poligono": [
+   {
+    "lat": 29.122147,
+    "lng": -110.962295
+   },
+   {
+    "lat": 29.122031,
+    "lng": -110.962284
+   },
+   {
+    "lat": 29.122037,
+    "lng": -110.962209
+   },
+   {
+    "lat": 29.122048,
+    "lng": -110.96221
+   },
+   {
+    "lat": 29.12205,
+    "lng": -110.962192
+   },
+   {
+    "lat": 29.122138,
+    "lng": -110.962201
+   },
+   {
+    "lat": 29.122134,
+    "lng": -110.962249
+   },
+   {
+    "lat": 29.12215,
+    "lng": -110.962251
+   },
+   {
+    "lat": 29.122147,
+    "lng": -110.962295
+   }
+  ]
+ },
+ {
+  "id": "lug_gimnasio_ues",
+  "nombre": "Gimnasio UES",
+  "categoria": "deportivo",
+  "punto": {
+   "lat": 29.120462,
+   "lng": -110.9611
+  },
+  "accesible": true,
+  "descripcion": "Gimnasio y área de acondicionamiento físico.",
+  "poligono": [
+   {
+    "lat": 29.120675,
+    "lng": -110.961238
+   },
+   {
+    "lat": 29.120724,
+    "lng": -110.960845
+   },
+   {
+    "lat": 29.120224,
+    "lng": -110.960764
+   },
+   {
+    "lat": 29.120175,
+    "lng": -110.961154
+   },
+   {
+    "lat": 29.120303,
+    "lng": -110.961175
+   },
+   {
+    "lat": 29.12031,
+    "lng": -110.961116
+   },
+   {
+    "lat": 29.120542,
+    "lng": -110.961154
+   },
+   {
+    "lat": 29.120535,
+    "lng": -110.961215
+   },
+   {
+    "lat": 29.120675,
+    "lng": -110.961238
+   }
+  ]
+ },
+ {
+  "id": "lug_taller_de_ecoprocesos",
+  "nombre": "Taller de Ecoprocesos",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.122171,
+   "lng": -110.964046
+  },
+  "accesible": true,
+  "descripcion": "Talleres del área de ingeniería ambiental / metalurgia.",
+  "poligono": [
+   {
+    "lat": 29.122241,
+    "lng": -110.964164
+   },
+   {
+    "lat": 29.122264,
+    "lng": -110.963994
+   },
+   {
+    "lat": 29.122247,
+    "lng": -110.963991
+   },
+   {
+    "lat": 29.122264,
+    "lng": -110.963868
+   },
+   {
+    "lat": 29.122208,
+    "lng": -110.963858
+   },
+   {
+    "lat": 29.122205,
+    "lng": -110.963881
+   },
+   {
+    "lat": 29.122114,
+    "lng": -110.963865
+   },
+   {
+    "lat": 29.122099,
+    "lng": -110.963975
+   },
+   {
+    "lat": 29.122076,
+    "lng": -110.963971
+   },
+   {
+    "lat": 29.122055,
+    "lng": -110.964127
+   },
+   {
+    "lat": 29.122116,
+    "lng": -110.964138
+   },
+   {
+    "lat": 29.122097,
+    "lng": -110.964274
+   },
+   {
+    "lat": 29.122164,
+    "lng": -110.96426
+   },
+   {
+    "lat": 29.122178,
+    "lng": -110.964153
+   },
+   {
+    "lat": 29.122241,
+    "lng": -110.964164
+   }
+  ]
+ },
+ {
+  "id": "lug_ciencias_de_la_salud",
+  "nombre": "Ciencias de la Salud",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.122197,
+   "lng": -110.963502
+  },
+  "accesible": true,
+  "descripcion": "Aulas y laboratorios del área de la salud.",
+  "poligono": [
+   {
+    "lat": 29.122147,
+    "lng": -110.963736
+   },
+   {
+    "lat": 29.122223,
+    "lng": -110.963733
+   },
+   {
+    "lat": 29.122223,
+    "lng": -110.963753
+   },
+   {
+    "lat": 29.122329,
+    "lng": -110.963749
+   },
+   {
+    "lat": 29.122311,
+    "lng": -110.96315
+   },
+   {
+    "lat": 29.12213,
+    "lng": -110.963156
+   },
+   {
+    "lat": 29.12213,
+    "lng": -110.963187
+   },
+   {
+    "lat": 29.122135,
+    "lng": -110.963315
+   },
+   {
+    "lat": 29.122147,
+    "lng": -110.963736
+   }
+  ]
+ },
+ {
+  "id": "lug_cafeteria_ues",
+  "nombre": "Cafetería UES",
+  "categoria": "alimentos",
+  "punto": {
+   "lat": 29.122099,
+   "lng": -110.961991
+  },
+  "accesible": true,
+  "descripcion": "Servicio de alimentos y área de mesas.",
+  "poligono": [
+   {
+    "lat": 29.122059,
+    "lng": -110.96211
+   },
+   {
+    "lat": 29.122125,
+    "lng": -110.96212
+   },
+   {
+    "lat": 29.122159,
+    "lng": -110.961813
+   },
+   {
+    "lat": 29.122094,
+    "lng": -110.961803
+   },
+   {
+    "lat": 29.122059,
+    "lng": -110.96211
+   }
+  ]
+ },
+ {
+  "id": "lug_domo_ues",
+  "nombre": "Domo UES",
+  "categoria": "deportivo",
+  "punto": {
+   "lat": 29.122094,
+   "lng": -110.96143
+  },
+  "accesible": true,
+  "descripcion": "Cancha techada y sede de eventos institucionales.",
+  "poligono": [
+   {
+    "lat": 29.12199,
+    "lng": -110.96158
+   },
+   {
+    "lat": 29.122046,
+    "lng": -110.961614
+   },
+   {
+    "lat": 29.122099,
+    "lng": -110.961622
+   },
+   {
+    "lat": 29.122172,
+    "lng": -110.961609
+   },
+   {
+    "lat": 29.122205,
+    "lng": -110.961317
+   },
+   {
+    "lat": 29.122189,
+    "lng": -110.961295
+   },
+   {
+    "lat": 29.122156,
+    "lng": -110.961277
+   },
+   {
+    "lat": 29.122104,
+    "lng": -110.961266
+   },
+   {
+    "lat": 29.122059,
+    "lng": -110.961274
+   },
+   {
+    "lat": 29.122025,
+    "lng": -110.961296
+   },
+   {
+    "lat": 29.12199,
+    "lng": -110.96158
+   }
+  ]
+ },
+ {
+  "id": "lug_edificio_r",
+  "nombre": "Edificio R",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.12233,
+   "lng": -110.962691
+  },
+  "accesible": true,
+  "descripcion": "Aulas y oficinas.",
+  "nombreCorto": "Edif. R",
+  "poligono": [
+   {
+    "lat": 29.12236,
+    "lng": -110.962806
+   },
+   {
+    "lat": 29.122396,
+    "lng": -110.962479
+   },
+   {
+    "lat": 29.122296,
+    "lng": -110.962464
+   },
+   {
+    "lat": 29.122259,
+    "lng": -110.962791
+   },
+   {
+    "lat": 29.122309,
+    "lng": -110.962799
+   },
+   {
+    "lat": 29.12236,
+    "lng": -110.962806
+   }
+  ]
+ },
+ {
+  "id": "lug_explanada_estudiantil",
+  "nombre": "Explanada Estudiantil",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.121585,
+   "lng": -110.961961
+  },
+  "accesible": true,
+  "descripcion": "Área techada de convivencia.",
+  "poligono": [
+   {
+    "lat": 29.121606,
+    "lng": -110.962141
+   },
+   {
+    "lat": 29.12165,
+    "lng": -110.961801
+   },
+   {
+    "lat": 29.121606,
+    "lng": -110.961794
+   },
+   {
+    "lat": 29.121596,
+    "lng": -110.961877
+   },
+   {
+    "lat": 29.121528,
+    "lng": -110.961865
+   },
+   {
+    "lat": 29.121518,
+    "lng": -110.961942
+   },
+   {
+    "lat": 29.121588,
+    "lng": -110.961954
+   },
+   {
+    "lat": 29.121564,
+    "lng": -110.962134
+   },
+   {
+    "lat": 29.121606,
+    "lng": -110.962141
+   }
+  ]
+ },
+ {
+  "id": "lug_campo_deportivo",
+  "nombre": "Campo Deportivo",
+  "categoria": "deportivo",
+  "punto": {
+   "lat": 29.12142,
+   "lng": -110.96389
+  },
+  "accesible": true,
+  "descripcion": "Campo de fútbol y pista, sobre el costado poniente."
+ },
+ {
+  "id": "lug_plaza_central",
+  "nombre": "Plaza Central",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.121868,
+   "lng": -110.961954
+  },
+  "accesible": true,
+  "descripcion": "Punto de encuentro central del campus."
+ },
+ {
+  "id": "lug_edificio_de_musica",
+  "nombre": "Edificio de Música",
+  "categoria": "aula",
+  "punto": {
+   "lat": 29.122338,
+   "lng": -110.962526
+  },
+  "accesible": true,
+  "descripcion": "Aulas y salas de la Licenciatura en Música."
+ },
+ {
+  "id": "lug_sanitarios_zona_explanada",
+  "nombre": "Sanitarios · Zona Explanada",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.121707,
+   "lng": -110.962067
+  },
+  "accesible": true,
+  "descripcion": "Sanitarios generales."
+ },
+ {
+  "id": "lug_sanitarios_zona_edificio_g",
+  "nombre": "Sanitarios · Zona Edificio G",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.121841,
+   "lng": -110.961214
+  },
+  "accesible": true,
+  "descripcion": "Sanitarios generales."
+ },
+ {
+  "id": "lug_sanitarios_zona_laboratorios",
+  "nombre": "Sanitarios · Zona Laboratorios",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.121434,
+   "lng": -110.962473
+  },
+  "accesible": true,
+  "descripcion": "Sanitarios generales."
+ },
+ {
+  "id": "lug_estacionamiento_1",
+  "nombre": "Estacionamiento 1",
+  "categoria": "estacionamiento",
+  "punto": {
+   "lat": 29.120399,
+   "lng": -110.962279
+  },
+  "accesible": true,
+  "descripcion": "Estacionamiento para la comunidad universitaria."
+ },
+ {
+  "id": "lug_estacionamiento_2",
+  "nombre": "Estacionamiento 2",
+  "categoria": "estacionamiento",
+  "punto": {
+   "lat": 29.121561,
+   "lng": -110.961074
+  },
+  "accesible": true,
+  "descripcion": "Estacionamiento para la comunidad universitaria."
+ },
+ {
+  "id": "lug_estacionamiento_3",
+  "nombre": "Estacionamiento 3",
+  "categoria": "estacionamiento",
+  "punto": {
+   "lat": 29.122054,
+   "lng": -110.962517
+  },
+  "accesible": true,
+  "descripcion": "Estacionamiento para la comunidad universitaria."
+ },
+ {
+  "id": "lug_estacionamiento_4",
+  "nombre": "Estacionamiento 4",
+  "categoria": "estacionamiento",
+  "punto": {
+   "lat": 29.121297,
+   "lng": -110.963208
+  },
+  "accesible": true,
+  "descripcion": "Estacionamiento para la comunidad universitaria."
+ },
+ {
+  "id": "lug_control_escolar_ues",
+  "nombre": "Control Escolar UES",
+  "categoria": "oficina",
+  "punto": {
+   "lat": 29.1218,
+   "lng": -110.96238
+  },
+  "accesible": true,
+  "descripcion": "Servicios escolares, inscripciones y trámites."
+ },
+ {
+  "id": "lug_acceso_principal",
+  "nombre": "Acceso Principal",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.12061,
+   "lng": -110.96233
+  },
+  "accesible": true,
+  "descripcion": "Entrada peatonal por Av. Ley Federal del Trabajo. Punto de partida por defecto."
+ },
+ {
+  "id": "lug_acceso_poniente",
+  "nombre": "Acceso Poniente",
+  "categoria": "servicios",
+  "punto": {
+   "lat": 29.12147,
+   "lng": -110.9642
+  },
+  "accesible": false,
+  "descripcion": "Entrada junto al campo deportivo, con escalón (no accesible)."
+ }
+]

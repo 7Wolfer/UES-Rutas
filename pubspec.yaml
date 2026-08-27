@@ -3,7 +3,7 @@ description: >
   UES Rutas — aplicación de orientación y navegación para el campus de la
   Universidad Estatal de Sonora (plantel Hermosillo).
 publish_to: "none"
-version: 0.1.0+1
+version: 0.2.0+2
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -17,7 +17,7 @@ dependencies:
   # Estado
   flutter_riverpod: ^2.6.1
 
-  # Navegación (deep links para QR y URLs en web)
+  # Navegación
   go_router: ^14.6.0
 
   # Identidad UES: Montserrat + Source Sans 3
@@ -26,10 +26,29 @@ dependencies:
   # Backend / auth (stub por ahora, detrás de feature flag)
   supabase_flutter: ^2.8.0
 
-  # Mapa ilustrativo del campus
+  # Mapa real (OpenStreetMap) + capa del campus
+  flutter_map: 7.0.2
+  latlong2: ^0.9.1
+
+  # Calendario académico
+  table_calendar: ^3.1.2
+
+  # Notificaciones locales
+  flutter_local_notifications: ^18.0.1
+
+  # Ubicación del usuario
+  geolocator: ^13.0.2
+
+  # Abrir WhatsApp / teléfono
+  url_launcher: ^6.3.1
+
+  # Credencial digital (QR)
+  qr_flutter: ^4.1.0
+
+  # Marca UES (llama)
   flutter_svg: ^2.0.16
 
-  # Persistencia de ajustes (tema, tamaño de texto, alto contraste)
+  # Persistencia de ajustes
   shared_preferences: ^2.3.0
 
   # Utilidades
@@ -40,10 +59,19 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_native_splash: ^2.4.3
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
   uses-material-design: true
   assets:
     - assets/seed/
-    - assets/map/
     - assets/brand/
+    - assets/docs/
+
+flutter_native_splash:
+  color: "#FDFCFB"
+  color_dark: "#17130F"
+  android_12:
+    color: "#FDFCFB"
+    color_dark: "#17130F"

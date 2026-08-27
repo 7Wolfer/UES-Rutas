@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../core/formato.dart';
 import 'models.dart';
 
 /// Resultado de un cálculo de ruta peatonal.
@@ -18,26 +17,21 @@ class RutaCalculada {
   final List<NodoRuta> nodos;
   final List<Punto> puntos;
 
-  /// Distancia total en unidades del mapa (aprox. metros para la demo).
+  /// Distancia total en metros.
   final double distancia;
-
-  /// `true` si se pidió (y se encontró) una ruta que evita escaleras.
   final bool accesible;
   final bool usaEscaleras;
   final bool usaElevador;
   final bool usaRampa;
 
-  /// Estimación de tiempo caminando a ~1.3 m/s.
+  /// Caminando a ~1.35 m/s.
   Duration get duracionEstimada =>
-      Duration(seconds: (distancia / 1.3).round());
+      Duration(seconds: (distancia / 1.35).round());
 
   bool get sinRuta => nodos.isEmpty;
 }
 
-/// Motor de ruteo muy simple (Dijkstra) sobre el grafo del campus.
-///
-/// Para la demo el grafo se arma a mano en `assets/seed/rutas.json`. Cuando
-/// existan planos reales, este mismo motor sirve sobre un grafo generado.
+/// Motor de ruteo (Dijkstra) sobre el grafo peatonal del campus.
 class MotorRutas {
   MotorRutas(CampusData data)
       : _nodos = {for (final n in data.nodos) n.id: n},
@@ -50,20 +44,17 @@ class MotorRutas {
     final m = <String, List<AristaRuta>>{};
     for (final a in data.aristas) {
       m.putIfAbsent(a.a, () => []).add(a);
-      // Grafo no dirigido: agrega la arista inversa.
-      m.putIfAbsent(a.b, () => []).add(
-            AristaRuta(a: a.b, b: a.a, tipo: a.tipo),
-          );
+      m
+          .putIfAbsent(a.b, () => [])
+          .add(AristaRuta(a: a.b, b: a.a, tipo: a.tipo));
     }
     return m;
   }
 
-  /// Nodo más cercano a un punto (para "engancharse" al grafo desde un espacio).
-  String? _nodoMasCercano(Punto p, {int? nivel}) {
+  String? _nodoMasCercano(Punto p) {
     String? mejor;
     var mejorD = double.infinity;
     for (final n in _nodos.values) {
-      if (nivel != null && n.nivel != nivel) continue;
       final d = n.punto.distanciaA(p);
       if (d < mejorD) {
         mejorD = d;
@@ -73,11 +64,9 @@ class MotorRutas {
     return mejor;
   }
 
-  /// Calcula la ruta entre dos espacios. Si [accesible] es `true`, evita
-  /// escaleras (usa rampas y elevadores).
   RutaCalculada calcular({
-    required Espacio origen,
-    required Espacio destino,
+    required Lugar origen,
+    required Lugar destino,
     required bool accesible,
   }) {
     final vacio = RutaCalculada(
@@ -90,46 +79,47 @@ class MotorRutas {
       usaRampa: false,
     );
 
-    final idOrigen = origen.id.let((id) =>
-        _nodos.containsKey('n_$id') ? 'n_$id' : _nodoMasCercano(origen.punto));
-    final idDestino = destino.id.let((id) =>
-        _nodos.containsKey('n_$id') ? 'n_$id' : _nodoMasCercano(destino.punto));
+    final idOrigen = _nodos.containsKey('n_${origen.id}')
+        ? 'n_${origen.id}'
+        : _nodoMasCercano(origen.punto);
+    final idDestino = _nodos.containsKey('n_${destino.id}')
+        ? 'n_${destino.id}'
+        : _nodoMasCercano(destino.punto);
     if (idOrigen == null || idDestino == null) return vacio;
+    if (idOrigen == idDestino) return vacio;
 
     final dist = <String, double>{idOrigen: 0};
     final prev = <String, String>{};
     final visit = <String>{};
-    final cola = PriorityQueue<_Item>((a, b) => a.d.compareTo(b.d))
-      ..add(_Item(idOrigen, 0));
+    final cola = _MinHeap()..add(idOrigen, 0);
 
     while (cola.isNotEmpty) {
-      final actual = cola.removeFirst();
-      if (!visit.add(actual.id)) continue;
-      if (actual.id == idDestino) break;
-
-      for (final arista in _ady[actual.id] ?? const <AristaRuta>[]) {
+      final actual = cola.removeMin();
+      if (!visit.add(actual)) continue;
+      if (actual == idDestino) break;
+      final na = _nodos[actual]!;
+      for (final arista in _ady[actual] ?? const <AristaRuta>[]) {
         if (accesible && !arista.esAccesible) continue;
-        final na = _nodos[actual.id]!;
         final nb = _nodos[arista.b];
         if (nb == null) continue;
-        // Penaliza cambios de nivel para que la ruta prefiera un solo piso.
-        final penal = arista.tipo == TipoArista.escalera ||
-                arista.tipo == TipoArista.rampa ||
-                arista.tipo == TipoArista.elevador
-            ? 12.0
-            : 0.0;
-        final nd = actual.d + na.punto.distanciaA(nb.punto) + penal;
+        final penal = switch (arista.tipo) {
+          TipoArista.escalera ||
+          TipoArista.rampa ||
+          TipoArista.elevador =>
+            15.0,
+          _ => 0.0,
+        };
+        final nd = dist[actual]! + na.punto.distanciaA(nb.punto) + penal;
         if (nd < (dist[arista.b] ?? double.infinity)) {
           dist[arista.b] = nd;
-          prev[arista.b] = actual.id;
-          cola.add(_Item(arista.b, nd));
+          prev[arista.b] = actual;
+          cola.add(arista.b, nd);
         }
       }
     }
 
-    if (!prev.containsKey(idDestino) && idOrigen != idDestino) return vacio;
+    if (!prev.containsKey(idDestino)) return vacio;
 
-    // Reconstruye el camino.
     final ids = <String>[idDestino];
     var cur = idDestino;
     while (cur != idOrigen) {
@@ -142,10 +132,15 @@ class MotorRutas {
     final nodos = ids.map((id) => _nodos[id]!).toList();
     var usaEsc = false, usaElev = false, usaRampa = false;
     for (var i = 0; i < ids.length - 1; i++) {
-      final t = _tipoEntre(ids[i], ids[i + 1]);
-      if (t == TipoArista.escalera) usaEsc = true;
-      if (t == TipoArista.elevador) usaElev = true;
-      if (t == TipoArista.rampa) usaRampa = true;
+      switch (_tipoEntre(ids[i], ids[i + 1])) {
+        case TipoArista.escalera:
+          usaEsc = true;
+        case TipoArista.elevador:
+          usaElev = true;
+        case TipoArista.rampa:
+          usaRampa = true;
+        default:
+      }
     }
 
     return RutaCalculada(
@@ -166,23 +161,23 @@ class MotorRutas {
     return null;
   }
 
-  /// Convierte la ruta en pasos legibles para mostrar en la UI.
+  /// Pasos legibles de la ruta.
   List<PasoRuta> describir(
     RutaCalculada r, {
-    required Espacio origen,
-    required Espacio destino,
+    required Lugar origen,
+    required Lugar destino,
   }) {
     if (r.sinRuta || r.nodos.length < 2) return const [];
     final pasos = <PasoRuta>[
-      PasoRuta(Icons.trip_origin, 'Sales de ${origen.titulo}'),
+      PasoRuta(Icons.trip_origin, 'Sales de ${origen.nombre}'),
     ];
 
     var caminado = 0.0;
-    void volcarCaminata() {
-      if (caminado > 4) {
+    void volcar() {
+      if (caminado > 8) {
         pasos.add(PasoRuta(
           Icons.directions_walk,
-          'Caminas ${caminado.round()} m',
+          'Caminas ${caminado.round()} m por el campus',
         ));
       }
       caminado = 0;
@@ -190,35 +185,27 @@ class MotorRutas {
 
     for (var i = 0; i < r.nodos.length - 1; i++) {
       final a = r.nodos[i], b = r.nodos[i + 1];
-      final tipo = _tipoEntre(a.id, b.id) ?? TipoArista.pasillo;
+      final tipo = _tipoEntre(a.id, b.id) ?? TipoArista.exterior;
       final d = a.punto.distanciaA(b.punto);
       switch (tipo) {
-        case TipoArista.exterior:
-        case TipoArista.pasillo:
-        case TipoArista.puerta:
-          caminado += d;
         case TipoArista.escalera:
-          volcarCaminata();
-          final sube = b.nivel > a.nivel;
-          pasos.add(PasoRuta(
-            Icons.stairs_outlined,
-            '${sube ? 'Subes' : 'Bajas'} por la escalera a ${etiquetaNivel(b.nivel)}',
-          ));
+          volcar();
+          pasos.add(
+              const PasoRuta(Icons.stairs_outlined, 'Subes por la escalinata'));
         case TipoArista.rampa:
-          volcarCaminata();
-          pasos.add(const PasoRuta(Icons.accessible, 'Tomas la rampa de acceso'));
+          volcar();
+          pasos.add(
+              const PasoRuta(Icons.accessible, 'Tomas la rampa de acceso'));
         case TipoArista.elevador:
-          volcarCaminata();
-          if (b.nivel != a.nivel) {
-            pasos.add(PasoRuta(
-              Icons.elevator_outlined,
-              'Tomas el elevador a ${etiquetaNivel(b.nivel)}',
-            ));
-          }
+          volcar();
+          pasos.add(
+              const PasoRuta(Icons.elevator_outlined, 'Tomas el elevador'));
+        default:
+          caminado += d;
       }
     }
-    volcarCaminata();
-    pasos.add(PasoRuta(Icons.place, 'Llegas a ${destino.titulo}'));
+    volcar();
+    pasos.add(PasoRuta(Icons.place, 'Llegas a ${destino.nombre}'));
     return pasos;
   }
 }
@@ -230,61 +217,47 @@ class PasoRuta {
   final String texto;
 }
 
-class _Item {
-  _Item(this.id, this.d);
-  final String id;
-  final double d;
-}
+/// Min-heap sobre (nodeId, dist). Permite entradas duplicadas; el visitado
+/// se filtra en el bucle principal.
+class _MinHeap {
+  final List<(String, double)> _h = [];
 
-/// Cola de prioridad mínima (binary heap). Evita depender de `package:collection`
-/// para esto y mantiene el motor autocontenido.
-class PriorityQueue<E> {
-  PriorityQueue(this._compare);
-
-  final int Function(E, E) _compare;
-  final List<E> _heap = [];
-
-  bool get isNotEmpty => _heap.isNotEmpty;
-
-  void add(E value) {
-    _heap.add(value);
-    var i = _heap.length - 1;
-    while (i > 0) {
-      final parent = (i - 1) >> 1;
-      if (_compare(_heap[i], _heap[parent]) >= 0) break;
-      _swap(i, parent);
-      i = parent;
-    }
-  }
-
-  E removeFirst() {
-    final first = _heap.first;
-    final last = _heap.removeLast();
-    if (_heap.isNotEmpty) {
-      _heap[0] = last;
-      var i = 0;
-      final n = _heap.length;
-      while (true) {
-        final l = 2 * i + 1;
-        final r = 2 * i + 2;
-        var smallest = i;
-        if (l < n && _compare(_heap[l], _heap[smallest]) < 0) smallest = l;
-        if (r < n && _compare(_heap[r], _heap[smallest]) < 0) smallest = r;
-        if (smallest == i) break;
-        _swap(i, smallest);
-        i = smallest;
-      }
-    }
-    return first;
-  }
+  bool get isNotEmpty => _h.isNotEmpty;
 
   void _swap(int a, int b) {
-    final t = _heap[a];
-    _heap[a] = _heap[b];
-    _heap[b] = t;
+    final t = _h[a];
+    _h[a] = _h[b];
+    _h[b] = t;
   }
-}
 
-extension<T> on T {
-  R let<R>(R Function(T) f) => f(this);
+  void add(String id, double d) {
+    _h.add((id, d));
+    var i = _h.length - 1;
+    while (i > 0) {
+      final p = (i - 1) >> 1;
+      if (_h[i].$2 >= _h[p].$2) break;
+      _swap(i, p);
+      i = p;
+    }
+  }
+
+  String removeMin() {
+    final top = _h.first;
+    final last = _h.removeLast();
+    if (_h.isNotEmpty) {
+      _h[0] = last;
+      var i = 0;
+      final n = _h.length;
+      while (true) {
+        final l = 2 * i + 1, rr = 2 * i + 2;
+        var m = i;
+        if (l < n && _h[l].$2 < _h[m].$2) m = l;
+        if (rr < n && _h[rr].$2 < _h[m].$2) m = rr;
+        if (m == i) break;
+        _swap(i, m);
+        i = m;
+      }
+    }
+    return top.$1;
+  }
 }

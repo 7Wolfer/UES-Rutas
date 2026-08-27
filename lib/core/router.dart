@@ -6,90 +6,101 @@ import '../design_system/catalogo_screen.dart';
 import '../features/ajustes/ajustes_screen.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/busqueda/busqueda_screen.dart';
+import '../features/credencializacion/credencializacion_screen.dart';
 import '../features/docente/docente_screen.dart';
 import '../features/espacio/espacio_screen.dart';
-import '../features/inicio/inicio_screen.dart';
-import '../features/mapa/mapa_screen.dart';
+import '../features/home/mapa_home_screen.dart';
+import '../features/notificaciones/notificaciones_ajustes_screen.dart';
+import '../features/notificaciones/notificaciones_screen.dart';
 import '../features/ruta/ruta_screen.dart';
-import '../features/shell/scaffold_con_nav.dart';
 
-final _rootKey = GlobalKey<NavigatorState>();
+CustomTransitionPage<void> _fade(Widget child, GoRouterState state) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: const Duration(milliseconds: 240),
+    transitionsBuilder: (context, animation, _, child) {
+      final curved =
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+      return FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 0.03),
+            end: Offset.zero,
+          ).animate(curved),
+          child: child,
+        ),
+      );
+    },
+  );
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    navigatorKey: _rootKey,
-    initialLocation: '/inicio',
+    initialLocation: '/',
     routes: [
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) =>
-            ScaffoldConNav(navigationShell: navigationShell),
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/inicio',
-                builder: (context, state) => const InicioScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/mapa',
-                builder: (context, state) => const MapaScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/ajustes',
-                builder: (context, state) => const AjustesScreen(),
-              ),
-            ],
+      GoRoute(
+        path: '/',
+        pageBuilder: (c, s) => _fade(const MapaHomeScreen(), s),
+      ),
+      GoRoute(
+        path: '/notificaciones',
+        pageBuilder: (c, s) => _fade(const NotificacionesScreen(), s),
+        routes: [
+          GoRoute(
+            path: 'ajustes',
+            pageBuilder: (c, s) =>
+                _fade(const NotificacionesAjustesScreen(), s),
           ),
         ],
       ),
       GoRoute(
+        path: '/credencializacion',
+        pageBuilder: (c, s) => _fade(const CredencializacionScreen(), s),
+      ),
+      GoRoute(
+        path: '/ajustes',
+        pageBuilder: (c, s) => _fade(const AjustesScreen(), s),
+      ),
+      GoRoute(
+        path: '/auth',
+        pageBuilder: (c, s) => _fade(const AuthScreen(), s),
+      ),
+      GoRoute(
         path: '/buscar',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) => BusquedaScreen(
-          consultaInicial: state.uri.queryParameters['q'],
+        pageBuilder: (c, s) => _fade(
+          BusquedaScreen(consultaInicial: s.uri.queryParameters['q']),
+          s,
         ),
       ),
       GoRoute(
         path: '/espacio/:id',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) =>
-            EspacioScreen(id: state.pathParameters['id']!),
+        pageBuilder: (c, s) =>
+            _fade(EspacioScreen(id: s.pathParameters['id']!), s),
       ),
       GoRoute(
         path: '/docente/:id',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) =>
-            DocenteScreen(id: state.pathParameters['id']!),
+        pageBuilder: (c, s) =>
+            _fade(DocenteScreen(id: s.pathParameters['id']!), s),
       ),
       GoRoute(
         path: '/ruta',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) {
-          final q = state.uri.queryParameters;
-          return RutaScreen(
-            destinoId: q['destino'] ?? 'esp_edif_a',
-            origenId: q['origen'] ?? 'esp_acceso',
-            accesibleInicial: q['accesible'] == '1',
+        pageBuilder: (c, s) {
+          final q = s.uri.queryParameters;
+          return _fade(
+            RutaScreen(
+              destinoId: q['destino'] ?? 'lug_acceso_principal',
+              origenId: q['origen'] ?? 'lug_acceso_principal',
+              accesibleInicial: q['accesible'] == '1',
+            ),
+            s,
           );
         },
       ),
       GoRoute(
         path: '/catalogo',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) => const CatalogoScreen(),
-      ),
-      GoRoute(
-        path: '/auth',
-        parentNavigatorKey: _rootKey,
-        builder: (context, state) => const AuthScreen(),
+        pageBuilder: (c, s) => _fade(const CatalogoScreen(), s),
       ),
     ],
   );

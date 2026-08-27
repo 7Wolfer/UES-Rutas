@@ -15,24 +15,22 @@ class SeedCampusRepository implements CampusRepository {
 
   @override
   Future<CampusData> cargar() async {
-    final results = await Future.wait([
-      rootBundle.loadString('assets/seed/edificios.json'),
-      rootBundle.loadString('assets/seed/espacios.json'),
+    final r = await Future.wait([
+      rootBundle.loadString('assets/seed/campus.json'),
+      rootBundle.loadString('assets/seed/lugares.json'),
       rootBundle.loadString('assets/seed/docentes.json'),
       rootBundle.loadString('assets/seed/rutas.json'),
     ]);
 
-    final edificios = (jsonDecode(results[0]) as List)
-        .map((e) => Edificio.fromJson(e as Map<String, dynamic>))
+    final info = CampusInfo.fromJson(jsonDecode(r[0]) as Map<String, dynamic>);
+    final lugares = (jsonDecode(r[1]) as List)
+        .map((e) => Lugar.fromJson(e as Map<String, dynamic>))
         .toList();
-    final espacios = (jsonDecode(results[1]) as List)
-        .map((e) => Espacio.fromJson(e as Map<String, dynamic>))
-        .toList();
-    final docentes = (jsonDecode(results[2]) as List)
+    final docentes = (jsonDecode(r[2]) as List)
         .map((e) => Docente.fromJson(e as Map<String, dynamic>))
         .toList();
 
-    final grafo = jsonDecode(results[3]) as Map<String, dynamic>;
+    final grafo = jsonDecode(r[3]) as Map<String, dynamic>;
     final nodos = (grafo['nodos'] as List)
         .map((e) => NodoRuta.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -41,8 +39,8 @@ class SeedCampusRepository implements CampusRepository {
         .toList();
 
     return CampusData(
-      edificios: edificios,
-      espacios: espacios,
+      info: info,
+      lugares: lugares,
       docentes: docentes,
       nodos: nodos,
       aristas: aristas,

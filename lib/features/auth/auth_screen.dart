@@ -30,7 +30,7 @@ class _AuthScreenState extends State<AuthScreen> {
     if (!AppConfig.supabaseConfigurado) {
       setState(() => _mensaje =
           'Supabase no está configurado. Corre la app con --dart-define de '
-          'SUPABASE_URL y SUPABASE_ANON_KEY.');
+              'SUPABASE_URL y SUPABASE_ANON_KEY.');
       return;
     }
     setState(() {
@@ -42,8 +42,8 @@ class _AuthScreenState extends State<AuthScreen> {
         email: _email.text.trim(),
         shouldCreateUser: true,
       );
-      setState(() => _mensaje =
-          'Te enviamos un enlace / código a ${_email.text.trim()}.');
+      setState(() =>
+          _mensaje = 'Te enviamos un enlace / código a ${_email.text.trim()}.');
     } on AuthException catch (e) {
       setState(() => _mensaje = e.message);
     } catch (e) {

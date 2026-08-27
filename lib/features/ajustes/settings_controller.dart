@@ -13,21 +13,39 @@ class Settings {
     this.themeMode = ThemeMode.system,
     this.textScale = 1.0,
     this.highContrast = false,
+    this.notificaciones = true,
+    this.avisarImportantes = true,
+    this.avisarEventos = true,
+    this.avisarRutas = true,
   });
 
   final ThemeMode themeMode;
   final double textScale;
   final bool highContrast;
 
+  /// Notificaciones locales activadas.
+  final bool notificaciones;
+  final bool avisarImportantes;
+  final bool avisarEventos;
+  final bool avisarRutas;
+
   Settings copyWith({
     ThemeMode? themeMode,
     double? textScale,
     bool? highContrast,
+    bool? notificaciones,
+    bool? avisarImportantes,
+    bool? avisarEventos,
+    bool? avisarRutas,
   }) =>
       Settings(
         themeMode: themeMode ?? this.themeMode,
         textScale: textScale ?? this.textScale,
         highContrast: highContrast ?? this.highContrast,
+        notificaciones: notificaciones ?? this.notificaciones,
+        avisarImportantes: avisarImportantes ?? this.avisarImportantes,
+        avisarEventos: avisarEventos ?? this.avisarEventos,
+        avisarRutas: avisarRutas ?? this.avisarRutas,
       );
 }
 
@@ -35,6 +53,10 @@ class SettingsController extends Notifier<Settings> {
   static const _kTheme = 'ajustes.themeMode';
   static const _kScale = 'ajustes.textScale';
   static const _kContrast = 'ajustes.highContrast';
+  static const _kNotif = 'ajustes.notificaciones';
+  static const _kImp = 'ajustes.avisarImportantes';
+  static const _kEve = 'ajustes.avisarEventos';
+  static const _kRut = 'ajustes.avisarRutas';
 
   SharedPreferences get _prefs => ref.read(sharedPrefsProvider);
 
@@ -42,12 +64,14 @@ class SettingsController extends Notifier<Settings> {
   Settings build() {
     final p = _prefs;
     return Settings(
-      themeMode: ThemeMode.values.byNameOr(
-        p.getString(_kTheme),
-        ThemeMode.system,
-      ),
+      themeMode:
+          ThemeMode.values.byNameOr(p.getString(_kTheme), ThemeMode.system),
       textScale: p.getDouble(_kScale) ?? 1.0,
       highContrast: p.getBool(_kContrast) ?? false,
+      notificaciones: p.getBool(_kNotif) ?? true,
+      avisarImportantes: p.getBool(_kImp) ?? true,
+      avisarEventos: p.getBool(_kEve) ?? true,
+      avisarRutas: p.getBool(_kRut) ?? true,
     );
   }
 
@@ -65,6 +89,26 @@ class SettingsController extends Notifier<Settings> {
   Future<void> setHighContrast(bool value) async {
     state = state.copyWith(highContrast: value);
     await _prefs.setBool(_kContrast, value);
+  }
+
+  Future<void> setNotificaciones(bool value) async {
+    state = state.copyWith(notificaciones: value);
+    await _prefs.setBool(_kNotif, value);
+  }
+
+  Future<void> setAvisarImportantes(bool v) async {
+    state = state.copyWith(avisarImportantes: v);
+    await _prefs.setBool(_kImp, v);
+  }
+
+  Future<void> setAvisarEventos(bool v) async {
+    state = state.copyWith(avisarEventos: v);
+    await _prefs.setBool(_kEve, v);
+  }
+
+  Future<void> setAvisarRutas(bool v) async {
+    state = state.copyWith(avisarRutas: v);
+    await _prefs.setBool(_kRut, v);
   }
 }
 
