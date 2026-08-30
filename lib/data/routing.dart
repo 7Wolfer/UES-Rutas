@@ -12,13 +12,19 @@ class RutaCalculada {
     required this.usaEscaleras,
     required this.usaElevador,
     required this.usaRampa,
+    this.aproxOrigen = 0,
   });
 
   final List<NodoRuta> nodos;
   final List<Punto> puntos;
 
-  /// Distancia total en metros.
+  /// Distancia total en metros (incluye el tramo de aproximación en cada extremo).
   final double distancia;
+
+  /// Metros entre el origen real y el primer nodo del camino. Útil cuando el
+  /// origen es la ubicación del usuario y queda lejos de la red peatonal.
+  final double aproxOrigen;
+
   final bool accesible;
   final bool usaEscaleras;
   final bool usaElevador;
@@ -143,10 +149,14 @@ class MotorRutas {
       }
     }
 
+    final aproxOrigen = origen.punto.distanciaA(nodos.first.punto);
+    final aproxDestino = destino.punto.distanciaA(nodos.last.punto);
+
     return RutaCalculada(
       nodos: nodos,
-      puntos: nodos.map((n) => n.punto).toList(),
-      distancia: dist[idDestino] ?? 0,
+      puntos: [origen.punto, ...nodos.map((n) => n.punto), destino.punto],
+      distancia: (dist[idDestino] ?? 0) + aproxOrigen + aproxDestino,
+      aproxOrigen: aproxOrigen,
       accesible: accesible,
       usaEscaleras: usaEsc,
       usaElevador: usaElev,

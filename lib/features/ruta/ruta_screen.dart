@@ -6,7 +6,9 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/routing.dart';
 import '../../design_system/widgets.dart';
+import '../../services/ubicacion_service.dart';
 import '../mapa/mapa_campus.dart';
+import 'selector_origen.dart';
 
 class RutaScreen extends ConsumerStatefulWidget {
   const RutaScreen({
@@ -27,12 +29,38 @@ class RutaScreen extends ConsumerStatefulWidget {
 class _RutaScreenState extends ConsumerState<RutaScreen> {
   final _map = MapController();
   late bool _accesible = widget.accesibleInicial;
+  late String _origenId = widget.origenId;
+
+  @override
+  void initState() {
+    super.initState();
+    _quizaUsarMiUbicacion();
+  }
+
+  /// Si el llamador no eligió un origen y ya hay permiso de ubicación concedido,
+  /// usa la posición del usuario como origen. No dispara ningún diálogo.
+  Future<void> _quizaUsarMiUbicacion() async {
+    if (widget.origenId != 'lug_acceso_principal') return;
+    if (!await UbicacionService.instance.permisoConcedido()) return;
+    if (!mounted) return;
+    final r = await ref.read(posicionUsuarioProvider.notifier).localizar();
+    if (!mounted || !r.exito) return;
+    setState(() => _origenId = Lugar.idMiUbicacion);
+  }
+
+  Future<void> _editarOrigen(CampusData campus) async {
+    final elegido = await mostrarSelectorOrigen(
+      context,
+      campus: campus,
+      destinoId: widget.destinoId,
+    );
+    if (elegido != null && mounted) setState(() => _origenId = elegido);
+  }
 
   @override
   Widget build(BuildContext context) {
     final data = ref.watch(campusDataProvider);
     final motor = ref.watch(motorRutasProvider);
-    final cs = Theme.of(context).colorScheme;
     final oscuro = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -42,7 +70,12 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
         error: (e, _) => EstadoVacio(
             icono: Icons.error_outline, titulo: 'Error', descripcion: '$e'),
         data: (campus) {
-          final origen = campus.lugar(widget.origenId);
+          final pos = ref.watch(posicionUsuarioProvider);
+          final origen = _origenId == Lugar.idMiUbicacion
+              ? (pos != null
+                  ? Lugar.miUbicacion(pos)
+                  : campus.lugar('lug_acceso_principal'))
+              : campus.lugar(_origenId);
           final destino = campus.lugar(widget.destinoId);
           if (origen == null || destino == null || motor == null) {
             return const EstadoVacio(
@@ -51,12 +84,11 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
             );
           }
 
-          final ruta = motor.calcular(
-            origen: origen,
-            destino: destino,
-            accesible: _accesible,
-          );
-          final pasos = motor.describir(ruta, origen: origen, destino: destino);
+          final mismoLugar = origen.id == destino.id;
+          final ruta = mismoLugar
+              ? null
+              : motor.calcular(
+                  origen: origen, destino: destino, accesible: _accesible);
 
           return Column(
             children: [
@@ -74,60 +106,27 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
                   children: [
-                    _OrigenDestino(origen: origen, destino: destino),
+                    _OrigenDestino(
+                      origen: origen,
+                      destino: destino,
+                      onEditarOrigen: () => _editarOrigen(campus),
+                    ),
                     const SizedBox(height: 14),
-                    if (ruta.sinRuta)
+                    if (mismoLugar)
+                      const EstadoVacio(
+                        icono: Icons.place_outlined,
+                        titulo: 'Ya estás en tu destino',
+                      )
+                    else if (ruta!.sinRuta)
                       const EstadoVacio(
                         icono: Icons.error_outline,
                         titulo: 'Sin ruta disponible',
                         descripcion:
-                            'No hay un camino en el grafo de prueba entre estos '
-                            'dos puntos.',
+                            'No encontramos un camino peatonal entre estos dos '
+                            'puntos.',
                       )
-                    else ...[
-                      Row(
-                        children: [
-                          _Metrica(
-                            icono: Icons.straighten,
-                            valor: '${ruta.distancia.round()} m',
-                            etiqueta: 'Distancia',
-                          ),
-                          const SizedBox(width: 12),
-                          _Metrica(
-                            icono: Icons.schedule,
-                            valor: '${ruta.duracionEstimada.inMinutes} min',
-                            etiqueta: 'Caminando',
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        value: _accesible,
-                        onChanged: (v) => setState(() => _accesible = v),
-                        title: const Text('Ruta accesible'),
-                        subtitle: Text(
-                          'Evita escalones; prioriza rampas.',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: cs.onSurfaceVariant),
-                        ),
-                        secondary: const Icon(Icons.accessible),
-                      ),
-                      if (_accesible && ruta.usaRampa)
-                        const _Aviso(
-                            'Ruta sin escalones · usa rampa de acceso.'),
-                      if (!_accesible && ruta.usaEscaleras)
-                        const _Aviso(
-                          'Esta ruta incluye un escalón. Activa "Ruta accesible" '
-                          'para una alternativa.',
-                        ),
-                      const SizedBox(height: 16),
-                      const EncabezadoSeccion('Indicaciones'),
-                      const SizedBox(height: 4),
-                      ..._pasos(context, pasos),
-                    ],
+                    else
+                      ..._detalleRuta(context, motor, origen, destino, ruta),
                   ],
                 ),
               ),
@@ -136,6 +135,65 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
         },
       ),
     );
+  }
+
+  List<Widget> _detalleRuta(
+    BuildContext context,
+    MotorRutas motor,
+    Lugar origen,
+    Lugar destino,
+    RutaCalculada ruta,
+  ) {
+    final cs = Theme.of(context).colorScheme;
+    final pasos = motor.describir(ruta, origen: origen, destino: destino);
+    return [
+      Row(
+        children: [
+          _Metrica(
+            icono: Icons.straighten,
+            valor: '${ruta.distancia.round()} m',
+            etiqueta: 'Distancia',
+          ),
+          const SizedBox(width: 12),
+          _Metrica(
+            icono: Icons.schedule,
+            valor: '${ruta.duracionEstimada.inMinutes} min',
+            etiqueta: 'Caminando',
+          ),
+        ],
+      ),
+      if (_origenId == Lugar.idMiUbicacion && ruta.aproxOrigen > 150)
+        _Aviso(
+          'Estás a ${ruta.aproxOrigen.round()} m del camino más cercano del '
+          'campus; la ruta continúa desde ahí.',
+        ),
+      const SizedBox(height: 16),
+      SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        value: _accesible,
+        onChanged: (v) => setState(() => _accesible = v),
+        title: const Text('Ruta accesible'),
+        subtitle: Text(
+          'Evita escalones; prioriza rampas.',
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.copyWith(color: cs.onSurfaceVariant),
+        ),
+        secondary: const Icon(Icons.accessible),
+      ),
+      if (_accesible && ruta.usaRampa)
+        const _Aviso('Ruta sin escalones · usa rampa de acceso.'),
+      if (!_accesible && ruta.usaEscaleras)
+        const _Aviso(
+          'Esta ruta incluye un escalón. Activa "Ruta accesible" para una '
+          'alternativa.',
+        ),
+      const SizedBox(height: 16),
+      const EncabezadoSeccion('Indicaciones'),
+      const SizedBox(height: 4),
+      ..._pasos(context, pasos),
+    ];
   }
 
   List<Widget> _pasos(BuildContext context, List<PasoRuta> pasos) {
@@ -178,27 +236,59 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
 }
 
 class _OrigenDestino extends StatelessWidget {
-  const _OrigenDestino({required this.origen, required this.destino});
+  const _OrigenDestino({
+    required this.origen,
+    required this.destino,
+    required this.onEditarOrigen,
+  });
   final Lugar origen;
   final Lugar destino;
+  final VoidCallback onEditarOrigen;
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return TarjetaUes(
+      padding: EdgeInsets.zero,
       child: Column(
         children: [
-          _fila(context, Icons.trip_origin, 'Desde', origen.nombre),
-          const Padding(
-            padding: EdgeInsets.only(left: 9),
-            child: SizedBox(height: 14, child: VerticalDivider(width: 2)),
+          InkWell(
+            onTap: onEditarOrigen,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 12, 8),
+              child: _fila(
+                context,
+                Icons.trip_origin,
+                'Desde',
+                origen.nombre,
+                trailing:
+                    Icon(Icons.edit_outlined, size: 18, color: cs.primary),
+              ),
+            ),
           ),
-          _fila(context, Icons.place, 'Hasta', destino.nombre),
+          Padding(
+            padding: const EdgeInsets.only(left: 25),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                height: 12,
+                child: VerticalDivider(width: 2, color: cs.outlineVariant),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+            child: _fila(context, Icons.place, 'Hasta', destino.nombre),
+          ),
         ],
       ),
     );
   }
 
-  Widget _fila(BuildContext context, IconData i, String label, String value) {
+  Widget _fila(BuildContext context, IconData i, String label, String value,
+      {Widget? trailing}) {
     return Row(
       children: [
         Icon(i, size: 20, color: Theme.of(context).colorScheme.primary),
@@ -212,6 +302,7 @@ class _OrigenDestino extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall,
               overflow: TextOverflow.ellipsis),
         ),
+        if (trailing != null) trailing,
       ],
     );
   }

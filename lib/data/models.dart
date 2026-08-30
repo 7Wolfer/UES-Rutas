@@ -46,6 +46,18 @@ class Lugar {
     this.poligono,
   });
 
+  /// Id del origen sintético "mi ubicación" (no existe en el catálogo).
+  static const String idMiUbicacion = '__mi_ubicacion';
+
+  /// Origen efímero para trazar una ruta desde la posición del usuario.
+  factory Lugar.miUbicacion(LatLng pos) => Lugar(
+        id: idMiUbicacion,
+        nombre: 'Mi ubicación',
+        categoria: CategoriaMapa.servicios,
+        punto: Punto(pos.latitude, pos.longitude),
+        accesible: true,
+      );
+
   final String id;
   final String nombre;
   final String? nombreCorto;

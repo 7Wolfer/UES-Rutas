@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../features/ajustes/settings_controller.dart';
+import '../services/ubicacion_service.dart';
 import 'avisos.dart';
 import 'busqueda.dart';
 import 'calendario.dart';
@@ -22,6 +24,29 @@ final motorRutasProvider = Provider<MotorRutas?>((ref) {
   final data = ref.watch(campusDataProvider).valueOrNull;
   return data == null ? null : MotorRutas(data);
 });
+
+// --- Ubicación del usuario ---
+
+final ubicacionServiceProvider =
+    Provider<UbicacionService>((ref) => UbicacionService.instance);
+
+/// Última posición conocida del usuario (`null` hasta que se localiza una vez).
+class PosicionUsuarioNotifier extends Notifier<LatLng?> {
+  @override
+  LatLng? build() => null;
+
+  /// Pide la ubicación (puede disparar el diálogo del sistema) y la guarda si
+  /// tuvo éxito. Devuelve el resultado completo para que la UI muestre errores.
+  Future<UbicacionResultado> localizar() async {
+    final r = await ref.read(ubicacionServiceProvider).localizar();
+    if (r.exito) state = r.posicion;
+    return r;
+  }
+}
+
+final posicionUsuarioProvider =
+    NotifierProvider<PosicionUsuarioNotifier, LatLng?>(
+        PosicionUsuarioNotifier.new);
 
 // --- Búsqueda ---
 

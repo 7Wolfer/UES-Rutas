@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:ues_rutas/data/busqueda.dart';
 import 'package:ues_rutas/data/campus_repository.dart';
 import 'package:ues_rutas/data/models.dart';
@@ -118,6 +119,37 @@ void main() {
           expect(r.sinRuta, isFalse, reason: 'sin ruta $a → $b');
         }
       }
+    });
+  });
+
+  group('ruta desde la ubicación del usuario', () {
+    test('traza ruta desde un punto arbitrario y la nombra "Mi ubicación"', () {
+      final origen = Lugar.miUbicacion(const LatLng(29.1214, -110.9625));
+      final destino = data.lugar('lug_aula_magna_biblioteca')!;
+      final ruta =
+          motor.calcular(origen: origen, destino: destino, accesible: false);
+
+      expect(ruta.sinRuta, isFalse);
+      expect(ruta.distancia, greaterThan(0));
+      // La polilínea arranca exactamente en el punto real del usuario.
+      expect(ruta.puntos.first.lat, origen.punto.lat);
+      expect(ruta.puntos.first.lng, origen.punto.lng);
+
+      final pasos = motor.describir(ruta, origen: origen, destino: destino);
+      expect(pasos.first.texto, contains('Mi ubicación'));
+    });
+
+    test('aproxOrigen refleja la distancia a la red peatonal', () {
+      // ~700 m al sur del campus: lejos de cualquier nodo del grafo.
+      final lejos = Lugar.miUbicacion(const LatLng(29.1150, -110.9625));
+      final destino = data.lugar('lug_aula_magna_biblioteca')!;
+      final ruta =
+          motor.calcular(origen: lejos, destino: destino, accesible: false);
+
+      expect(ruta.sinRuta, isFalse);
+      expect(ruta.aproxOrigen, greaterThan(150));
+      // La distancia total incluye ese tramo de aproximación.
+      expect(ruta.distancia, greaterThan(ruta.aproxOrigen));
     });
   });
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../../core/app_drawer.dart';
 import '../../data/avisos.dart';
@@ -23,7 +22,6 @@ class MapaHomeScreen extends ConsumerStatefulWidget {
 class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
   final _map = MapController();
   final _sheetKey = GlobalKey<HomeSheetState>();
-  LatLng? _posUsuario;
   bool _buscandoUbicacion = false;
 
   void _centrarEn(Lugar l) {
@@ -32,19 +30,43 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
 
   Future<void> _miUbicacion() async {
     setState(() => _buscandoUbicacion = true);
-    final pos = await UbicacionService.instance.posicionActual();
+    final r = await ref.read(posicionUsuarioProvider.notifier).localizar();
     if (!mounted) return;
-    setState(() {
-      _buscandoUbicacion = false;
-      _posUsuario = pos;
-    });
-    if (pos != null) {
-      _map.move(pos, 17.5);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('No se pudo obtener tu ubicación. Revisa los permisos.'),
-      ));
+    setState(() => _buscandoUbicacion = false);
+    if (r.exito) {
+      _map.move(r.posicion!, 17.5);
+      return;
     }
+    final (String texto, bool ajustes) = switch (r.estado) {
+      EstadoUbicacion.servicioApagado => (
+          'Activa la ubicación del dispositivo para verte en el mapa.',
+          true,
+        ),
+      EstadoUbicacion.permisoBloqueado => (
+          'El permiso de ubicación está bloqueado. Actívalo en los ajustes.',
+          true,
+        ),
+      EstadoUbicacion.permisoDenegado => (
+          'Necesitas permitir el acceso a tu ubicación.',
+          false,
+        ),
+      _ => ('No se pudo obtener tu ubicación. Intenta de nuevo.', false),
+    };
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(texto),
+      action: ajustes
+          ? SnackBarAction(
+              label: 'Ajustes',
+              onPressed: () {
+                if (r.estado == EstadoUbicacion.servicioApagado) {
+                  UbicacionService.instance.abrirAjustesUbicacion();
+                } else {
+                  UbicacionService.instance.abrirAjustesApp();
+                }
+              },
+            )
+          : null,
+    ));
   }
 
   @override
@@ -77,7 +99,7 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
                 controller: _map,
                 estilo: estilo,
                 oscuro: oscuro,
-                posicionUsuario: _posUsuario,
+                posicionUsuario: ref.watch(posicionUsuarioProvider),
                 onTapLugar: (l) {
                   ref.read(lugarSeleccionadoProvider.notifier).state = l.id;
                   _centrarEn(l);
