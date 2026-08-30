@@ -41,7 +41,8 @@ class DocenteScreen extends ConsumerWidget {
         }
         final oficina = campus.lugar(d.oficinaLugarId);
         final porDia = <int, List<Asignacion>>{};
-        for (final a in d.asignaciones) {
+        for (final a in [...d.asignaciones]
+          ..sort((x, y) => x.horaInicio.compareTo(y.horaInicio))) {
           porDia.putIfAbsent(a.dia, () => []).add(a);
         }
         final dias = porDia.keys.toList()..sort();
@@ -64,7 +65,8 @@ class DocenteScreen extends ConsumerWidget {
             ],
           ),
           body: ListView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+            padding: EdgeInsets.fromLTRB(
+                20, 12, 20, 32 + MediaQuery.viewPaddingOf(context).bottom),
             children: [
               Row(
                 children: [
@@ -113,12 +115,10 @@ class DocenteScreen extends ConsumerWidget {
                         ?.copyWith(color: cs.secondary),
                   ),
                 ),
-                ...(porDia[dia]!
-                      ..sort((a, b) => a.horaInicio.compareTo(b.horaInicio)))
-                    .map((a) => _FilaClase(
-                          asignacion: a,
-                          lugar: campus.lugar(a.lugarId),
-                        )),
+                ...porDia[dia]!.map((a) => _FilaClase(
+                      asignacion: a,
+                      lugar: campus.lugar(a.lugarId),
+                    )),
               ],
             ],
           ),

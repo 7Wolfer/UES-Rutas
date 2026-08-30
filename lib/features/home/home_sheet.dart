@@ -267,35 +267,11 @@ class _Directorio extends ConsumerWidget {
   final ScrollController scrollController;
   final ValueChanged<Lugar> onElegir;
 
-  static const _cats = [
-    CategoriaMapa.aula,
-    CategoriaMapa.biblioteca,
-    CategoriaMapa.alimentos,
-    CategoriaMapa.deportivo,
-    CategoriaMapa.servicios,
-    CategoriaMapa.estacionamiento,
-    CategoriaMapa.oficina,
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(campusDataProvider).valueOrNull;
-    if (data == null) {
+    final items = ref.watch(directorioProvider);
+    if (items.isEmpty) {
       return const Center(child: CircularProgressIndicator());
-    }
-
-    // Lista plana (encabezado de categoría o lugar) para render perezoso.
-    final porCat = <CategoriaMapa, List<Lugar>>{};
-    for (final l in data.lugares) {
-      porCat.putIfAbsent(l.categoria, () => []).add(l);
-    }
-    final items = <Object>[];
-    for (final cat in _cats) {
-      final lugares = porCat[cat];
-      if (lugares == null) continue;
-      lugares.sort((a, b) => a.nombre.compareTo(b.nombre));
-      items.add(cat);
-      items.addAll(lugares);
     }
 
     final cs = Theme.of(context).colorScheme;

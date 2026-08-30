@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import '../data/providers.dart';
 import '../design_system/widgets.dart';
 import '../features/atencion/atencion.dart';
-import 'brand.dart';
 import 'config.dart';
 
 class AppDrawer extends ConsumerWidget {
@@ -147,7 +146,7 @@ class _Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: UesBrand.vino),
+      leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
       title: Text(label, style: Theme.of(context).textTheme.titleSmall),
       trailing: trailing,
       onTap: onTap,

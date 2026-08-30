@@ -18,7 +18,8 @@ class AjustesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Ajustes')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        padding: EdgeInsets.fromLTRB(
+            20, 12, 20, 32 + MediaQuery.viewPaddingOf(context).bottom),
         children: [
           const EncabezadoSeccion('Accesibilidad y apariencia'),
           const SizedBox(height: 8),
@@ -128,8 +129,8 @@ class AjustesScreen extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             leading: Icon(Icons.info_outline),
             title: Text('Versión'),
-            subtitle:
-                Text('${AppConfig.nombreApp} 0.1.0 · avance de prácticas'),
+            subtitle: Text(
+                '${AppConfig.nombreApp} ${AppConfig.version} · avance de prácticas'),
           ),
         ],
       ),

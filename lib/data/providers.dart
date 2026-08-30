@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../core/brand.dart';
 import '../features/ajustes/settings_controller.dart';
 import '../services/ubicacion_service.dart';
 import 'avisos.dart';
@@ -65,6 +66,37 @@ final resultadosBusquedaProvider = Provider<List<ResultadoBusqueda>>((ref) {
   final q = ref.watch(consultaBusquedaProvider);
   if (data == null) return const [];
   return buscar(data, q);
+});
+
+/// Directorio pre-agrupado para la hoja de inicio: intercala encabezados de
+/// categoría (`CategoriaMapa`) y `Lugar`. Memorizado para no reagrupar/ordenar
+/// en cada build de la hoja.
+final directorioProvider = Provider<List<Object>>((ref) {
+  const cats = [
+    CategoriaMapa.aula,
+    CategoriaMapa.biblioteca,
+    CategoriaMapa.alimentos,
+    CategoriaMapa.deportivo,
+    CategoriaMapa.servicios,
+    CategoriaMapa.estacionamiento,
+    CategoriaMapa.oficina,
+  ];
+  final data = ref.watch(campusDataProvider).valueOrNull;
+  if (data == null) return const [];
+  final porCat = <CategoriaMapa, List<Lugar>>{};
+  for (final l in data.lugares) {
+    porCat.putIfAbsent(l.categoria, () => []).add(l);
+  }
+  final items = <Object>[];
+  for (final cat in cats) {
+    final lugares = porCat[cat];
+    if (lugares == null) continue;
+    lugares.sort((a, b) => a.nombre.compareTo(b.nombre));
+    items
+      ..add(cat)
+      ..addAll(lugares);
+  }
+  return items;
 });
 
 /// Lugar seleccionado en el mapa / hoja de inicio (`null` = ninguno).

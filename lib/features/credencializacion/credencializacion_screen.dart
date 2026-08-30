@@ -216,7 +216,13 @@ class _TabCalendario extends ConsumerStatefulWidget {
 }
 
 class _TabCalendarioState extends ConsumerState<_TabCalendario> {
-  DateTime _focused = DateTime(2026, 8, 26);
+  static final _primerDia = DateTime(2026, 1, 1);
+  static final _ultimoDia = DateTime(2027, 2, 28);
+  final _hoy = DateTime.now();
+
+  late DateTime _focused = _hoy.isBefore(_primerDia)
+      ? _primerDia
+      : (_hoy.isAfter(_ultimoDia) ? _ultimoDia : _hoy);
   DateTime? _selected;
 
   @override
@@ -241,7 +247,7 @@ class _TabCalendarioState extends ConsumerState<_TabCalendario> {
             TarjetaUes(
               child: Row(
                 children: [
-                  const Icon(Icons.school_outlined, color: UesBrand.vino),
+                  Icon(Icons.school_outlined, color: cs.secondary),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -274,10 +280,10 @@ class _TabCalendarioState extends ConsumerState<_TabCalendario> {
                 padding: const EdgeInsets.all(6),
                 child: TableCalendar<EventoCalendario>(
                   locale: 'es',
-                  firstDay: DateTime(2026, 1, 1),
-                  lastDay: DateTime(2027, 2, 28),
+                  firstDay: _primerDia,
+                  lastDay: _ultimoDia,
                   focusedDay: _focused,
-                  currentDay: DateTime.now(),
+                  currentDay: _hoy,
                   availableGestures: AvailableGestures.horizontalSwipe,
                   headerStyle: const HeaderStyle(
                     formatButtonVisible: false,
@@ -371,8 +377,9 @@ class _TabCalendarioState extends ConsumerState<_TabCalendario> {
                 builder: (context) => Dialog(
                   child: InteractiveViewer(
                     child: Image.asset(
-                      'assets/docs/calendario-ues-2026-2027.png',
+                      'assets/docs/calendario-ues-2026-2027.jpg',
                       semanticLabel: 'Calendario escolar UES 2026-2027',
+                      cacheWidth: 1310,
                     ),
                   ),
                 ),
@@ -459,15 +466,17 @@ class _TabRequisitos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+      padding: EdgeInsets.fromLTRB(
+          20, 20, 20, 32 + MediaQuery.viewPaddingOf(context).bottom),
       children: [
         Text('Para tramitar tu credencial en Control Escolar UES:',
             style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 12),
         ..._pasos.map((p) => ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: Icon(p.$2, color: UesBrand.vino),
+              leading: Icon(p.$2, color: cs.secondary),
               title: Text(p.$1),
             )),
         const SizedBox(height: 16),
