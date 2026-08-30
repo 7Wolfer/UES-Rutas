@@ -37,6 +37,10 @@ class HomeSheetState extends ConsumerState<HomeSheet> {
   void _animar(double size) {
     if (!_sheet.isAttached) return;
     if ((_sheet.size - size).abs() < 0.02) return; // ya está ahí
+    if (mounted && MediaQuery.disableAnimationsOf(context)) {
+      _sheet.jumpTo(size);
+      return;
+    }
     _sheet.animateTo(size,
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic);

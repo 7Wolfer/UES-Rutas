@@ -25,19 +25,14 @@ class AjustesScreen extends ConsumerWidget {
           Text('Tema', style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 8),
           SegmentedButton<ThemeMode>(
+            showSelectedIcon: false,
             segments: const [
               ButtonSegment(
                   value: ThemeMode.system,
                   label: Text('Sistema'),
-                  icon: Icon(Icons.brightness_auto)),
-              ButtonSegment(
-                  value: ThemeMode.light,
-                  label: Text('Claro'),
-                  icon: Icon(Icons.light_mode)),
-              ButtonSegment(
-                  value: ThemeMode.dark,
-                  label: Text('Oscuro'),
-                  icon: Icon(Icons.dark_mode)),
+                  tooltip: 'Según el sistema'),
+              ButtonSegment(value: ThemeMode.light, label: Text('Claro')),
+              ButtonSegment(value: ThemeMode.dark, label: Text('Oscuro')),
             ],
             selected: {s.themeMode},
             onSelectionChanged: (v) => ctrl.setThemeMode(v.first),
@@ -58,6 +53,7 @@ class AjustesScreen extends ConsumerWidget {
             max: 1.5,
             divisions: 13,
             label: '${(s.textScale * 100).round()}%',
+            semanticFormatterCallback: (v) => '${(v * 100).round()} por ciento',
             onChanged: (v) => ctrl.setTextScale(v),
           ),
           SwitchListTile(

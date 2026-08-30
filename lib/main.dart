@@ -111,9 +111,13 @@ class _UesRutasAppState extends ConsumerState<UesRutasApp> {
       ],
       builder: (context, child) {
         final mq = MediaQuery.of(context);
+        // Compone la preferencia del sistema con el ajuste de la app (no la
+        // reemplaza), y acota para que nada se rompa.
+        final escala =
+            (mq.textScaler.scale(1) * settings.textScale).clamp(0.85, 2.0);
         return MediaQuery(
           data: mq.copyWith(
-            textScaler: TextScaler.linear(settings.textScale),
+            textScaler: TextScaler.linear(escala),
             highContrast: settings.highContrast || mq.highContrast,
           ),
           child: child ?? const SizedBox.shrink(),
@@ -129,6 +133,7 @@ class _UesRutasAppState extends ConsumerState<UesRutasApp> {
       colorScheme: cs.copyWith(
         outline: cs.onSurface,
         outlineVariant: cs.onSurfaceVariant,
+        onSurfaceVariant: Color.lerp(cs.onSurfaceVariant, cs.onSurface, 0.45)!,
       ),
       dividerColor: cs.onSurface,
     );

@@ -52,126 +52,140 @@ class _TabCredencial extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
       children: [
-        Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 380),
-            child: AspectRatio(
-              aspectRatio: 1.6,
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [UesBrand.vino, UesBrand.vinoOscuro],
-                      ),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 16,
-                            offset: Offset(0, 6)),
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+        // La credencial es un artefacto de tamaño fijo (como un pase de
+        // Wallet): su texto no escala para no deformar la tarjeta.
+        MediaQuery(
+          data:
+              MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+          child: Semantics(
+            label: 'Credencial digital de ejemplo. Los datos se llenan al '
+                'iniciar sesión.',
+            excludeSemantics: true,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 380),
+                child: AspectRatio(
+                  aspectRatio: 1.6,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [UesBrand.vino, UesBrand.vinoOscuro],
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 16,
+                                offset: Offset(0, 6)),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SvgPicture.asset(
-                              'assets/brand/ues_isotipo.svg',
-                              height: 26,
-                              colorFilter: const ColorFilter.mode(
-                                  Colors.white, BlendMode.srcIn),
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/brand/ues_isotipo.svg',
+                                  height: 26,
+                                  colorFilter: const ColorFilter.mode(
+                                      Colors.white, BlendMode.srcIn),
+                                ),
+                                const SizedBox(width: 8),
+                                const Text('UES',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 20,
+                                        letterSpacing: 1)),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text('Universidad Estatal de Sonora',
+                                      style: TextStyle(
+                                          color: Colors.white
+                                              .withValues(alpha: 0.85),
+                                          fontSize: 10)),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8),
-                            const Text('UES',
-                                style: TextStyle(
+                            const Spacer(),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('ESTUDIANTE',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.7),
+                                              fontSize: 9,
+                                              letterSpacing: 1.5)),
+                                      const Text('Nombre Apellido Apellido',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16)),
+                                      const SizedBox(height: 6),
+                                      Text('Matrícula 00000000',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.9),
+                                              fontSize: 12)),
+                                      Text('Ing. de Software · 6.º semestre',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withValues(alpha: 0.9),
+                                              fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 20,
-                                    letterSpacing: 1)),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text('Universidad Estatal de Sonora',
-                                  style: TextStyle(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.85),
-                                      fontSize: 10)),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: QrImageView(
+                                    data: 'UESRUTAS-DEMO-00000000',
+                                    size: 62,
+                                    padding: EdgeInsets.zero,
+                                    semanticsLabel:
+                                        'Código QR de la credencial (demo)',
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        const Spacer(),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('ESTUDIANTE',
-                                      style: TextStyle(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.7),
-                                          fontSize: 9,
-                                          letterSpacing: 1.5)),
-                                  const Text('Nombre Apellido Apellido',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16)),
-                                  const SizedBox(height: 6),
-                                  Text('Matrícula 00000000',
-                                      style: TextStyle(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.9),
-                                          fontSize: 12)),
-                                  Text('Ing. de Software · 6.º semestre',
-                                      style: TextStyle(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.9),
-                                          fontSize: 12)),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: QrImageView(
-                                data: 'UESRUTAS-DEMO-00000000',
-                                size: 62,
-                                padding: EdgeInsets.zero,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 14,
-                    right: -30,
-                    child: Transform.rotate(
-                      angle: 0.785,
-                      child: Container(
-                        color: UesBrand.amarillo,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 34, vertical: 3),
-                        child: const Text('PROTOTIPO',
-                            style: TextStyle(
-                                color: Color(0xFF3E2E00),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 10,
-                                letterSpacing: 1)),
                       ),
-                    ),
+                      Positioned(
+                        top: 14,
+                        right: -30,
+                        child: Transform.rotate(
+                          angle: 0.785,
+                          child: Container(
+                            color: UesBrand.amarillo,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 34, vertical: 3),
+                            child: const Text('PROTOTIPO',
+                                style: TextStyle(
+                                    color: Color(0xFF3E2E00),
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 10,
+                                    letterSpacing: 1)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -353,8 +367,10 @@ class _TabCalendarioState extends ConsumerState<_TabCalendario> {
                 context: context,
                 builder: (context) => Dialog(
                   child: InteractiveViewer(
-                    child:
-                        Image.asset('assets/docs/calendario-ues-2026-2027.png'),
+                    child: Image.asset(
+                      'assets/docs/calendario-ues-2026-2027.png',
+                      semanticLabel: 'Calendario escolar UES 2026-2027',
+                    ),
                   ),
                 ),
               ),

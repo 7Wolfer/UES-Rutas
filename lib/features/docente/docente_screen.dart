@@ -196,6 +196,8 @@ class _FilaClase extends StatelessWidget {
                 Expanded(
                   child: Text(
                     lugar?.nombre ?? 'Lugar por definir',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: cs.onSurfaceVariant,
                         ),
@@ -207,9 +209,7 @@ class _FilaClase extends StatelessWidget {
                     icon: const Icon(Icons.directions_walk, size: 18),
                     label: const Text('Ir'),
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      minimumSize: const Size(0, 32),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
                   ),
               ],

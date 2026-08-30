@@ -9,13 +9,26 @@ import '../../design_system/widgets.dart';
 import '../mapa/mapa_campus.dart';
 
 /// Ficha de un lugar del campus (edificio, servicio, acceso).
-class EspacioScreen extends ConsumerWidget {
+class EspacioScreen extends ConsumerStatefulWidget {
   const EspacioScreen({super.key, required this.id});
 
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EspacioScreen> createState() => _EspacioScreenState();
+}
+
+class _EspacioScreenState extends ConsumerState<EspacioScreen> {
+  final _map = MapController();
+
+  @override
+  void dispose() {
+    _map.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final data = ref.watch(campusDataProvider);
     final cs = Theme.of(context).colorScheme;
 
@@ -28,7 +41,7 @@ class EspacioScreen extends ConsumerWidget {
             icono: Icons.error_outline, titulo: 'Error', descripcion: '$e'),
       ),
       data: (campus) {
-        final l = campus.lugar(id);
+        final l = campus.lugar(widget.id);
         if (l == null) {
           return Scaffold(
             appBar: AppBar(),
@@ -109,12 +122,14 @@ class EspacioScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(16),
                 child: SizedBox(
                   height: 220,
-                  child: IgnorePointer(
-                    child: MapaCampus(
-                      data: campus,
-                      controller: MapController(),
-                      oscuro: Theme.of(context).brightness == Brightness.dark,
-                      lugarDestacadoId: l.id,
+                  child: ExcludeSemantics(
+                    child: IgnorePointer(
+                      child: MapaCampus(
+                        data: campus,
+                        controller: _map,
+                        oscuro: Theme.of(context).brightness == Brightness.dark,
+                        lugarDestacadoId: l.id,
+                      ),
                     ),
                   ),
                 ),

@@ -63,15 +63,13 @@ class _SelectorOrigenState extends ConsumerState<_SelectorOrigen> {
     final q = _busqueda.text.trim();
     if (q.isNotEmpty) {
       return buscar(widget.campus, q)
-          .where((r) =>
-              r.tipo == TipoResultado.lugar && r.id != widget.destinoId)
+          .where(
+              (r) => r.tipo == TipoResultado.lugar && r.id != widget.destinoId)
           .map((r) => widget.campus.lugar(r.id))
           .whereType<Lugar>()
           .toList();
     }
-    return widget.campus.lugares
-        .where((l) => l.id != widget.destinoId)
-        .toList()
+    return widget.campus.lugares.where((l) => l.id != widget.destinoId).toList()
       ..sort((a, b) => a.nombre.compareTo(b.nombre));
   }
 
@@ -218,23 +216,25 @@ class _AvisoUbicacion extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: onReintentar,
-                child: const Text('Reintentar'),
-              ),
-              if (accion != null) ...[
-                const SizedBox(width: 4),
-                FilledButton.tonal(
-                  onPressed: () {
-                    alTocar?.call();
-                  },
-                  child: Text(accion),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Wrap(
+              alignment: WrapAlignment.end,
+              spacing: 4,
+              children: [
+                TextButton(
+                  onPressed: onReintentar,
+                  child: const Text('Reintentar'),
                 ),
+                if (accion != null)
+                  FilledButton.tonal(
+                    onPressed: () {
+                      alTocar?.call();
+                    },
+                    child: Text(accion),
+                  ),
               ],
-            ],
+            ),
           ),
         ],
       ),

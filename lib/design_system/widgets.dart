@@ -308,8 +308,8 @@ class BotonCircularMapa extends StatelessWidget {
         customBorder: const CircleBorder(),
         onTap: cargando ? null : onTap,
         child: SizedBox(
-          width: 46,
-          height: 46,
+          width: 48,
+          height: 48,
           child: cargando
               ? const Padding(
                   padding: EdgeInsets.all(13),

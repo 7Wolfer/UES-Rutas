@@ -20,6 +20,7 @@ CustomTransitionPage<void> _fade(Widget child, GoRouterState state) {
     child: child,
     transitionDuration: const Duration(milliseconds: 240),
     transitionsBuilder: (context, animation, _, child) {
+      if (MediaQuery.disableAnimationsOf(context)) return child;
       final curved =
           CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
       return FadeTransition(

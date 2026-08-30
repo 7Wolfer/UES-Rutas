@@ -20,7 +20,8 @@ abstract final class Atencion {
       'https://wa.me/$_numero?text=${Uri.encodeComponent('Hola, necesito ayuda con la app UES Rutas.')}',
     );
     await _abrir(context, uri,
-        modo: LaunchMode.externalApplication, error: 'No se pudo abrir WhatsApp.');
+        modo: LaunchMode.externalApplication,
+        error: 'No se pudo abrir WhatsApp.');
   }
 
   static Future<void> llamar(BuildContext context) async {

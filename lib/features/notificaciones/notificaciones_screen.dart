@@ -83,7 +83,7 @@ class _AvisoCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cs = Theme.of(context).colorScheme;
     final fecha = DateFormat("d 'de' MMMM, y", 'es').format(aviso.fecha);
-    return TarjetaUes(
+    final tarjeta = TarjetaUes(
       onTap: () {
         ref.read(avisosLeidosProvider.notifier).marcarLeido(aviso.id);
         showModalBottomSheet<void>(
@@ -145,6 +145,7 @@ class _AvisoCard extends ConsumerWidget {
         ],
       ),
     );
+    return leido ? tarjeta : Semantics(label: 'Aviso sin leer', child: tarjeta);
   }
 }
 
@@ -156,7 +157,7 @@ class _DetalleAviso extends StatelessWidget {
   Widget build(BuildContext context) {
     final fecha = DateFormat("EEEE d 'de' MMMM, y", 'es').format(aviso.fecha);
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(24, 4, 24, 28),
         child: Column(
           mainAxisSize: MainAxisSize.min,

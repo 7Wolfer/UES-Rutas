@@ -197,6 +197,14 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
     final bg = oscuro ? const Color(0xFF16130F) : const Color(0xFFF2EFEA);
     final hayRuta = ruta != null && ruta!.puntos.length > 1;
 
+    return Semantics(
+      container: true,
+      label: 'Mapa del campus',
+      child: _mapa(context, bg, hayRuta),
+    );
+  }
+
+  Widget _mapa(BuildContext context, Color bg, bool hayRuta) {
     return FlutterMap(
       mapController: widget.controller,
       options: MapOptions(
@@ -290,8 +298,8 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
       if (!_zoomCerca && !destacado && !_visibleLejos(l)) continue;
       markers.add(Marker(
         point: l.punto.toLatLng(),
-        width: destacado ? 150 : 34,
-        height: destacado ? 62 : 34,
+        width: destacado ? 150 : 44,
+        height: destacado ? 62 : 44,
         alignment: Alignment.center,
         child: _PinLugar(
           lugar: l,
@@ -363,35 +371,41 @@ class _PinLugar extends StatelessWidget {
           color: Colors.white, size: destacado ? 20 : 16),
     );
 
-    return GestureDetector(
+    return Semantics(
+      button: true,
+      label: lugar.nombre,
+      excludeSemantics: true,
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: destacado
-          ? Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: cs.surface,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: cs.outlineVariant),
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: destacado
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: cs.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: cs.outlineVariant),
+                    ),
+                    child: Text(
+                      lugar.etiquetaCorta,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
                   ),
-                  child: Text(
-                    lugar.etiquetaCorta,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                ),
-                const SizedBox(height: 3),
-                punto,
-              ],
-            )
-          : punto,
+                  const SizedBox(height: 3),
+                  punto,
+                ],
+              )
+            : punto,
+      ),
     );
   }
 }
@@ -403,13 +417,17 @@ class _PuntoRuta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 3),
+    return Semantics(
+      label: 'Inicio de la ruta',
+      excludeSemantics: true,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
+        ),
+        child: Icon(icono, color: Colors.white, size: 12),
       ),
-      child: Icon(icono, color: Colors.white, size: 12),
     );
   }
 }
@@ -419,21 +437,25 @@ class _PuntoUsuario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 18,
-        height: 18,
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A73E8),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1A73E8).withValues(alpha: 0.4),
-              blurRadius: 8,
-              spreadRadius: 2,
-            ),
-          ],
+    return Semantics(
+      label: 'Tu ubicación',
+      excludeSemantics: true,
+      child: Center(
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1A73E8),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF1A73E8).withValues(alpha: 0.4),
+                blurRadius: 8,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
         ),
       ),
     );

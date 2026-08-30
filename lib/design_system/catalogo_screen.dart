@@ -28,8 +28,8 @@ class CatalogoScreen extends StatelessWidget {
               border: Border.all(
                   color: Theme.of(context).colorScheme.outlineVariant),
             ),
-            child: SvgPicture.asset('assets/brand/ues_horizontal.svg',
-                width: 240),
+            child:
+                SvgPicture.asset('assets/brand/ues_horizontal.svg', width: 240),
           ),
           const SizedBox(height: 8),
           Container(
