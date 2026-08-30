@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/compartir.dart';
 import '../../data/providers.dart';
 import '../../design_system/widgets.dart';
 import '../mapa/mapa_campus.dart';
@@ -43,7 +44,22 @@ class EspacioScreen extends ConsumerWidget {
             .toList();
 
         return Scaffold(
-          appBar: AppBar(title: Text(l.nombre)),
+          appBar: AppBar(
+            title: Text(l.nombre),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.ios_share),
+                  tooltip: 'Compartir',
+                  onPressed: () => compartir(
+                    context,
+                    titulo: '${l.nombre} — UES Rutas',
+                    ruta: '/espacio/${l.id}',
+                  ),
+                ),
+              ),
+            ],
+          ),
           body: ListView(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
             children: [

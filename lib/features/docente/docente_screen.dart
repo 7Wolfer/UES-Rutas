@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/compartir.dart';
 import '../../core/formato.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
@@ -43,7 +44,22 @@ class DocenteScreen extends ConsumerWidget {
         final dias = porDia.keys.toList()..sort();
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Docente')),
+          appBar: AppBar(
+            title: const Text('Docente'),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.ios_share),
+                  tooltip: 'Compartir',
+                  onPressed: () => compartir(
+                    context,
+                    titulo: '${d.nombre} — UES Rutas',
+                    ruta: '/docente/${d.id}',
+                  ),
+                ),
+              ),
+            ],
+          ),
           body: ListView(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
             children: [

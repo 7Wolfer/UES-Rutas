@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/compartir.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/routing.dart';
@@ -62,9 +63,26 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
     final data = ref.watch(campusDataProvider);
     final motor = ref.watch(motorRutasProvider);
     final oscuro = Theme.of(context).brightness == Brightness.dark;
+    final destino = data.valueOrNull?.lugar(widget.destinoId);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cómo llegar')),
+      appBar: AppBar(
+        title: const Text('Cómo llegar'),
+        actions: [
+          if (destino != null)
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.ios_share),
+                tooltip: 'Compartir',
+                onPressed: () => compartir(
+                  context,
+                  titulo: 'Cómo llegar a ${destino.nombre} — UES Rutas',
+                  ruta: '/ruta?destino=${widget.destinoId}',
+                ),
+              ),
+            ),
+        ],
+      ),
       body: data.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => EstadoVacio(
@@ -254,8 +272,7 @@ class _OrigenDestino extends StatelessWidget {
         children: [
           InkWell(
             onTap: onEditarOrigen,
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 14, 12, 8),
               child: _fila(

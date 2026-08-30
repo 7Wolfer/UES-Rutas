@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/brand.dart';
+import '../../core/compartir.dart';
 import '../../data/busqueda.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
@@ -166,8 +167,20 @@ class _FichaLugar extends ConsumerWidget {
                 ],
               ),
             ),
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.ios_share),
+                tooltip: 'Compartir',
+                onPressed: () => compartir(
+                  context,
+                  titulo: '${lugar.nombre} — UES Rutas',
+                  ruta: '/espacio/${lugar.id}',
+                ),
+              ),
+            ),
             IconButton(
               icon: const Icon(Icons.close),
+              tooltip: 'Cerrar',
               onPressed: () =>
                   ref.read(lugarSeleccionadoProvider.notifier).state = null,
             ),
@@ -325,8 +338,8 @@ class _Directorio extends ConsumerWidget {
           leading: Container(
             width: 10,
             height: 10,
-            decoration: BoxDecoration(
-                color: l.categoria.color, shape: BoxShape.circle),
+            decoration:
+                BoxDecoration(color: l.categoria.color, shape: BoxShape.circle),
           ),
           title: Text(l.nombre),
           trailing: l.accesible

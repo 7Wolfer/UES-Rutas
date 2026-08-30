@@ -19,6 +19,12 @@ abstract final class AppConfig {
   /// Número de Atención (WhatsApp / llamada). **Ficticio** hasta tener el real.
   static const String telefonoAtencion = '+526620000000';
 
+  /// Dominio público de la app, base de los enlaces para compartir.
+  /// Placeholder hasta que la UES tenga hosting; en web el enlace se deriva
+  /// en runtime de `Uri.base`, así que esto solo afecta a móvil.
+  static const String urlPublica = String.fromEnvironment('URL_PUBLICA',
+      defaultValue: 'https://ues-rutas.app');
+
   /// URL del proyecto Supabase. Vacío = backend deshabilitado (modo seed local).
   static const String supabaseUrl =
       String.fromEnvironment('SUPABASE_URL', defaultValue: '');
