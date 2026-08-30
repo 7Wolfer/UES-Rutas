@@ -48,6 +48,14 @@ final posicionUsuarioProvider =
     NotifierProvider<PosicionUsuarioNotifier, LatLng?>(
         PosicionUsuarioNotifier.new);
 
+// --- Teselas del mapa offline ---
+
+/// Claves "z_x_y" de las teselas del campus incluidas como assets para uso
+/// offline. Se sobreescribe en `main.dart` tras leer
+/// `assets/tiles/manifest.json`; el valor por defecto (vacío) hace que todo vaya
+/// a la red, como antes.
+final teselasBundledProvider = Provider<Set<String>>((ref) => const {});
+
 // --- Búsqueda ---
 
 final consultaBusquedaProvider = StateProvider<String>((ref) => '');

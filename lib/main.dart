@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -21,6 +23,7 @@ Future<void> main() async {
   await initializeDateFormatting('es', null);
 
   final prefs = await SharedPreferences.getInstance();
+  final teselas = await _cargarManifestTeselas();
 
   if (AppConfig.supabaseConfigurado) {
     await Supabase.initialize(
@@ -35,10 +38,23 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      overrides: [sharedPrefsProvider.overrideWithValue(prefs)],
+      overrides: [
+        sharedPrefsProvider.overrideWithValue(prefs),
+        teselasBundledProvider.overrideWithValue(teselas),
+      ],
       child: const UesRutasApp(),
     ),
   );
+}
+
+/// Claves de las teselas del campus empaquetadas como assets (mapa offline).
+Future<Set<String>> _cargarManifestTeselas() async {
+  try {
+    final raw = await rootBundle.loadString('assets/tiles/manifest.json');
+    return (jsonDecode(raw) as List).cast<String>().toSet();
+  } catch (_) {
+    return const <String>{};
+  }
 }
 
 class UesRutasApp extends ConsumerStatefulWidget {

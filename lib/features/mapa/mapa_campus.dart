@@ -8,6 +8,7 @@ import '../../core/brand.dart';
 import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../data/routing.dart';
+import 'teselas_campus_provider.dart';
 
 /// Mapa real del campus UES: teselas de OpenStreetMap + capa propia
 /// (perímetro, campo deportivo, edificios, pines y ruta).
@@ -19,9 +20,9 @@ import '../../data/routing.dart';
 ///   toque en un pin no reconstruya todo el mapa.
 /// - Los marcadores se filtran por zoom: pocos de lejos, todos de cerca.
 ///
-/// Nota web: en la build web con CanvasKit, las teselas de `flutter_map` no
-/// empiezan a cargarse hasta el primer gesto real (toque/scroll). En iOS y
-/// Android (los objetivos de la app) cargan normalmente.
+/// Las teselas del área del campus van empaquetadas como assets
+/// (`TeselasCampusProvider`): el mapa carga al instante y sin red. Fuera del
+/// campus o a zooms muy alejados se sigue pidiendo a OpenStreetMap.
 class MapaCampus extends ConsumerStatefulWidget {
   const MapaCampus({
     super.key,
@@ -87,9 +88,12 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
   EstiloMapa get estilo => widget.estilo;
   RutaCalculada? get ruta => widget.ruta;
 
+  late final TeselasCampusProvider _tileProvider;
+
   @override
   void initState() {
     super.initState();
+    _tileProvider = TeselasCampusProvider(ref.read(teselasBundledProvider));
     _recalcularEstaticas();
     // El zoom real del encuadre inicial (ya aplicado el `initialCameraFit`).
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -250,11 +254,13 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
         maxNativeZoom: 19,
       );
     }
-    // OSM estándar, un solo host (bueno para CSP y política de uso).
+    // OSM estándar: el área del campus sale de los assets empaquetados; el resto
+    // (y otros zooms) se pide a este host, único, por red.
     return TileLayer(
       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       userAgentPackageName: _pkgName,
       maxNativeZoom: 19,
+      tileProvider: _tileProvider,
     );
   }
 
