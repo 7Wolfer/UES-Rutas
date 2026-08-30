@@ -232,24 +232,28 @@ class TarjetaUes extends StatelessWidget {
   }
 }
 
-/// Estado vacío / sin resultados.
+/// Estado vacío / sin resultados / error.
 class EstadoVacio extends StatelessWidget {
   const EstadoVacio({
     super.key,
     required this.icono,
     required this.titulo,
     this.descripcion,
+    this.accion,
   });
 
   final IconData icono;
   final String titulo;
   final String? descripcion;
 
+  /// Botón opcional (p. ej. "Reintentar" / "Ir al inicio").
+  final Widget? accion;
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -271,6 +275,10 @@ class EstadoVacio extends StatelessWidget {
                     .bodyMedium
                     ?.copyWith(color: cs.onSurfaceVariant),
               ),
+            ],
+            if (accion != null) ...[
+              const SizedBox(height: 20),
+              accion!,
             ],
           ],
         ),

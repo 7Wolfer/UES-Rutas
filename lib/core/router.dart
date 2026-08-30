@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../design_system/catalogo_screen.dart';
+import '../design_system/widgets.dart';
 import '../features/ajustes/ajustes_screen.dart';
 import '../features/auth/auth_screen.dart';
 import '../features/busqueda/busqueda_screen.dart';
@@ -40,6 +41,18 @@ CustomTransitionPage<void> _fade(Widget child, GoRouterState state) {
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
+    errorBuilder: (context, state) => Scaffold(
+      appBar: AppBar(title: const Text('UES Rutas')),
+      body: EstadoVacio(
+        icono: Icons.explore_off_outlined,
+        titulo: 'No encontramos esa página',
+        descripcion: 'El enlace puede estar mal escrito o ya no existe.',
+        accion: FilledButton(
+          onPressed: () => context.go('/'),
+          child: const Text('Ir al inicio'),
+        ),
+      ),
+    ),
     routes: [
       GoRoute(
         path: '/',

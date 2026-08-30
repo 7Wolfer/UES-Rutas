@@ -13,6 +13,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/config.dart';
 import 'core/router.dart';
 import 'core/theme.dart';
+import 'data/avisos.dart';
 import 'data/providers.dart';
 import 'features/ajustes/settings_controller.dart';
 import 'services/notificaciones_service.dart';
@@ -77,7 +78,15 @@ class _UesRutasAppState extends ConsumerState<UesRutasApp> {
     if (!s.notificaciones || kIsWeb) return;
     final avisos = await ref.read(avisosProvider.future);
     final leidos = ref.read(avisosLeidosProvider);
-    final nuevos = avisos.where((a) => !leidos.contains(a.id)).toList();
+    final nuevos = avisos.where((a) {
+      if (leidos.contains(a.id)) return false;
+      return switch (a.categoria) {
+        CategoriaAviso.importante => s.avisarImportantes,
+        CategoriaAviso.ruta => s.avisarRutas,
+        CategoriaAviso.evento => s.avisarEventos,
+        CategoriaAviso.general => true,
+      };
+    }).toList();
     if (nuevos.isEmpty) return;
     final permitido = await NotificacionesService.instance.pedirPermiso();
     if (!permitido) return;

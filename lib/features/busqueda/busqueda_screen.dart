@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,30 +20,31 @@ class BusquedaScreen extends ConsumerStatefulWidget {
 class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
   late final TextEditingController _controller =
       TextEditingController(text: widget.consultaInicial ?? '');
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(consultaBusquedaProvider.notifier).state = _controller.text;
-    });
-  }
+  // Estado local, desacoplado de la hoja de inicio.
+  late String _consulta = _controller.text;
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
   void _onChanged(String v) {
-    setState(() {});
-    ref.read(consultaBusquedaProvider.notifier).state = v;
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 180), () {
+      if (mounted) setState(() => _consulta = v);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final resultados = ref.watch(resultadosBusquedaProvider);
-    final consulta = ref.watch(consultaBusquedaProvider);
+    final data = ref.watch(campusDataProvider).valueOrNull;
+    final consulta = _consulta.trim();
+    final resultados = (data == null || consulta.isEmpty)
+        ? const <ResultadoBusqueda>[]
+        : buscar(data, consulta);
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +61,7 @@ class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
           ),
         ),
       ),
-      body: consulta.trim().isEmpty
+      body: consulta.isEmpty
           ? const EstadoVacio(
               icono: Icons.search,
               titulo: 'Escribe para buscar',

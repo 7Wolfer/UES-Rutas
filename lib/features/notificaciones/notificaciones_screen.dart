@@ -29,10 +29,10 @@ class NotificacionesScreen extends ConsumerWidget {
       ),
       body: avisosAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EstadoVacio(
-          icono: Icons.error_outline,
-          titulo: 'Error',
-          descripcion: '$e',
+        error: (e, _) => const EstadoVacio(
+          icono: Icons.cloud_off_outlined,
+          titulo: 'No pudimos cargar los avisos',
+          descripcion: 'Revisa tu conexión e inténtalo de nuevo.',
         ),
         data: (avisos) {
           if (avisos.isEmpty) {

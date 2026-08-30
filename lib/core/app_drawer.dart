@@ -69,18 +69,18 @@ class AppDrawer extends ConsumerWidget {
                   _Item(
                     icon: Icons.chat_outlined,
                     label: 'Atención por WhatsApp',
-                    onTap: () {
-                      Navigator.pop(context);
-                      Atencion.whatsApp(context);
-                    },
+                    // El diálogo se muestra sobre el drawer (contexto válido);
+                    // el drawer se cierra después.
+                    onTap: () => Atencion.whatsApp(context).whenComplete(() {
+                      if (context.mounted) Navigator.pop(context);
+                    }),
                   ),
                   _Item(
                     icon: Icons.call_outlined,
                     label: 'Llamar a Atención',
-                    onTap: () {
-                      Navigator.pop(context);
-                      Atencion.llamar(context);
-                    },
+                    onTap: () => Atencion.llamar(context).whenComplete(() {
+                      if (context.mounted) Navigator.pop(context);
+                    }),
                   ),
                   const Divider(height: 16, indent: 20, endIndent: 20),
                   _Item(

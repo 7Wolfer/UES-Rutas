@@ -226,8 +226,11 @@ class _TabCalendarioState extends ConsumerState<_TabCalendario> {
 
     return calAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => EstadoVacio(
-          icono: Icons.error_outline, titulo: 'Error', descripcion: '$e'),
+      error: (e, _) => const EstadoVacio(
+        icono: Icons.cloud_off_outlined,
+        titulo: 'No pudimos cargar el calendario',
+        descripcion: 'Revisa tu conexión e inténtalo de nuevo.',
+      ),
       data: (cal) {
         final sel = _selected;
         final eventosSel =
@@ -298,7 +301,7 @@ class _TabCalendarioState extends ConsumerState<_TabCalendario> {
                     _selected = selected;
                     _focused = focused;
                   }),
-                  onPageChanged: (f) => _focused = f,
+                  onPageChanged: (f) => setState(() => _focused = f),
                   calendarBuilders: CalendarBuilders(
                     markerBuilder: (context, day, events) {
                       if (events.isEmpty) return null;

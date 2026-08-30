@@ -38,6 +38,12 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
     _quizaUsarMiUbicacion();
   }
 
+  @override
+  void dispose() {
+    _map.dispose();
+    super.dispose();
+  }
+
   /// Si el llamador no eligió un origen y ya hay permiso de ubicación concedido,
   /// usa la posición del usuario como origen. No dispara ningún diálogo.
   Future<void> _quizaUsarMiUbicacion() async {
@@ -85,8 +91,11 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
       ),
       body: data.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EstadoVacio(
-            icono: Icons.error_outline, titulo: 'Error', descripcion: '$e'),
+        error: (e, _) => const EstadoVacio(
+          icono: Icons.cloud_off_outlined,
+          titulo: 'No pudimos cargar el campus',
+          descripcion: 'Revisa tu conexión e inténtalo de nuevo.',
+        ),
         data: (campus) {
           final pos = ref.watch(posicionUsuarioProvider);
           final origen = _origenId == Lugar.idMiUbicacion

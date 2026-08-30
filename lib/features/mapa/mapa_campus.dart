@@ -116,14 +116,23 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
   }
 
   void _recalcularEstaticas() {
-    final lats = data.info.perimetro.map((p) => p.lat).toList();
-    final lngs = data.info.perimetro.map((p) => p.lng).toList();
-    _limitesCampus = LatLngBounds(
-      LatLng(lats.reduce((a, b) => a < b ? a : b),
-          lngs.reduce((a, b) => a < b ? a : b)),
-      LatLng(lats.reduce((a, b) => a > b ? a : b),
-          lngs.reduce((a, b) => a > b ? a : b)),
-    );
+    final perimetro = data.info.perimetro;
+    if (perimetro.isEmpty) {
+      final c = data.info.centro.toLatLng();
+      _limitesCampus = LatLngBounds(
+        LatLng(c.latitude - 0.003, c.longitude - 0.003),
+        LatLng(c.latitude + 0.003, c.longitude + 0.003),
+      );
+    } else {
+      final lats = perimetro.map((p) => p.lat);
+      final lngs = perimetro.map((p) => p.lng);
+      _limitesCampus = LatLngBounds(
+        LatLng(lats.reduce((a, b) => a < b ? a : b),
+            lngs.reduce((a, b) => a < b ? a : b)),
+        LatLng(lats.reduce((a, b) => a > b ? a : b),
+            lngs.reduce((a, b) => a > b ? a : b)),
+      );
+    }
 
     _perimetroPolis = [
       Polygon(

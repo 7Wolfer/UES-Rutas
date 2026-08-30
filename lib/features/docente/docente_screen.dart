@@ -23,8 +23,11 @@ class DocenteScreen extends ConsumerWidget {
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(
         appBar: AppBar(),
-        body: EstadoVacio(
-            icono: Icons.error_outline, titulo: 'Error', descripcion: '$e'),
+        body: const EstadoVacio(
+          icono: Icons.cloud_off_outlined,
+          titulo: 'No pudimos cargar el campus',
+          descripcion: 'Revisa tu conexión e inténtalo de nuevo.',
+        ),
       ),
       data: (campus) {
         final d = campus.docente(id);

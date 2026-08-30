@@ -24,6 +24,12 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
   final _sheetKey = GlobalKey<HomeSheetState>();
   bool _buscandoUbicacion = false;
 
+  @override
+  void dispose() {
+    _map.dispose();
+    super.dispose();
+  }
+
   void _centrarEn(Lugar l) {
     _map.move(l.punto.toLatLng(), 17.6);
   }
@@ -81,15 +87,10 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
       drawer: const AppDrawer(),
       body: dataAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: EstadoVacio(
-              icono: Icons.map_outlined,
-              titulo: 'No se pudo cargar el campus',
-              descripcion: '$e',
-            ),
-          ),
+        error: (e, _) => const EstadoVacio(
+          icono: Icons.cloud_off_outlined,
+          titulo: 'No pudimos cargar el campus',
+          descripcion: 'Revisa tu conexión e inténtalo de nuevo.',
         ),
         data: (data) => Stack(
           children: [
