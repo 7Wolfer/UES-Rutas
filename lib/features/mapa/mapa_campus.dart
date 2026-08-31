@@ -209,7 +209,9 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
     return Semantics(
       container: true,
       label: 'Mapa del campus',
-      child: _mapa(context, bg, hayRuta),
+      // Aísla los repintados del mapa (al arrastrar/hacer zoom) del resto de la
+      // pantalla — importante en web, donde el mapa es lo más caro de dibujar.
+      child: RepaintBoundary(child: _mapa(context, bg, hayRuta)),
     );
   }
 
