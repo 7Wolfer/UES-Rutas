@@ -151,5 +151,93 @@ void main() {
       // La distancia total incluye ese tramo de aproximación.
       expect(ruta.distancia, greaterThan(ruta.aproxOrigen));
     });
+
+    test('entre dos lugares la ruta arranca y termina en su nodo, sin tramo '
+        'recto sobre el edificio', () {
+      final origen = data.lugar('lug_edificio_a')!;
+      final destino = data.lugar('lug_cafeteria_ues')!;
+      final ruta =
+          motor.calcular(origen: origen, destino: destino, accesible: false);
+      // Sin prepend del centro: el primer/último punto es un nodo del grafo.
+      expect(ruta.aproxOrigen, 0);
+      expect(ruta.puntos.first, equals(ruta.nodos.first.punto));
+      expect(ruta.puntos.last, equals(ruta.nodos.last.punto));
+    });
+  });
+
+  group('el grafo no atraviesa edificios', () {
+    List<LatLng> anillo(Lugar l) => [
+          for (final p in l.poligono!) LatLng(p.lat, p.lng),
+        ];
+
+    bool dentro(LatLng p, List<LatLng> poly) {
+      var dentro = false;
+      for (var i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        final a = poly[i], b = poly[j];
+        if ((a.longitude > p.longitude) != (b.longitude > p.longitude) &&
+            p.latitude <
+                (b.latitude - a.latitude) *
+                        (p.longitude - a.longitude) /
+                        (b.longitude - a.longitude) +
+                    a.latitude) {
+          dentro = !dentro;
+        }
+      }
+      return dentro;
+    }
+
+    double cruz(LatLng o, LatLng a, LatLng b) =>
+        (a.latitude - o.latitude) * (b.longitude - o.longitude) -
+        (a.longitude - o.longitude) * (b.latitude - o.latitude);
+
+    bool segsCruzan(LatLng p1, LatLng p2, LatLng p3, LatLng p4) =>
+        (cruz(p3, p4, p1) > 0) != (cruz(p3, p4, p2) > 0) &&
+        (cruz(p1, p2, p3) > 0) != (cruz(p1, p2, p4) > 0);
+
+    bool aristaCruza(LatLng a, LatLng b, List<LatLng> poly) {
+      if (dentro(a, poly) || dentro(b, poly)) return true;
+      for (var i = 0; i < poly.length; i++) {
+        if (segsCruzan(a, b, poly[i], poly[(i + 1) % poly.length])) return true;
+      }
+      return false;
+    }
+
+    test('ninguna arista cruza el polígono de un edificio', () {
+      final nodo = {for (final n in data.nodos) n.id: n.punto};
+      final edificios = {
+        for (final l in data.lugares)
+          if (l.poligono != null && l.poligono!.length >= 3) l.id: anillo(l)
+      };
+      final infractoras = <String>[];
+      for (final ar in data.aristas) {
+        final a = nodo[ar.a]!, b = nodo[ar.b]!;
+        for (final e in edificios.entries) {
+          // la arista propia de un lugar sí toca su edificio (la entrada)
+          if (ar.a == 'n_${e.key}' || ar.b == 'n_${e.key}') continue;
+          if (aristaCruza(LatLng(a.lat, a.lng), LatLng(b.lat, b.lng), e.value)) {
+            infractoras.add('${ar.a}↔${ar.b} sobre ${e.key}');
+          }
+        }
+      }
+      expect(infractoras, isEmpty, reason: infractoras.join('\n'));
+    });
+
+    test('todos los lugares quedan conectados al acceso principal', () {
+      final ady = <String, Set<String>>{};
+      for (final ar in data.aristas) {
+        ady.putIfAbsent(ar.a, () => {}).add(ar.b);
+        ady.putIfAbsent(ar.b, () => {}).add(ar.a);
+      }
+      final vistos = <String>{'n_lug_acceso_principal'};
+      final cola = <String>['n_lug_acceso_principal'];
+      while (cola.isNotEmpty) {
+        for (final v in ady[cola.removeLast()] ?? const <String>{}) {
+          if (vistos.add(v)) cola.add(v);
+        }
+      }
+      for (final l in data.lugares) {
+        expect(vistos.contains('n_${l.id}'), isTrue, reason: 'aislado: ${l.id}');
+      }
+    });
   });
 }

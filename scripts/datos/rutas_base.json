@@ -1,0 +1,1080 @@
+{
+ "nodos": [
+  {
+   "id": "n0",
+   "punto": {
+    "lat": 29.12149,
+    "lng": -110.96298
+   }
+  },
+  {
+   "id": "n1",
+   "punto": {
+    "lat": 29.12155,
+    "lng": -110.96256
+   }
+  },
+  {
+   "id": "n2",
+   "punto": {
+    "lat": 29.12219,
+    "lng": -110.96264
+   }
+  },
+  {
+   "id": "n3",
+   "punto": {
+    "lat": 29.12217,
+    "lng": -110.96284
+   }
+  },
+  {
+   "id": "n4",
+   "punto": {
+    "lat": 29.12192,
+    "lng": -110.96281
+   }
+  },
+  {
+   "id": "n5",
+   "punto": {
+    "lat": 29.12157,
+    "lng": -110.96238
+   }
+  },
+  {
+   "id": "n6",
+   "punto": {
+    "lat": 29.12221,
+    "lng": -110.96246
+   }
+  },
+  {
+   "id": "n7",
+   "punto": {
+    "lat": 29.12223,
+    "lng": -110.9623
+   }
+  },
+  {
+   "id": "n8",
+   "punto": {
+    "lat": 29.12071,
+    "lng": -110.96284
+   }
+  },
+  {
+   "id": "n9",
+   "punto": {
+    "lat": 29.12077,
+    "lng": -110.96285
+   }
+  },
+  {
+   "id": "n10",
+   "punto": {
+    "lat": 29.12113,
+    "lng": -110.96292
+   }
+  },
+  {
+   "id": "n11",
+   "punto": {
+    "lat": 29.12176,
+    "lng": -110.96279
+   }
+  },
+  {
+   "id": "n12",
+   "punto": {
+    "lat": 29.12162,
+    "lng": -110.96093
+   }
+  },
+  {
+   "id": "n13",
+   "punto": {
+    "lat": 29.12147,
+    "lng": -110.96101
+   }
+  },
+  {
+   "id": "n14",
+   "punto": {
+    "lat": 29.12109,
+    "lng": -110.96096
+   }
+  },
+  {
+   "id": "n15",
+   "punto": {
+    "lat": 29.12105,
+    "lng": -110.96126
+   }
+  },
+  {
+   "id": "n16",
+   "punto": {
+    "lat": 29.12164,
+    "lng": -110.96066
+   }
+  },
+  {
+   "id": "n17",
+   "punto": {
+    "lat": 29.12163,
+    "lng": -110.96076
+   }
+  },
+  {
+   "id": "n18",
+   "punto": {
+    "lat": 29.12183,
+    "lng": -110.96096
+   }
+  },
+  {
+   "id": "n19",
+   "punto": {
+    "lat": 29.12058,
+    "lng": -110.96251
+   }
+  },
+  {
+   "id": "n20",
+   "punto": {
+    "lat": 29.12044,
+    "lng": -110.96251
+   }
+  },
+  {
+   "id": "n21",
+   "punto": {
+    "lat": 29.12026,
+    "lng": -110.96248
+   }
+  },
+  {
+   "id": "n22",
+   "punto": {
+    "lat": 29.12016,
+    "lng": -110.96243
+   }
+  },
+  {
+   "id": "n23",
+   "punto": {
+    "lat": 29.12012,
+    "lng": -110.96239
+   }
+  },
+  {
+   "id": "n24",
+   "punto": {
+    "lat": 29.12014,
+    "lng": -110.96227
+   }
+  },
+  {
+   "id": "n25",
+   "punto": {
+    "lat": 29.1202,
+    "lng": -110.96221
+   }
+  },
+  {
+   "id": "n26",
+   "punto": {
+    "lat": 29.12074,
+    "lng": -110.96258
+   }
+  },
+  {
+   "id": "n27",
+   "punto": {
+    "lat": 29.12058,
+    "lng": -110.96245
+   }
+  },
+  {
+   "id": "n28",
+   "punto": {
+    "lat": 29.12058,
+    "lng": -110.96234
+   }
+  },
+  {
+   "id": "n29",
+   "punto": {
+    "lat": 29.12054,
+    "lng": -110.96228
+   }
+  },
+  {
+   "id": "n30",
+   "punto": {
+    "lat": 29.12041,
+    "lng": -110.96226
+   }
+  },
+  {
+   "id": "n31",
+   "punto": {
+    "lat": 29.12028,
+    "lng": -110.96222
+   }
+  },
+  {
+   "id": "n32",
+   "punto": {
+    "lat": 29.12173,
+    "lng": -110.96302
+   }
+  },
+  {
+   "id": "n33",
+   "punto": {
+    "lat": 29.12089,
+    "lng": -110.96135
+   }
+  },
+  {
+   "id": "n34",
+   "punto": {
+    "lat": 29.12074,
+    "lng": -110.96132
+   }
+  },
+  {
+   "id": "n35",
+   "punto": {
+    "lat": 29.1208,
+    "lng": -110.96074
+   }
+  },
+  {
+   "id": "n36",
+   "punto": {
+    "lat": 29.12016,
+    "lng": -110.96064
+   }
+  },
+  {
+   "id": "n37",
+   "punto": {
+    "lat": 29.12009,
+    "lng": -110.96122
+   }
+  },
+  {
+   "id": "n38",
+   "punto": {
+    "lat": 29.12197,
+    "lng": -110.9605
+   }
+  },
+  {
+   "id": "n39",
+   "punto": {
+    "lat": 29.12132,
+    "lng": -110.9604
+   }
+  },
+  {
+   "id": "n40",
+   "punto": {
+    "lat": 29.12102,
+    "lng": -110.96034
+   }
+  },
+  {
+   "id": "n41",
+   "punto": {
+    "lat": 29.12253,
+    "lng": -110.96118
+   }
+  },
+  {
+   "id": "n42",
+   "punto": {
+    "lat": 29.1224,
+    "lng": -110.96117
+   }
+  },
+  {
+   "id": "n43",
+   "punto": {
+    "lat": 29.12229,
+    "lng": -110.96115
+   }
+  },
+  {
+   "id": "n44",
+   "punto": {
+    "lat": 29.12229,
+    "lng": -110.96108
+   }
+  },
+  {
+   "id": "n45",
+   "punto": {
+    "lat": 29.12228,
+    "lng": -110.96076
+   }
+  },
+  {
+   "id": "n46",
+   "punto": {
+    "lat": 29.12225,
+    "lng": -110.96187
+   }
+  },
+  {
+   "id": "n47",
+   "punto": {
+    "lat": 29.12194,
+    "lng": -110.96321
+   }
+  },
+  {
+   "id": "n48",
+   "punto": {
+    "lat": 29.12192,
+    "lng": -110.96335
+   }
+  },
+  {
+   "id": "n49",
+   "punto": {
+    "lat": 29.1211,
+    "lng": -110.96321
+   }
+  },
+  {
+   "id": "n50",
+   "punto": {
+    "lat": 29.12112,
+    "lng": -110.96308
+   }
+  },
+  {
+   "id": "n_lug_centro_de_computo",
+   "punto": {
+    "lat": 29.121196,
+    "lng": -110.961156
+   },
+   "lugarId": "lug_centro_de_computo"
+  },
+  {
+   "id": "n_lug_edificio_n",
+   "punto": {
+    "lat": 29.121126,
+    "lng": -110.96184
+   },
+   "lugarId": "lug_edificio_n"
+  },
+  {
+   "id": "n_lug_edificio_a",
+   "punto": {
+    "lat": 29.120999,
+    "lng": -110.962374
+   },
+   "lugarId": "lug_edificio_a"
+  },
+  {
+   "id": "n_lug_edificio_b",
+   "punto": {
+    "lat": 29.12123,
+    "lng": -110.96243
+   },
+   "lugarId": "lug_edificio_b"
+  },
+  {
+   "id": "n_lug_laboratorios_centrales",
+   "punto": {
+    "lat": 29.12144,
+    "lng": -110.962439
+   },
+   "lugarId": "lug_laboratorios_centrales"
+  },
+  {
+   "id": "n_lug_edificio_f",
+   "punto": {
+    "lat": 29.121632,
+    "lng": -110.961349
+   },
+   "lugarId": "lug_edificio_f"
+  },
+  {
+   "id": "n_lug_edificio_g",
+   "punto": {
+    "lat": 29.121804,
+    "lng": -110.961309
+   },
+   "lugarId": "lug_edificio_g"
+  },
+  {
+   "id": "n_lug_edificio_k_laboratorios_turismo",
+   "punto": {
+    "lat": 29.121906,
+    "lng": -110.961554
+   },
+   "lugarId": "lug_edificio_k_laboratorios_turismo"
+  },
+  {
+   "id": "n_lug_edificio_i",
+   "punto": {
+    "lat": 29.122403,
+    "lng": -110.96196
+   },
+   "lugarId": "lug_edificio_i"
+  },
+  {
+   "id": "n_lug_aula_magna_biblioteca",
+   "punto": {
+    "lat": 29.12238,
+    "lng": -110.961497
+   },
+   "lugarId": "lug_aula_magna_biblioteca"
+  },
+  {
+   "id": "n_lug_oficinas_academicas",
+   "punto": {
+    "lat": 29.121627,
+    "lng": -110.962785
+   },
+   "lugarId": "lug_oficinas_academicas"
+  },
+  {
+   "id": "n_lug_invernadero",
+   "punto": {
+    "lat": 29.121347,
+    "lng": -110.962767
+   },
+   "lugarId": "lug_invernadero"
+  },
+  {
+   "id": "n_lug_recursos_humanos",
+   "punto": {
+    "lat": 29.122083,
+    "lng": -110.961736
+   },
+   "lugarId": "lug_recursos_humanos"
+  },
+  {
+   "id": "n_lug_edificio_e",
+   "punto": {
+    "lat": 29.122098,
+    "lng": -110.962242
+   },
+   "lugarId": "lug_edificio_e"
+  },
+  {
+   "id": "n_lug_gimnasio_ues",
+   "punto": {
+    "lat": 29.120462,
+    "lng": -110.9611
+   },
+   "lugarId": "lug_gimnasio_ues"
+  },
+  {
+   "id": "n_lug_taller_de_ecoprocesos",
+   "punto": {
+    "lat": 29.122171,
+    "lng": -110.964046
+   },
+   "lugarId": "lug_taller_de_ecoprocesos"
+  },
+  {
+   "id": "n_lug_ciencias_de_la_salud",
+   "punto": {
+    "lat": 29.122197,
+    "lng": -110.963502
+   },
+   "lugarId": "lug_ciencias_de_la_salud"
+  },
+  {
+   "id": "n_lug_cafeteria_ues",
+   "punto": {
+    "lat": 29.122099,
+    "lng": -110.961991
+   },
+   "lugarId": "lug_cafeteria_ues"
+  },
+  {
+   "id": "n_lug_domo_ues",
+   "punto": {
+    "lat": 29.122094,
+    "lng": -110.96143
+   },
+   "lugarId": "lug_domo_ues"
+  },
+  {
+   "id": "n_lug_edificio_r",
+   "punto": {
+    "lat": 29.12233,
+    "lng": -110.962691
+   },
+   "lugarId": "lug_edificio_r"
+  },
+  {
+   "id": "n_lug_explanada_estudiantil",
+   "punto": {
+    "lat": 29.121585,
+    "lng": -110.961961
+   },
+   "lugarId": "lug_explanada_estudiantil"
+  },
+  {
+   "id": "n_lug_campo_deportivo",
+   "punto": {
+    "lat": 29.12142,
+    "lng": -110.96389
+   },
+   "lugarId": "lug_campo_deportivo"
+  },
+  {
+   "id": "n_lug_plaza_central",
+   "punto": {
+    "lat": 29.121868,
+    "lng": -110.961954
+   },
+   "lugarId": "lug_plaza_central"
+  },
+  {
+   "id": "n_lug_edificio_de_musica",
+   "punto": {
+    "lat": 29.122338,
+    "lng": -110.962526
+   },
+   "lugarId": "lug_edificio_de_musica"
+  },
+  {
+   "id": "n_lug_sanitarios_zona_explanada",
+   "punto": {
+    "lat": 29.121707,
+    "lng": -110.962067
+   },
+   "lugarId": "lug_sanitarios_zona_explanada"
+  },
+  {
+   "id": "n_lug_sanitarios_zona_edificio_g",
+   "punto": {
+    "lat": 29.121841,
+    "lng": -110.961214
+   },
+   "lugarId": "lug_sanitarios_zona_edificio_g"
+  },
+  {
+   "id": "n_lug_sanitarios_zona_laboratorios",
+   "punto": {
+    "lat": 29.121434,
+    "lng": -110.962473
+   },
+   "lugarId": "lug_sanitarios_zona_laboratorios"
+  },
+  {
+   "id": "n_lug_estacionamiento_1",
+   "punto": {
+    "lat": 29.120399,
+    "lng": -110.962279
+   },
+   "lugarId": "lug_estacionamiento_1"
+  },
+  {
+   "id": "n_lug_estacionamiento_2",
+   "punto": {
+    "lat": 29.121561,
+    "lng": -110.961074
+   },
+   "lugarId": "lug_estacionamiento_2"
+  },
+  {
+   "id": "n_lug_estacionamiento_3",
+   "punto": {
+    "lat": 29.122054,
+    "lng": -110.962517
+   },
+   "lugarId": "lug_estacionamiento_3"
+  },
+  {
+   "id": "n_lug_estacionamiento_4",
+   "punto": {
+    "lat": 29.121297,
+    "lng": -110.963208
+   },
+   "lugarId": "lug_estacionamiento_4"
+  },
+  {
+   "id": "n_lug_control_escolar_ues",
+   "punto": {
+    "lat": 29.1218,
+    "lng": -110.96238
+   },
+   "lugarId": "lug_control_escolar_ues"
+  },
+  {
+   "id": "n_lug_acceso_principal",
+   "punto": {
+    "lat": 29.12061,
+    "lng": -110.96233
+   },
+   "lugarId": "lug_acceso_principal"
+  },
+  {
+   "id": "n_lug_acceso_poniente",
+   "punto": {
+    "lat": 29.12147,
+    "lng": -110.9642
+   },
+   "lugarId": "lug_acceso_poniente"
+  }
+ ],
+ "aristas": [
+  {
+   "a": "n0",
+   "b": "n1",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n2",
+   "b": "n3",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n3",
+   "b": "n4",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n1",
+   "b": "n5",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n5",
+   "b": "n6",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n6",
+   "b": "n7",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n8",
+   "b": "n9",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n9",
+   "b": "n10",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n10",
+   "b": "n0",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n4",
+   "b": "n11",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n12",
+   "b": "n13",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n13",
+   "b": "n14",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n14",
+   "b": "n15",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n16",
+   "b": "n17",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n17",
+   "b": "n12",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n12",
+   "b": "n18",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n19",
+   "b": "n20",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n20",
+   "b": "n21",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n21",
+   "b": "n22",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n22",
+   "b": "n23",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n23",
+   "b": "n24",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n24",
+   "b": "n25",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n26",
+   "b": "n19",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n19",
+   "b": "n27",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n27",
+   "b": "n28",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n28",
+   "b": "n29",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n29",
+   "b": "n30",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n30",
+   "b": "n31",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n31",
+   "b": "n25",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n32",
+   "b": "n0",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n11",
+   "b": "n32",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n1",
+   "b": "n2",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n6",
+   "b": "n2",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n33",
+   "b": "n34",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n34",
+   "b": "n35",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n35",
+   "b": "n36",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n36",
+   "b": "n37",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n37",
+   "b": "n34",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n38",
+   "b": "n39",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n39",
+   "b": "n40",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n41",
+   "b": "n42",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n42",
+   "b": "n43",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n43",
+   "b": "n44",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n44",
+   "b": "n45",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n7",
+   "b": "n46",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n47",
+   "b": "n48",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n48",
+   "b": "n49",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n49",
+   "b": "n50",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n50",
+   "b": "n47",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n10",
+   "b": "n50",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n19",
+   "b": "n8",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n12",
+   "b": "n46",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n33",
+   "b": "n15",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n41",
+   "b": "n46",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n38",
+   "b": "n16",
+   "tipo": "exterior"
+  },
+  {
+   "a": "n_lug_centro_de_computo",
+   "b": "n15",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_n",
+   "b": "n33",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_a",
+   "b": "n26",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_b",
+   "b": "n1",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_laboratorios_centrales",
+   "b": "n5",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_f",
+   "b": "n13",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_g",
+   "b": "n18",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_k_laboratorios_turismo",
+   "b": "n46",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_i",
+   "b": "n46",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_aula_magna_biblioteca",
+   "b": "n42",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_oficinas_academicas",
+   "b": "n11",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_invernadero",
+   "b": "n0",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_recursos_humanos",
+   "b": "n46",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_e",
+   "b": "n7",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_gimnasio_ues",
+   "b": "n34",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_taller_de_ecoprocesos",
+   "b": "n48",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_ciencias_de_la_salud",
+   "b": "n48",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_cafeteria_ues",
+   "b": "n46",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_domo_ues",
+   "b": "n43",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_r",
+   "b": "n2",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_explanada_estudiantil",
+   "b": "n5",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_campo_deportivo",
+   "b": "n49",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_plaza_central",
+   "b": "n46",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_edificio_de_musica",
+   "b": "n6",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_sanitarios_zona_explanada",
+   "b": "n5",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_sanitarios_zona_edificio_g",
+   "b": "n18",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_sanitarios_zona_laboratorios",
+   "b": "n1",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_estacionamiento_1",
+   "b": "n30",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_estacionamiento_2",
+   "b": "n13",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_estacionamiento_3",
+   "b": "n6",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_estacionamiento_4",
+   "b": "n49",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_control_escolar_ues",
+   "b": "n5",
+   "tipo": "pasillo"
+  },
+  {
+   "a": "n_lug_acceso_principal",
+   "b": "n28",
+   "tipo": "rampa"
+  },
+  {
+   "a": "n_lug_acceso_poniente",
+   "b": "n48",
+   "tipo": "escalera"
+  }
+ ]
+}

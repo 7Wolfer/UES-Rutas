@@ -85,12 +85,15 @@ class MotorRutas {
       usaRampa: false,
     );
 
-    final idOrigen = _nodos.containsKey('n_${origen.id}')
-        ? 'n_${origen.id}'
-        : _nodoMasCercano(origen.punto);
-    final idDestino = _nodos.containsKey('n_${destino.id}')
-        ? 'n_${destino.id}'
-        : _nodoMasCercano(destino.punto);
+    // Un lugar del catálogo tiene su propio nodo (`n_<id>`), colocado en su
+    // entrada. La ubicación del usuario no: se engancha al nodo más cercano y se
+    // dibuja un tramo recto de aproximación hasta él.
+    final origenEnGrafo = _nodos.containsKey('n_${origen.id}');
+    final destinoEnGrafo = _nodos.containsKey('n_${destino.id}');
+    final idOrigen =
+        origenEnGrafo ? 'n_${origen.id}' : _nodoMasCercano(origen.punto);
+    final idDestino =
+        destinoEnGrafo ? 'n_${destino.id}' : _nodoMasCercano(destino.punto);
     if (idOrigen == null || idDestino == null) return vacio;
     if (idOrigen == idDestino) return vacio;
 
@@ -149,12 +152,18 @@ class MotorRutas {
       }
     }
 
-    final aproxOrigen = origen.punto.distanciaA(nodos.first.punto);
-    final aproxDestino = destino.punto.distanciaA(nodos.last.punto);
+    final aproxOrigen =
+        origenEnGrafo ? 0.0 : origen.punto.distanciaA(nodos.first.punto);
+    final aproxDestino =
+        destinoEnGrafo ? 0.0 : destino.punto.distanciaA(nodos.last.punto);
 
     return RutaCalculada(
       nodos: nodos,
-      puntos: [origen.punto, ...nodos.map((n) => n.punto), destino.punto],
+      puntos: [
+        if (!origenEnGrafo) origen.punto,
+        ...nodos.map((n) => n.punto),
+        if (!destinoEnGrafo) destino.punto,
+      ],
       distancia: (dist[idDestino] ?? 0) + aproxOrigen + aproxDestino,
       aproxOrigen: aproxOrigen,
       accesible: accesible,
