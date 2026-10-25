@@ -3,7 +3,7 @@ description: >
   UES Rutas — aplicación de orientación y navegación para el campus de la
   Universidad Estatal de Sonora (plantel Hermosillo).
 publish_to: "none"
-version: 0.2.0+2
+version: 0.3.0+3
 
 environment:
   sdk: ">=3.5.0 <4.0.0"

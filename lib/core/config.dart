@@ -14,7 +14,7 @@ abstract final class AppConfig {
   static const String nombreApp = 'UES Rutas';
 
   /// Versión visible (coincide con `pubspec.yaml`).
-  static const String version = '0.2.0';
+  static const String version = '0.3.0';
 
   /// Número de Atención (WhatsApp / llamada). **Ficticio** hasta tener el real.
   static const String telefonoAtencion = '+526620000000';
