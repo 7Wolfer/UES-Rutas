@@ -69,7 +69,7 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
 
   /// Categorías visibles cuando el mapa está "lejos" (vista de campus).
   static const _catsLejos = {
-    CategoriaMapa.aula,
+    CategoriaMapa.edificio,
     CategoriaMapa.biblioteca,
     CategoriaMapa.alimentos,
     CategoriaMapa.deportivo,
@@ -110,7 +110,9 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
   @override
   void didUpdateWidget(covariant MapaCampus old) {
     super.didUpdateWidget(old);
-    if (!identical(old.data, widget.data) || old.oscuro != widget.oscuro) {
+    if (!identical(old.data, widget.data) ||
+        old.oscuro != widget.oscuro ||
+        old.estilo != widget.estilo) {
       _recalcularEstaticas();
     }
   }
@@ -150,13 +152,17 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
         ),
     ];
 
+    // En la vista "Plano" el propio plano ya dibuja los edificios: los
+    // polígonos se quedan apenas insinuados para no tapar sus letras.
+    final plano = estilo == EstiloMapa.plano;
     _edificiosBasePolis = [
       for (final l in data.lugares)
         if (l.poligono != null && l.poligono!.length >= 3)
           Polygon(
             points: l.poligono!.map((p) => p.toLatLng()).toList(),
-            color: l.categoria.color.withValues(alpha: oscuro ? 0.35 : 0.28),
-            borderColor: l.categoria.color.withValues(alpha: 0.9),
+            color: l.categoria.color.withValues(
+                alpha: plano ? 0.06 : (oscuro ? 0.35 : 0.28)),
+            borderColor: l.categoria.color.withValues(alpha: plano ? 0.45 : 0.9),
             borderStrokeWidth: 1,
           ),
     ];
@@ -238,6 +244,8 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
       ),
       children: [
         _tiles(),
+        if (estilo == EstiloMapa.plano && data.info.planoOverlay != null)
+          _planoLayer(data.info.planoOverlay!),
         PolygonLayer(polygons: _perimetroPolis),
         PolygonLayer(polygons: _edificiosBasePolis),
         Consumer(builder: (context, ref, _) {
@@ -257,9 +265,26 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
         }),
         if (hayRuta) _rutaLayer(),
         Consumer(builder: (context, ref, _) {
-          return _marcadores(context, _watchDestacadoId(ref));
+          final ocultas = ref.watch(categoriasOcultasProvider);
+          return _marcadores(context, _watchDestacadoId(ref), ocultas);
         }),
         _atribucion(context),
+      ],
+    );
+  }
+
+  /// El plano oficial georreferenciado (rotado ~9°): flutter_map lo coloca por
+  /// sus tres esquinas, así que no hace falta rectificar la imagen.
+  OverlayImageLayer _planoLayer(PlanoOverlay p) {
+    return OverlayImageLayer(
+      overlayImages: [
+        RotatedOverlayImage(
+          imageProvider: AssetImage(p.imagen),
+          topLeftCorner: p.tl.toLatLng(),
+          bottomLeftCorner: p.bl.toLatLng(),
+          bottomRightCorner: p.br.toLatLng(),
+          opacity: 0.94,
+        ),
       ],
     );
   }
@@ -301,12 +326,18 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
   bool _visibleLejos(Lugar l) =>
       _catsLejos.contains(l.categoria) || l.id == 'lug_acceso_principal';
 
-  MarkerLayer _marcadores(BuildContext context, String? destacadoId) {
+  MarkerLayer _marcadores(
+    BuildContext context,
+    String? destacadoId,
+    Set<CategoriaMapa> ocultas,
+  ) {
     final markers = <Marker>[];
 
     for (final l in data.lugares) {
       final destacado = l.id == destacadoId;
       if (!_zoomCerca && !destacado && !_visibleLejos(l)) continue;
+      // Filtro del usuario: el lugar resaltado se ve siempre.
+      if (!destacado && ocultas.contains(l.categoria)) continue;
       markers.add(Marker(
         point: l.punto.toLatLng(),
         width: destacado ? 150 : 44,
@@ -349,8 +380,11 @@ class _MapaCampusState extends ConsumerState<MapaCampus> {
       attributions: [
         if (estilo == EstiloMapa.satelite)
           const TextSourceAttribution('Esri, Maxar, Earthstar Geographics')
-        else
+        else ...[
+          if (estilo == EstiloMapa.plano)
+            const TextSourceAttribution('Plano: Universidad Estatal de Sonora'),
           const TextSourceAttribution('© OpenStreetMap contributors'),
+        ],
       ],
     );
   }
@@ -370,6 +404,23 @@ class _PinLugar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final clave = lugar.clave;
+    // La letra/número del plano oficial es lo que la gente busca en la
+    // señalética; el ícono queda para lugares sin clave.
+    final contenido = clave == null
+        ? Icon(lugar.categoria.icono,
+            color: Colors.white, size: destacado ? 20 : 16)
+        : Center(
+            child: Text(
+              clave,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: (destacado ? 17.0 : 13.0) - (clave.length > 1 ? 3 : 0),
+                height: 1,
+              ),
+            ),
+          );
     final punto = Container(
       width: destacado ? 40 : 30,
       height: destacado ? 40 : 30,
@@ -378,8 +429,7 @@ class _PinLugar extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: destacado ? 3 : 2.5),
       ),
-      child: Icon(lugar.categoria.icono,
-          color: Colors.white, size: destacado ? 20 : 16),
+      child: contenido,
     );
 
     return Semantics(

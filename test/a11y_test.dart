@@ -12,9 +12,11 @@ import 'package:ues_rutas/core/theme.dart';
 import 'package:ues_rutas/data/campus_repository.dart';
 import 'package:ues_rutas/data/models.dart';
 import 'package:ues_rutas/data/providers.dart';
+import 'package:ues_rutas/design_system/widgets.dart';
 import 'package:ues_rutas/features/ajustes/ajustes_screen.dart';
 import 'package:ues_rutas/features/ajustes/settings_controller.dart';
 import 'package:ues_rutas/features/credencializacion/credencializacion_screen.dart';
+import 'package:ues_rutas/features/home/filtro_categorias_sheet.dart';
 import 'package:ues_rutas/features/notificaciones/notificaciones_screen.dart';
 
 void main() {
@@ -75,6 +77,48 @@ void main() {
 
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('Filtro de categorías: chips de 48 px con etiqueta y estado',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await bombear(
+        tester,
+        Scaffold(
+          body: Builder(
+            builder: (context) => Center(
+              child: FilledButton(
+                onPressed: () => mostrarFiltroCategorias(context, data),
+                child: const Text('Filtrar lugares'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Filtrar lugares'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Mostrar en el mapa'), findsOneWidget);
+      // Una pastilla por categoría presente en el catálogo; "aula" no existe
+      // hasta la versión con salones.
+      expect(find.text('Laboratorio'), findsOneWidget);
+      expect(find.text('Aula'), findsNothing);
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+
+      // Al tocar una pastilla queda apagada (y el mapa oculta la categoría);
+      // "Todos" la vuelve a encender.
+      bool encendida(String etiqueta) => tester
+          .widget<ChipCategoria>(find.widgetWithText(ChipCategoria, etiqueta))
+          .seleccionado;
+      await tester.tap(find.text('Deportivo'));
+      await tester.pumpAndSettle();
+      expect(encendida('Deportivo'), isFalse);
+      expect(encendida('Edificio'), isTrue);
+      await tester.tap(find.text('Todos'));
+      await tester.pumpAndSettle();
+      expect(encendida('Deportivo'), isTrue);
       handle.dispose();
     });
   });

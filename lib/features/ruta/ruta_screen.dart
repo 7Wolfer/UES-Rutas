@@ -39,6 +39,17 @@ class _RutaScreenState extends ConsumerState<RutaScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant RutaScreen old) {
+    super.didUpdateWidget(old);
+    // go_router reutiliza la pantalla al cambiar solo los parámetros de la
+    // URL (p. ej. un enlace compartido abierto sobre otra ruta).
+    if (old.origenId != widget.origenId) _origenId = widget.origenId;
+    if (old.accesibleInicial != widget.accesibleInicial) {
+      _accesible = widget.accesibleInicial;
+    }
+  }
+
+  @override
   void dispose() {
     _map.dispose();
     super.dispose();

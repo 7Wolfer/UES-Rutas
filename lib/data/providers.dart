@@ -68,19 +68,23 @@ final resultadosBusquedaProvider = Provider<List<ResultadoBusqueda>>((ref) {
   return buscar(data, q);
 });
 
+/// Orden en que se presentan las categorías (directorio, filtro del mapa).
+const ordenCategorias = [
+  CategoriaMapa.edificio,
+  CategoriaMapa.laboratorio,
+  CategoriaMapa.biblioteca,
+  CategoriaMapa.oficina,
+  CategoriaMapa.alimentos,
+  CategoriaMapa.deportivo,
+  CategoriaMapa.servicios,
+  CategoriaMapa.estacionamiento,
+  CategoriaMapa.aula,
+];
+
 /// Directorio pre-agrupado para la hoja de inicio: intercala encabezados de
 /// categoría (`CategoriaMapa`) y `Lugar`. Memorizado para no reagrupar/ordenar
 /// en cada build de la hoja.
 final directorioProvider = Provider<List<Object>>((ref) {
-  const cats = [
-    CategoriaMapa.aula,
-    CategoriaMapa.biblioteca,
-    CategoriaMapa.alimentos,
-    CategoriaMapa.deportivo,
-    CategoriaMapa.servicios,
-    CategoriaMapa.estacionamiento,
-    CategoriaMapa.oficina,
-  ];
   final data = ref.watch(campusDataProvider).valueOrNull;
   if (data == null) return const [];
   final porCat = <CategoriaMapa, List<Lugar>>{};
@@ -88,7 +92,7 @@ final directorioProvider = Provider<List<Object>>((ref) {
     porCat.putIfAbsent(l.categoria, () => []).add(l);
   }
   final items = <Object>[];
-  for (final cat in cats) {
+  for (final cat in ordenCategorias) {
     final lugares = porCat[cat];
     if (lugares == null) continue;
     lugares.sort((a, b) => a.nombre.compareTo(b.nombre));
@@ -104,10 +108,48 @@ final lugarSeleccionadoProvider = StateProvider<String?>((ref) => null);
 
 // --- Estilo del mapa ---
 
-enum EstiloMapa { estandar, satelite }
+/// `plano` = el plano oficial georreferenciado sobre el mapa estándar.
+enum EstiloMapa { estandar, satelite, plano }
 
 final estiloMapaProvider =
     StateProvider<EstiloMapa>((ref) => EstiloMapa.estandar);
+
+// --- Filtro de pines por categoría ---
+
+/// Categorías que el usuario decidió ocultar en el mapa (persistido). Se guarda
+/// lo oculto, no lo visible: así todo se ve por defecto y una categoría nueva
+/// aparece sola. No afecta al directorio ni a la búsqueda.
+class CategoriasOcultasController extends Notifier<Set<CategoriaMapa>> {
+  static const _k = 'mapa.categoriasOcultas';
+
+  @override
+  Set<CategoriaMapa> build() {
+    final guardadas = ref.read(sharedPrefsProvider).getStringList(_k) ?? const [];
+    return {
+      for (final n in guardadas)
+        for (final c in CategoriaMapa.values)
+          if (c.name == n) c,
+    };
+  }
+
+  Future<void> alternar(CategoriaMapa c) async {
+    state = state.contains(c) ? ({...state}..remove(c)) : {...state, c};
+    await _guardar();
+  }
+
+  Future<void> mostrarTodas() async {
+    state = const {};
+    await _guardar();
+  }
+
+  Future<void> _guardar() => ref
+      .read(sharedPrefsProvider)
+      .setStringList(_k, [for (final c in state) c.name]);
+}
+
+final categoriasOcultasProvider =
+    NotifierProvider<CategoriasOcultasController, Set<CategoriaMapa>>(
+        CategoriasOcultasController.new);
 
 // --- Avisos / notificaciones ---
 

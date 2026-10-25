@@ -56,6 +56,7 @@ abstract final class UesBrand {
 enum CategoriaMapa {
   aula('Aula', Color(0xFF8E1537), Icons.meeting_room_outlined),
   edificio('Edificio', Color(0xFF8E1537), Icons.apartment_outlined),
+  laboratorio('Laboratorio', Color(0xFF5E4B8B), Icons.science_outlined),
   oficina('Oficina', Color(0xFF6D4B54), Icons.badge_outlined),
   servicios('Servicios', Color(0xFF3F6B7D), Icons.wc_outlined),
   alimentos('Cafetería', Color(0xFFB4531F), Icons.restaurant_outlined),
@@ -75,7 +76,7 @@ enum CategoriaMapa {
   static CategoriaMapa desdeId(String? id) {
     return CategoriaMapa.values.firstWhere(
       (c) => c.name == id,
-      orElse: () => CategoriaMapa.aula,
+      orElse: () => CategoriaMapa.edificio,
     );
   }
 }

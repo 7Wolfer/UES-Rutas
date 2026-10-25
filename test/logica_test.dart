@@ -23,8 +23,7 @@ void main() {
     expect(data.aristas, isNotEmpty);
     expect(data.info.perimetro.length, greaterThan(4));
     expect(data.lugares.any((l) => l.nombre.contains('Cafetería')), isTrue);
-    expect(
-        data.lugares.any((l) => l.nombre == 'Aula Magna / Biblioteca'), isTrue);
+    expect(data.lugares.any((l) => l.nombre.contains('Biblioteca')), isTrue);
   });
 
   test('todas las coordenadas caen dentro del campus de Hermosillo', () {
@@ -204,9 +203,12 @@ void main() {
 
     test('ninguna arista cruza el polígono de un edificio', () {
       final nodo = {for (final n in data.nodos) n.id: n.punto};
+      // Las áreas transitables (explanada, estacionamientos) se dibujan pero
+      // no son obstáculo: por ellas sí pasan las rutas.
       final edificios = {
         for (final l in data.lugares)
-          if (l.poligono != null && l.poligono!.length >= 3) l.id: anillo(l)
+          if (l.poligono != null && l.poligono!.length >= 3 && !l.transitable)
+            l.id: anillo(l)
       };
       final infractoras = <String>[];
       for (final ar in data.aristas) {

@@ -4,7 +4,7 @@
     "nombre": "Dra. Laura Martínez Rivera",
     "departamento": "Ingeniería de Software",
     "correo": "laura.martinez@ues.mx",
-    "oficinaLugarId": "lug_oficinas_academicas",
+    "oficinaLugarId": "lug_edificio_c",
     "fotoUrl": null,
     "asignaciones": [
       { "materia": "Estructuras de Datos", "grupo": "2-A", "lugarId": "lug_centro_de_computo", "dia": 1, "horaInicio": 7, "minInicio": 0, "horaFin": 8, "minFin": 30 },

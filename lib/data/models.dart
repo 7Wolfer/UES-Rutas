@@ -44,6 +44,8 @@ class Lugar {
     this.nombreCorto,
     this.descripcion = '',
     this.poligono,
+    this.clave,
+    this.transitable = false,
   });
 
   /// Id del origen sintético "mi ubicación" (no existe en el catálogo).
@@ -69,8 +71,18 @@ class Lugar {
   /// Contorno del edificio (si aplica), para dibujar sobre el mapa.
   final List<Punto>? poligono;
 
+  /// Letra o número con que el plano oficial identifica el lugar ("A", "S1",
+  /// "6"). Es lo que ve la gente en la señalética del campus.
+  final String? clave;
+
+  /// `true` si el polígono es un área por la que se camina (explanada,
+  /// estacionamiento): se dibuja, pero no estorba a las rutas.
+  final bool transitable;
+
   bool get esEdificio =>
       categoria == CategoriaMapa.aula ||
+      categoria == CategoriaMapa.edificio ||
+      categoria == CategoriaMapa.laboratorio ||
       categoria == CategoriaMapa.biblioteca ||
       categoria == CategoriaMapa.oficina;
 
@@ -87,8 +99,22 @@ class Lugar {
         poligono: (j['poligono'] as List?)
             ?.map((e) => Punto.fromJson(e as Map<String, dynamic>))
             .toList(),
+        clave: j['clave'] as String?,
+        transitable: (j['transitable'] ?? false) as bool,
       );
 }
+
+/// Ids retirados del catálogo al adoptar la nomenclatura del plano oficial.
+/// Siguen resolviendo (enlaces compartidos, datos antiguos) al lugar que los
+/// absorbió.
+const aliasesLugar = <String, String>{
+  'lug_oficinas_academicas': 'lug_control_escolar_ues',
+  'lug_edificio_de_musica': 'lug_edificio_r',
+  'lug_plaza_central': 'lug_explanada_estudiantil',
+  'lug_sanitarios_zona_explanada': 'lug_edificio_d',
+  'lug_sanitarios_zona_edificio_g': 'lug_edificio_g',
+  'lug_sanitarios_zona_laboratorios': 'lug_laboratorios_centrales',
+};
 
 @immutable
 class Asignacion {
@@ -189,6 +215,34 @@ class Docente {
       );
 }
 
+/// El plano oficial georreferenciado, para la vista "Plano" del mapa: imagen
+/// (asset) y sus tres esquinas en coordenadas, tal como las produce
+/// `scripts/importar_plano.py`.
+@immutable
+class PlanoOverlay {
+  const PlanoOverlay({
+    required this.imagen,
+    required this.tl,
+    required this.bl,
+    required this.br,
+  });
+
+  final String imagen;
+  final Punto tl;
+  final Punto bl;
+  final Punto br;
+
+  factory PlanoOverlay.fromJson(Map<String, dynamic> j) {
+    final e = j['esquinas'] as Map<String, dynamic>;
+    return PlanoOverlay(
+      imagen: j['imagen'] as String,
+      tl: Punto.fromJson(e['tl'] as Map<String, dynamic>),
+      bl: Punto.fromJson(e['bl'] as Map<String, dynamic>),
+      br: Punto.fromJson(e['br'] as Map<String, dynamic>),
+    );
+  }
+}
+
 /// Contorno y centro del campus (de `assets/seed/campus.json`).
 @immutable
 class CampusInfo {
@@ -196,11 +250,13 @@ class CampusInfo {
     required this.perimetro,
     required this.centro,
     required this.campoDeportivo,
+    this.planoOverlay,
   });
 
   final List<Punto> perimetro;
   final Punto centro;
   final List<Punto> campoDeportivo;
+  final PlanoOverlay? planoOverlay;
 
   factory CampusInfo.fromJson(Map<String, dynamic> j) => CampusInfo(
         perimetro: (j['perimetro'] as List)
@@ -210,6 +266,9 @@ class CampusInfo {
         campoDeportivo: ((j['campoDeportivo'] ?? []) as List)
             .map((e) => Punto.fromJson(e as Map<String, dynamic>))
             .toList(),
+        planoOverlay: j['planoOverlay'] == null
+            ? null
+            : PlanoOverlay.fromJson(j['planoOverlay'] as Map<String, dynamic>),
       );
 }
 
@@ -231,8 +290,13 @@ class CampusData {
 
   List<Lugar> get edificios => lugares.where((l) => l.esEdificio).toList();
 
-  Lugar? lugar(String? id) =>
-      id == null ? null : lugares.firstWhereOrNull((l) => l.id == id);
+  /// Busca por id; los ids retirados (`aliasesLugar`) resuelven al lugar que
+  /// los absorbió, para que los enlaces antiguos sigan abriendo.
+  Lugar? lugar(String? id) {
+    if (id == null) return null;
+    final real = aliasesLugar[id] ?? id;
+    return lugares.firstWhereOrNull((l) => l.id == real);
+  }
   Docente? docente(String? id) =>
       id == null ? null : docentes.firstWhereOrNull((d) => d.id == id);
 }

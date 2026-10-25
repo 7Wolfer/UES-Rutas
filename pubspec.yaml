@@ -67,6 +67,7 @@ flutter:
     - assets/brand/
     - assets/docs/
     - assets/tiles/
+    - assets/plano/
 
   # Identidad UES: Montserrat (títulos) + Source Sans 3 (cuerpo).
   # Empaquetadas para no descargarlas en runtime (arranque más rápido, sin FOUT).

@@ -36,3 +36,15 @@ android/key.properties
 # Supabase CLI
 supabase/.branches/
 supabase/.temp/
+
+# Imágenes de depuración de los scripts (se regeneran)
+scripts/datos/*_debug.png
+__pycache__/
+
+# Plano oficial de la UES a resolución completa: no se publica (repo público).
+# Se regenera con: python3 scripts/importar_plano.py --pdf <ruta al PDF del plano>
+scripts/datos/plano_campus_fuente.jpeg
+
+# Notas locales del asistente de código
+CLAUDE.md
+

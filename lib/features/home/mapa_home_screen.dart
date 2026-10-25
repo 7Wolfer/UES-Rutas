@@ -10,6 +10,7 @@ import '../../data/providers.dart';
 import '../../design_system/widgets.dart';
 import '../../services/ubicacion_service.dart';
 import '../mapa/mapa_campus.dart';
+import 'filtro_categorias_sheet.dart';
 import 'home_sheet.dart';
 
 class MapaHomeScreen extends ConsumerStatefulWidget {
@@ -82,6 +83,12 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
     final dataAsync = ref.watch(campusDataProvider);
     final estilo = ref.watch(estiloMapaProvider);
     final destacado = ref.watch(avisoDestacadoProvider);
+    final ocultas = ref.watch(categoriasOcultasProvider);
+    final (IconData iconoVista, String nombreVista) = switch (estilo) {
+      EstiloMapa.estandar => (Icons.map_outlined, 'Estándar'),
+      EstiloMapa.satelite => (Icons.satellite_alt_outlined, 'Satélite'),
+      EstiloMapa.plano => (Icons.grid_on_outlined, 'Plano oficial'),
+    };
 
     return Scaffold(
       drawer: const AppDrawer(),
@@ -171,14 +178,27 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
               child: Column(
                 children: [
                   BotonCircularMapa(
-                    icon: estilo == EstiloMapa.satelite
-                        ? Icons.map_outlined
-                        : Icons.layers_outlined,
-                    tooltip: 'Cambiar vista',
-                    onTap: () => ref.read(estiloMapaProvider.notifier).state =
-                        estilo == EstiloMapa.satelite
-                            ? EstiloMapa.estandar
-                            : EstiloMapa.satelite,
+                    icon: Icons.filter_alt_outlined,
+                    tooltip: 'Filtrar lugares',
+                    activo: ocultas.isNotEmpty,
+                    onTap: () => mostrarFiltroCategorias(context, data),
+                  ),
+                  const SizedBox(height: 10),
+                  BotonCircularMapa(
+                    icon: iconoVista,
+                    tooltip: 'Vista: $nombreVista. Toca para cambiar',
+                    onTap: () {
+                      // Estándar → Satélite → Plano → Estándar. La vista Plano
+                      // solo si el catálogo trae el plano georreferenciado.
+                      final hayPlano = data.info.planoOverlay != null;
+                      final siguiente = switch (estilo) {
+                        EstiloMapa.estandar => EstiloMapa.satelite,
+                        EstiloMapa.satelite =>
+                          hayPlano ? EstiloMapa.plano : EstiloMapa.estandar,
+                        EstiloMapa.plano => EstiloMapa.estandar,
+                      };
+                      ref.read(estiloMapaProvider.notifier).state = siguiente;
+                    },
                   ),
                   const SizedBox(height: 10),
                   BotonCircularMapa(
