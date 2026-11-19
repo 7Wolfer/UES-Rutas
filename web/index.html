@@ -15,6 +15,10 @@
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
+  <!-- OpenStreetMap bloquea las teselas pedidas sin encabezado Referer. Si el
+       hosting manda "Referrer-Policy: same-origin", el navegador no lo envía;
+       esta etiqueta manda solo el origen del sitio (sin rutas ni datos). -->
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="UES Rutas — prototipo de prácticas profesionales (no oficial) de orientación y navegación para el campus Hermosillo de la Universidad Estatal de Sonora.">
   <!-- Prototipo académico: que no aparezca en buscadores. -->
