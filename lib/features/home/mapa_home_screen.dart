@@ -9,6 +9,7 @@ import '../../data/models.dart';
 import '../../data/providers.dart';
 import '../../design_system/widgets.dart';
 import '../../services/ubicacion_service.dart';
+import '../mapa/capa_usuario.dart';
 import '../mapa/mapa_campus.dart';
 import 'filtro_categorias_sheet.dart';
 import 'home_sheet.dart';
@@ -107,7 +108,10 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
                 controller: _map,
                 estilo: estilo,
                 oscuro: oscuro,
-                posicionUsuario: ref.watch(posicionUsuarioProvider),
+                usuario: switch (ref.watch(posicionUsuarioProvider)) {
+                  final pos? => UbicacionEnMapa(posicion: pos),
+                  null => null,
+                },
                 onTapLugar: (l) {
                   ref.read(lugarSeleccionadoProvider.notifier).state = l.id;
                   _centrarEn(l);
@@ -197,7 +201,7 @@ class _MapaHomeScreenState extends ConsumerState<MapaHomeScreen> {
                           hayPlano ? EstiloMapa.plano : EstiloMapa.estandar,
                         EstiloMapa.plano => EstiloMapa.estandar,
                       };
-                      ref.read(estiloMapaProvider.notifier).state = siguiente;
+                      ref.read(estiloMapaProvider.notifier).elegir(siguiente);
                     },
                   ),
                   const SizedBox(height: 10),

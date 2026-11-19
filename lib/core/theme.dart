@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'brand.dart';
@@ -53,6 +55,39 @@ abstract final class UesTheme {
           isLight ? UesBrand.neutro0 : UesBrand.oscuroFondo,
       textTheme: textTheme,
       splashFactory: InkSparkle.splashFactory,
+      // Transiciones nativas: "atrás predictivo" en Android y deslizar desde
+      // el borde en iOS. En web, un fundido que no pelea con el gesto de
+      // atrás del navegador.
+      pageTransitionsTheme: kIsWeb
+          ? PageTransitionsTheme(builders: {
+              for (final p in TargetPlatform.values)
+                p: const FadeForwardsPageTransitionsBuilder(),
+            })
+          : const PageTransitionsTheme(builders: {
+              TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.windows: FadeForwardsPageTransitionsBuilder(),
+              TargetPlatform.linux: FadeForwardsPageTransitionsBuilder(),
+              TargetPlatform.fuchsia: FadeForwardsPageTransitionsBuilder(),
+            }),
+      // Pestañas dentro de la barra superior (vino en claro): texto blanco.
+      tabBarTheme: TabBarThemeData(
+        labelColor: isLight ? Colors.white : cs.primary,
+        unselectedLabelColor:
+            isLight ? Colors.white.withValues(alpha: 0.78) : cs.onSurfaceVariant,
+        indicatorColor: isLight ? UesBrand.amarillo : cs.primary,
+        dividerColor: Colors.transparent,
+        labelStyle: const TextStyle(
+            fontFamily: _titulos, fontSize: 14, fontWeight: FontWeight.w700),
+        unselectedLabelStyle: const TextStyle(
+            fontFamily: _titulos, fontSize: 14, fontWeight: FontWeight.w600),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        insetPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: isLight ? UesBrand.vino : UesBrand.oscuroSuperficie,
         foregroundColor: isLight ? Colors.white : UesBrand.oscuroTexto,

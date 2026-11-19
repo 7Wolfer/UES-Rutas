@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/brand.dart';
+import '../core/movimiento.dart';
 
 /// Campo de búsqueda universal (aula, edificio, servicio, docente).
 class CampoBusqueda extends StatelessWidget {
@@ -21,25 +22,180 @@ class CampoBusqueda extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      autofocus: autofocus,
-      textInputAction: TextInputAction.search,
-      onChanged: onChanged,
-      onSubmitted: onSubmitted,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: const Icon(Icons.search),
-        suffixIcon: (controller?.text.isNotEmpty ?? false)
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                tooltip: 'Limpiar',
-                onPressed: () {
-                  controller?.clear();
-                  onChanged?.call('');
-                },
-              )
-            : null,
+    final c = controller;
+    Widget campo(bool conTexto) => TextField(
+          controller: c,
+          autofocus: autofocus,
+          textInputAction: TextInputAction.search,
+          onChanged: onChanged,
+          onSubmitted: onSubmitted,
+          decoration: InputDecoration(
+            hintText: hintText,
+            prefixIcon: const Icon(Icons.search),
+            suffixIcon: AnimatedSwitcher(
+              duration: Movimiento.de(context, Movimiento.rapida),
+              transitionBuilder: (child, a) =>
+                  ScaleTransition(scale: a, child: child),
+              child: conTexto
+                  ? IconButton(
+                      key: const ValueKey('limpiar'),
+                      icon: const Icon(Icons.close),
+                      tooltip: 'Limpiar',
+                      onPressed: () {
+                        c?.clear();
+                        onChanged?.call('');
+                      },
+                    )
+                  : const SizedBox.shrink(key: ValueKey('vacio')),
+            ),
+          ),
+        );
+    // La "X" escucha al controlador: aparece y desaparece con el texto.
+    if (c == null) return campo(false);
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: c,
+      builder: (context, v, _) => campo(v.text.isNotEmpty),
+    );
+  }
+}
+
+/// Encoge ligeramente a su hijo mientras se presiona (respuesta táctil).
+/// No interfiere con el ripple ni con la semántica del hijo.
+class Presionable extends StatefulWidget {
+  const Presionable({super.key, required this.child, this.escala = 0.96});
+
+  final Widget child;
+  final double escala;
+
+  @override
+  State<Presionable> createState() => _PresionableState();
+}
+
+class _PresionableState extends State<Presionable> {
+  bool _abajo = false;
+
+  void _poner(bool v) {
+    if (_abajo != v) setState(() => _abajo = v);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (Movimiento.reducido(context)) return widget.child;
+    return Listener(
+      onPointerDown: (_) => _poner(true),
+      onPointerUp: (_) => _poner(false),
+      onPointerCancel: (_) => _poner(false),
+      child: AnimatedScale(
+        scale: _abajo ? widget.escala : 1,
+        duration: Movimiento.presion,
+        curve: Movimiento.estandar,
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+/// Número que cambia con una transición suave (distancias, minutos).
+class NumeroAnimado extends StatelessWidget {
+  const NumeroAnimado({
+    super.key,
+    required this.valor,
+    required this.formatear,
+    this.estilo,
+    this.duracion = Movimiento.lenta,
+  });
+
+  final double valor;
+  final String Function(double v) formatear;
+  final TextStyle? estilo;
+  final Duration duracion;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: formatear(valor),
+      excludeSemantics: true,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(end: valor),
+        duration: Movimiento.de(context, duracion),
+        curve: Movimiento.entrada,
+        builder: (context, v, _) => Text(formatear(v), style: estilo),
+      ),
+    );
+  }
+}
+
+/// Bloque gris con brillo que recorre mientras algo carga. El brillo se
+/// detiene solo (y no corre con "reducir movimiento" ni en pruebas).
+class EsqueletoCarga extends StatefulWidget {
+  const EsqueletoCarga({
+    super.key,
+    this.ancho = double.infinity,
+    this.alto = 14,
+    this.radio = 8,
+  });
+
+  final double ancho;
+  final double alto;
+  final double radio;
+
+  @override
+  State<EsqueletoCarga> createState() => _EsqueletoCargaState();
+}
+
+class _EsqueletoCargaState extends State<EsqueletoCarga>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  );
+  int _ciclos = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Movimiento.buclesPermitidos(context) && !_c.isAnimating && _ciclos < 6) {
+      _c
+        ..addStatusListener(_alTerminar)
+        ..forward(from: 0);
+    }
+  }
+
+  void _alTerminar(AnimationStatus s) {
+    if (s != AnimationStatus.completed) return;
+    _ciclos++;
+    if (_ciclos < 6 && mounted) _c.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final base = cs.surfaceContainerHighest;
+    final brillo = Color.lerp(base, cs.surface, 0.6)!;
+    return ExcludeSemantics(
+      child: AnimatedBuilder(
+        animation: _c,
+        builder: (context, _) {
+          final x = -1.5 + 3 * _c.value;
+          return Container(
+            width: widget.ancho,
+            height: widget.alto,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(widget.radio),
+              gradient: LinearGradient(
+                begin: Alignment(x - 0.6, 0),
+                end: Alignment(x + 0.6, 0),
+                colors: [base, brillo, base],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -318,17 +474,27 @@ class BotonCircularMapa extends StatelessWidget {
         child: SizedBox(
           width: 48,
           height: 48,
-          child: cargando
-              ? const Padding(
-                  padding: EdgeInsets.all(13),
-                  child: CircularProgressIndicator(strokeWidth: 2.4),
-                )
-              : Icon(icon,
-                  size: 22, color: activo ? cs.onPrimary : cs.onSurfaceVariant),
+          child: AnimatedSwitcher(
+            duration: Movimiento.de(context, Movimiento.rapida),
+            transitionBuilder: TransicionesUes.fadeThrough,
+            child: cargando
+                ? const Padding(
+                    key: ValueKey('cargando'),
+                    padding: EdgeInsets.all(13),
+                    child: CircularProgressIndicator(strokeWidth: 2.4),
+                  )
+                : Icon(icon,
+                    key: ValueKey(icon),
+                    size: 22,
+                    color: activo ? cs.onPrimary : cs.onSurfaceVariant),
+          ),
         ),
       ),
     );
-    return tooltip == null ? w : Tooltip(message: tooltip!, child: w);
+    final conPresion = Presionable(child: w);
+    return tooltip == null
+        ? conPresion
+        : Tooltip(message: tooltip!, child: conPresion);
   }
 }
 
@@ -347,6 +513,10 @@ class PastillaAccion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Presionable(child: _pastilla());
+  }
+
+  Widget _pastilla() {
     return Material(
       color: UesBrand.naranja,
       borderRadius: BorderRadius.circular(999),

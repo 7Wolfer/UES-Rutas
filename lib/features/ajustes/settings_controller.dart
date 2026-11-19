@@ -7,6 +7,18 @@ final sharedPrefsProvider = Provider<SharedPreferences>(
   (ref) => throw UnimplementedError('Se sobreescribe en main()'),
 );
 
+/// Ritmo al caminar con que se estiman los tiempos de las rutas.
+enum VelocidadPreferida {
+  /// Lenta en rutas accesibles, normal en las demás.
+  automatica('Automática'),
+  lenta('Lenta'),
+  normal('Normal'),
+  rapida('Rápida');
+
+  const VelocidadPreferida(this.etiqueta);
+  final String etiqueta;
+}
+
 @immutable
 class Settings {
   const Settings({
@@ -17,6 +29,9 @@ class Settings {
     this.avisarImportantes = true,
     this.avisarEventos = true,
     this.avisarRutas = true,
+    this.vibracion = true,
+    this.velocidad = VelocidadPreferida.automatica,
+    this.vozNavegacion = true,
   });
 
   final ThemeMode themeMode;
@@ -29,6 +44,15 @@ class Settings {
   final bool avisarEventos;
   final bool avisarRutas;
 
+  /// Vibración en selecciones, giros y llegada.
+  final bool vibracion;
+
+  /// Ritmo al caminar para estimar tiempos.
+  final VelocidadPreferida velocidad;
+
+  /// Indicaciones por voz durante la navegación.
+  final bool vozNavegacion;
+
   Settings copyWith({
     ThemeMode? themeMode,
     double? textScale,
@@ -37,6 +61,9 @@ class Settings {
     bool? avisarImportantes,
     bool? avisarEventos,
     bool? avisarRutas,
+    bool? vibracion,
+    VelocidadPreferida? velocidad,
+    bool? vozNavegacion,
   }) =>
       Settings(
         themeMode: themeMode ?? this.themeMode,
@@ -46,6 +73,9 @@ class Settings {
         avisarImportantes: avisarImportantes ?? this.avisarImportantes,
         avisarEventos: avisarEventos ?? this.avisarEventos,
         avisarRutas: avisarRutas ?? this.avisarRutas,
+        vibracion: vibracion ?? this.vibracion,
+        velocidad: velocidad ?? this.velocidad,
+        vozNavegacion: vozNavegacion ?? this.vozNavegacion,
       );
 }
 
@@ -57,6 +87,9 @@ class SettingsController extends Notifier<Settings> {
   static const _kImp = 'ajustes.avisarImportantes';
   static const _kEve = 'ajustes.avisarEventos';
   static const _kRut = 'ajustes.avisarRutas';
+  static const _kVib = 'ajustes.vibracion';
+  static const _kVel = 'ajustes.velocidadMarcha';
+  static const _kVoz = 'ajustes.vozNavegacion';
 
   SharedPreferences get _prefs => ref.read(sharedPrefsProvider);
 
@@ -72,6 +105,10 @@ class SettingsController extends Notifier<Settings> {
       avisarImportantes: p.getBool(_kImp) ?? true,
       avisarEventos: p.getBool(_kEve) ?? true,
       avisarRutas: p.getBool(_kRut) ?? true,
+      vibracion: p.getBool(_kVib) ?? true,
+      velocidad: VelocidadPreferida.values
+          .byNameOr(p.getString(_kVel), VelocidadPreferida.automatica),
+      vozNavegacion: p.getBool(_kVoz) ?? true,
     );
   }
 
@@ -109,6 +146,21 @@ class SettingsController extends Notifier<Settings> {
   Future<void> setAvisarRutas(bool v) async {
     state = state.copyWith(avisarRutas: v);
     await _prefs.setBool(_kRut, v);
+  }
+
+  Future<void> setVibracion(bool v) async {
+    state = state.copyWith(vibracion: v);
+    await _prefs.setBool(_kVib, v);
+  }
+
+  Future<void> setVelocidad(VelocidadPreferida v) async {
+    state = state.copyWith(velocidad: v);
+    await _prefs.setString(_kVel, v.name);
+  }
+
+  Future<void> setVozNavegacion(bool v) async {
+    state = state.copyWith(vozNavegacion: v);
+    await _prefs.setBool(_kVoz, v);
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -7,6 +8,7 @@ import '../services/ubicacion_service.dart';
 import 'avisos.dart';
 import 'busqueda.dart';
 import 'calendario.dart';
+import 'campus_geo.dart';
 import 'campus_repository.dart';
 import 'models.dart';
 import 'routing.dart';
@@ -25,6 +27,83 @@ final motorRutasProvider = Provider<MotorRutas?>((ref) {
   final data = ref.watch(campusDataProvider).valueOrNull;
   return data == null ? null : MotorRutas(data);
 });
+
+/// El campus en metros (índice espacial, edificios, perímetro). Lo construye
+/// el motor de rutas una sola vez y lo comparten las demás piezas.
+final campusGeoProvider =
+    Provider<CampusGeo?>((ref) => ref.watch(motorRutasProvider)?.geo);
+
+/// Qué ruta se pide. Igualdad por valor para memorizar el cálculo: la misma
+/// solicitud no vuelve a correr el A*. Las coordenadas de un origen libre se
+/// redondean (~1 m) para no recalcular por ruido del GPS.
+@immutable
+class SolicitudRuta {
+  SolicitudRuta({
+    required this.origenId,
+    required this.destinoId,
+    required this.accesible,
+    double? origenLat,
+    double? origenLng,
+  })  : origenLat = origenLat == null ? null : _redondear(origenLat),
+        origenLng = origenLng == null ? null : _redondear(origenLng);
+
+  final String origenId;
+  final String destinoId;
+  final bool accesible;
+  final double? origenLat;
+  final double? origenLng;
+
+  static double _redondear(double v) => (v * 1e5).roundToDouble() / 1e5;
+
+  /// Origen como `Lugar` (el del catálogo o "Mi ubicación").
+  Lugar? origen(CampusData data) {
+    if (origenId == Lugar.idMiUbicacion) {
+      final lat = origenLat, lng = origenLng;
+      return lat == null || lng == null
+          ? null
+          : Lugar.miUbicacion(LatLng(lat, lng));
+    }
+    return data.lugar(origenId);
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      other is SolicitudRuta &&
+      other.origenId == origenId &&
+      other.destinoId == destinoId &&
+      other.accesible == accesible &&
+      other.origenLat == origenLat &&
+      other.origenLng == origenLng;
+
+  @override
+  int get hashCode =>
+      Object.hash(origenId, destinoId, accesible, origenLat, origenLng);
+}
+
+/// Ruta memorizada por solicitud (`null` mientras carga el campus).
+final rutaProvider =
+    Provider.autoDispose.family<RutaCalculada?, SolicitudRuta>((ref, s) {
+  final data = ref.watch(campusDataProvider).valueOrNull;
+  final motor = ref.watch(motorRutasProvider);
+  if (data == null || motor == null) return null;
+  final origen = s.origen(data);
+  final destino = data.lugar(s.destinoId);
+  if (origen == null || destino == null) {
+    return RutaCalculada.vacia(accesible: s.accesible);
+  }
+  return motor.calcular(
+      origen: origen, destino: destino, accesible: s.accesible);
+});
+
+/// Velocidad al caminar (m/s) según el ajuste del usuario y el tipo de ruta.
+double velocidadMarcha(Settings s, {required bool accesible}) =>
+    switch (s.velocidad) {
+      VelocidadPreferida.lenta => VelocidadMarcha.lenta,
+      VelocidadPreferida.normal => VelocidadMarcha.normal,
+      VelocidadPreferida.rapida => VelocidadMarcha.rapida,
+      VelocidadPreferida.automatica =>
+        accesible ? VelocidadMarcha.lenta : VelocidadMarcha.normal,
+    };
 
 // --- Ubicación del usuario ---
 
@@ -78,6 +157,8 @@ const ordenCategorias = [
   CategoriaMapa.deportivo,
   CategoriaMapa.servicios,
   CategoriaMapa.estacionamiento,
+  CategoriaMapa.salud,
+  CategoriaMapa.accesibilidad,
   CategoriaMapa.aula,
 ];
 
@@ -111,8 +192,26 @@ final lugarSeleccionadoProvider = StateProvider<String?>((ref) => null);
 /// `plano` = el plano oficial georreferenciado sobre el mapa estándar.
 enum EstiloMapa { estandar, satelite, plano }
 
+/// Estilo del mapa elegido (persistido entre sesiones).
+class EstiloMapaController extends Notifier<EstiloMapa> {
+  static const _k = 'mapa.estilo';
+
+  @override
+  EstiloMapa build() {
+    final guardado = ref.read(sharedPrefsProvider).getString(_k);
+    return EstiloMapa.values.firstWhere((e) => e.name == guardado,
+        orElse: () => EstiloMapa.estandar);
+  }
+
+  Future<void> elegir(EstiloMapa e) async {
+    state = e;
+    await ref.read(sharedPrefsProvider).setString(_k, e.name);
+  }
+}
+
 final estiloMapaProvider =
-    StateProvider<EstiloMapa>((ref) => EstiloMapa.estandar);
+    NotifierProvider<EstiloMapaController, EstiloMapa>(
+        EstiloMapaController.new);
 
 // --- Filtro de pines por categoría ---
 

@@ -15,29 +15,6 @@ import '../features/notificaciones/notificaciones_ajustes_screen.dart';
 import '../features/notificaciones/notificaciones_screen.dart';
 import '../features/ruta/ruta_screen.dart';
 
-CustomTransitionPage<void> _fade(Widget child, GoRouterState state) {
-  return CustomTransitionPage(
-    key: state.pageKey,
-    child: child,
-    transitionDuration: const Duration(milliseconds: 240),
-    transitionsBuilder: (context, animation, _, child) {
-      if (MediaQuery.disableAnimationsOf(context)) return child;
-      final curved =
-          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-      return FadeTransition(
-        opacity: curved,
-        child: SlideTransition(
-          position: Tween(
-            begin: const Offset(0, 0.03),
-            end: Offset.zero,
-          ).animate(curved),
-          child: child,
-        ),
-      );
-    },
-  );
-}
-
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
@@ -56,65 +33,57 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(
         path: '/',
-        pageBuilder: (c, s) => _fade(const MapaHomeScreen(), s),
+        builder: (c, s) => const MapaHomeScreen(),
       ),
       GoRoute(
         path: '/notificaciones',
-        pageBuilder: (c, s) => _fade(const NotificacionesScreen(), s),
+        builder: (c, s) => const NotificacionesScreen(),
         routes: [
           GoRoute(
             path: 'ajustes',
-            pageBuilder: (c, s) =>
-                _fade(const NotificacionesAjustesScreen(), s),
+            builder: (c, s) => const NotificacionesAjustesScreen(),
           ),
         ],
       ),
       GoRoute(
         path: '/credencializacion',
-        pageBuilder: (c, s) => _fade(const CredencializacionScreen(), s),
+        builder: (c, s) => const CredencializacionScreen(),
       ),
       GoRoute(
         path: '/ajustes',
-        pageBuilder: (c, s) => _fade(const AjustesScreen(), s),
+        builder: (c, s) => const AjustesScreen(),
       ),
       GoRoute(
         path: '/auth',
-        pageBuilder: (c, s) => _fade(const AuthScreen(), s),
+        builder: (c, s) => const AuthScreen(),
       ),
       GoRoute(
         path: '/buscar',
-        pageBuilder: (c, s) => _fade(
-          BusquedaScreen(consultaInicial: s.uri.queryParameters['q']),
-          s,
-        ),
+        builder: (c, s) =>
+            BusquedaScreen(consultaInicial: s.uri.queryParameters['q']),
       ),
       GoRoute(
         path: '/espacio/:id',
-        pageBuilder: (c, s) =>
-            _fade(EspacioScreen(id: s.pathParameters['id']!), s),
+        builder: (c, s) => EspacioScreen(id: s.pathParameters['id']!),
       ),
       GoRoute(
         path: '/docente/:id',
-        pageBuilder: (c, s) =>
-            _fade(DocenteScreen(id: s.pathParameters['id']!), s),
+        builder: (c, s) => DocenteScreen(id: s.pathParameters['id']!),
       ),
       GoRoute(
         path: '/ruta',
-        pageBuilder: (c, s) {
+        builder: (c, s) {
           final q = s.uri.queryParameters;
-          return _fade(
-            RutaScreen(
-              destinoId: q['destino'] ?? 'lug_acceso_principal',
-              origenId: q['origen'] ?? 'lug_acceso_principal',
-              accesibleInicial: q['accesible'] == '1',
-            ),
-            s,
+          return RutaScreen(
+            destinoId: q['destino'] ?? 'lug_acceso_principal',
+            origenId: q['origen'] ?? 'lug_acceso_principal',
+            accesibleInicial: q['accesible'] == '1',
           );
         },
       ),
       GoRoute(
         path: '/catalogo',
-        pageBuilder: (c, s) => _fade(const CatalogoScreen(), s),
+        builder: (c, s) => const CatalogoScreen(),
       ),
     ],
   );
