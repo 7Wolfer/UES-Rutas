@@ -116,7 +116,10 @@ class AppDrawer extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Center(
-                child: Text('Versión ${AppConfig.version}',
+                child: Text(
+                    'Versión ${AppConfig.version}\n'
+                    'Prototipo de prácticas profesionales · no oficial',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall

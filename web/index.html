@@ -16,7 +16,9 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="UES Rutas — orientación y navegación para el campus de la Universidad Estatal de Sonora.">
+  <meta name="description" content="UES Rutas — prototipo de prácticas profesionales (no oficial) de orientación y navegación para el campus Hermosillo de la Universidad Estatal de Sonora.">
+  <!-- Prototipo académico: que no aparezca en buscadores. -->
+  <meta name="robots" content="noindex, nofollow">
 
   <meta name="theme-color" content="#8E1537">
 
@@ -142,6 +144,10 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
+  <script>
+    // Quita el splash propio en cuanto Flutter pinta su primer cuadro.
+    window.addEventListener("flutter-first-frame", removeSplashFromWeb);
+  </script>
   <script src="flutter_bootstrap.js" async=""></script>
 
 

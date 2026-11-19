@@ -100,3 +100,17 @@ test/              pruebas unitarias y de widgets
    ninguna arista cruce un edificio y que todo quede conectado).
 3. **Teselas sin conexión:** `python3 scripts/descargar_teselas.py`.
 4. **Íconos y splash:** `dart run flutter_launcher_icons` y `dart run flutter_native_splash:create`.
+
+## Publicación web
+
+La versión web se publica sola en GitHub Pages con cada push a `main`
+(`.github/workflows/publicar-web.yml`): analiza, corre las pruebas, compila y publica. Si algo
+falla, el sitio anterior sigue en línea. También se puede lanzar a mano desde la pestaña
+**Actions → Publicar web → Run workflow**.
+
+- Dominio: `uesrutas.com.mx` (configurado en Settings → Pages → Custom domain). Registros DNS:
+  `A @` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` y
+  `CNAME www` → `7wolfer.github.io`.
+- Sin dominio, el sitio vive en `https://7wolfer.github.io/UES-Rutas/`; el workflow ajusta la
+  base de las rutas automáticamente.
+- Es un prototipo: lleva `noindex` y `robots.txt` para no aparecer en buscadores.
