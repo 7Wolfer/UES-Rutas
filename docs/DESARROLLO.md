@@ -103,14 +103,21 @@ test/              pruebas unitarias y de widgets
 
 ## Publicación web
 
-La versión web se publica sola en GitHub Pages con cada push a `main`
-(`.github/workflows/publicar-web.yml`): analiza, corre las pruebas, compila y publica. Si algo
-falla, el sitio anterior sigue en línea. También se puede lanzar a mano desde la pestaña
-**Actions → Publicar web → Run workflow**.
+La web está en **https://uesrutas.thunder053.com** (servidor Pterodactyl de ThunderHost que sirve
+la carpeta `web/` con `server.js`). Para publicar una versión nueva:
 
-- Dominio: `uesrutas.com.mx` (configurado en Settings → Pages → Custom domain). Registros DNS:
-  `A @` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` y
-  `CNAME www` → `7wolfer.github.io`.
-- Sin dominio, el sitio vive en `https://7wolfer.github.io/UES-Rutas/`; el workflow ajusta la
-  base de las rutas automáticamente.
+```bash
+bash scripts/publicar_web.sh            # compila y publica
+bash scripts/publicar_web.sh --sin-compilar
+```
+
+El script sube un .zip, lo descomprime en `web_nuevo/` e intercambia carpetas, así el sitio nunca
+queda a medias. Necesita `~/.config/ues-rutas/panel.env` (fuera del repositorio, permisos 600)
+con `PANEL_URL`, `PANEL_SERVIDOR` y `PANEL_CLAVE` (una clave de API del panel, en Account → API
+Keys; se revoca desde ahí).
+
+- El hosting manda `Referrer-Policy: same-origin`; `web/index.html` lo corrige con
+  `<meta name="referrer">` para que OpenStreetMap no bloquee las teselas.
 - Es un prototipo: lleva `noindex` y `robots.txt` para no aparecer en buscadores.
+- `.github/workflows/publicar-web.yml` publica en GitHub Pages si Actions está disponible en la
+  cuenta (hoy está bloqueado por facturación).
